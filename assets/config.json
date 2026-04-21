@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "WebTerminal",
-    "version": "3.2",
+    "version": "3.3",
     "defaultHost": "webos",
     "defaultUser": "user",
     "storagePrefix": "wt_"
@@ -30,5 +30,5 @@
     "localStorage": true,
     "history": true
   },
-  "helpMarkdown": "# WebTerminal v{{version}}\n\nЛёгкий эмулятор терминала, работающий прямо в браузере.\n\n## Файловая система\n• `ls` — список файлов\n• `cd <dir>` — перейти в папку\n• `pwd` — текущий путь\n• `cat <file>` — прочитать файл\n• `touch <file>` — создать файл\n• `edit <file>` — открыть редактор\n• `rm <file>` — удалить файл\n• `clear` — очистить экран\n\n## Хранилище\n• `lsstore` — ключи\n• `getstore <key>` — получить значение\n• `setstore <key> <val>` — установить\n• `delstore <key>` — удалить\n• `clearstore` — очистить пользовательские ключи\n\n## Система\n• `date` — дата и время\n• `calc <expr>` — калькулятор\n• `neofetch` — инфо о системе\n• `theme` — сменить тему\n• `matrix` — эффект Матрицы\n• `whoami` — текущий пользователь\n• `logout` — сброс профиля\n\n> Все данные сохраняются локально через `localStorage`."
+  "helpMarkdown": "# WebTerminal v{{version}}\n\nЛёгкий эмулятор терминала для обучения работе с командной строкой Linux.\n\n## 📁 Файловая система\n• `ls` — список файлов и папок\n• `cd <dir>` — перейти в папку\n• `pwd` — показать текущий путь\n• `cat <file>` — прочитать файл\n• `touch <file>` — создать пустой файл\n• `edit <file>` — открыть текстовый редактор\n• `rm <file>` — удалить файл\n• `clear` — очистить экран\n\n## 💾 Хранилище\n• `lsstore` — показать ключи\n• `getstore <key>` — получить значение\n• `setstore <key> <val>` — установить пару\n• `delstore <key>` — удалить ключ\n• `clearstore` — очистить пользовательские данные\n\n## 🐧 Системные команды (симуляция)\n• `date` — дата и время\n• `calc <expr>` — калькулятор\n• `neofetch` — информация о системе\n• `whoami` — текущий пользователь\n• `uname -a` — ядро и архитектура\n• `apt update / install` — обучение пакетному менеджеру\n• `sudo <cmd>` — выполнение от имени root\n• `man <cmd>` — справка по команде\n\n> Все данные сохраняются локально через `localStorage`."
 }

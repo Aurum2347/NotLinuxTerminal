@@ -5,32 +5,35 @@
       "documents": {
         "type": "dir",
         "children": {
-          "readme.txt": {
-            "type": "file",
-            "content": "Welcome to WebTerminal v{{version}}\n\nFeatures:\n• GRUB-style boot screen\n• LocalStorage management\n• File create/edit\n• Clean monochrome UI\n• Ubuntu-style prompt",
-            "meta": { "created": "{{timestamp}}", "readonly": true }
-          },
-          "notes.txt": {
-            "type": "file",
-            "content": "",
-            "meta": { "created": "{{timestamp}}" }
-          }
+          "readme.txt": { "type": "file", "content": "Welcome to WebTerminal v{{version}}\n\nFeatures:\n• GRUB-style boot screen\n• LocalStorage management\n• File create/edit\n• Clean monochrome UI\n• Ubuntu-style prompt", "meta": { "created": "{{timestamp}}", "readonly": true } },
+          "notes.txt": { "type": "file", "content": "", "meta": { "created": "{{timestamp}}" } }
         }
       },
       "projects": {
         "type": "dir",
-        "children": {}
+        "children": {
+          "webapp": { "type": "dir", "children": { "index.html": { "type": "file", "content": "<!DOCTYPE html>\n<html><head><title>My Project</title></head>\n<body><h1>Hello World</h1></body>\n</html>", "meta": { "created": "{{timestamp}}" } } } },
+          "scripts": { "type": "dir", "children": { "backup.sh": { "type": "file", "content": "#!/bin/bash\n# Simple backup script\necho 'Backing up files...'\ntar -czf backup.tar.gz ~/documents\necho 'Done.'", "meta": { "created": "{{timestamp}}" } } } }
+        }
+      },
+      "logs": {
+        "type": "dir",
+        "children": {
+          "dev-diary": {
+            "type": "dir",
+            "children": {
+              "21-04-2026.md": { "type": "file", "content": "# Запись от 21.04.2026\n- by Aurum2347\n\nСегодня я решился создать что то вроде терминала, но в интернете. По идеологии этот сайт должен научить пользователей пользоваться терминалом, прежде как те начнут работать к примеру с тем же ubuntu, или arch, или ещё что то в этом роде. Пока что это лишь задумка, но я попытаюсь её реализовать по мере возможностей. Как никак я захостил этот сайт на github (Github-pages), уже как хостинг - это не самая лучшая идея...", "meta": { "created": "{{timestamp}}", "readonly": true } }
+            }
+          }
+        }
       },
       ".config": {
         "type": "dir",
         "children": {
-          "settings.json": {
-            "type": "file",
-            "content": "{\n  \"theme\": \"{{theme}}\",\n  \"fontSize\": 14\n}",
-            "meta": { "created": "{{timestamp}}" }
-          }
+          "settings.json": { "type": "file", "content": "{\n  \"theme\": \"{{theme}}\",\n  \"fontSize\": 14,\n  \"editor\": {\n    \"autoSave\": true,\n    \"lineNumbers\": true\n  }\n}", "meta": { "created": "{{timestamp}}" } }
         }
-      }
+      },
+      ".bash_history": { "type": "file", "content": "ls\ncd projects\nsudo apt update\nman ls\ncat /etc/os-release\nuname -a\nclear", "meta": { "created": "{{timestamp}}", "readonly": true } }
     }
   }
 }
