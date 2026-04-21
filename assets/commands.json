@@ -1,24 +1,16 @@
 {
-  "help": {
-    "description": "Show available commands",
-    "usage": "help",
-    "category": "system",
-    "handler": "static",
-    "output": "<span class=\"success\">Available commands:</span>\n\n<span class=\"info\">Filesystem:</span>\n  ls, cd, pwd, cat, touch, edit, rm, clear\n\n<span class=\"info\">LocalStorage:</span>\n  lsstore, getstore, setstore, delstore, clearstore\n\n<span class=\"info\">System:</span>\n  date, calc, neofetch, theme, matrix, whoami, logout"
-  },
   "ls": {
     "description": "List directory contents",
     "usage": "ls [path]",
     "category": "filesystem",
-    "handler": "builtin:ls",
-    "flags": ["-a", "-l"]
+    "handler": "builtin:ls"
   },
   "cd": {
     "description": "Change directory",
     "usage": "cd <path>",
     "category": "filesystem",
     "handler": "builtin:cd",
-    "args": {"required": 1, "optional": 0}
+    "args": {"required": 1}
   },
   "pwd": {
     "description": "Print working directory",
@@ -53,8 +45,7 @@
     "usage": "rm <filename>",
     "category": "filesystem",
     "handler": "builtin:rm",
-    "args": {"required": 1},
-    "confirm": true
+    "args": {"required": 1}
   },
   "clear": {
     "description": "Clear terminal screen",
@@ -88,7 +79,7 @@
     "category": "storage",
     "handler": "builtin:delstore",
     "args": {"required": 1},
-    "protected": ["webos_fs", "webos_user", "webos_host"]
+    "protected": ["wt_fs", "wt_user", "wt_host"]
   },
   "clearstore": {
     "description": "Clear non-system localStorage",
@@ -100,36 +91,31 @@
     "description": "Show current date and time",
     "usage": "date",
     "category": "system",
-    "handler": "builtin:date",
-    "locale": "ru-RU"
+    "handler": "builtin:date"
   },
   "calc": {
     "description": "Evaluate math expression",
     "usage": "calc <expression>",
     "category": "system",
-    "handler": "builtin:calc",
-    "safeEval": true
+    "handler": "builtin:calc"
   },
   "neofetch": {
     "description": "Display system information",
     "usage": "neofetch",
     "category": "system",
-    "handler": "builtin:neofetch",
-    "template": "ascii-art"
+    "handler": "builtin:neofetch"
   },
   "theme": {
     "description": "Toggle UI theme",
     "usage": "theme [name]",
     "category": "system",
-    "handler": "builtin:theme",
-    "values": ["mono", "light"]
+    "handler": "builtin:theme"
   },
   "matrix": {
     "description": "Start Matrix animation",
     "usage": "matrix",
     "category": "fun",
-    "handler": "builtin:matrix",
-    "exitKey": "any"
+    "handler": "builtin:matrix"
   },
   "echo": {
     "description": "Print arguments",

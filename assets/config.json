@@ -4,43 +4,31 @@
     "version": "3.2",
     "defaultHost": "webos",
     "defaultUser": "user",
-    "storagePrefix": "webos_"
+    "storagePrefix": "wt_"
   },
   "ui": {
     "theme": "mono",
     "themes": {
       "mono": {
-        "--bg": "#000000",
+        "--bg": "#050505",
         "--bg-elevated": "#0a0a0a",
-        "--text": "#e8e8e8",
+        "--border": "#333",
+        "--border-hover": "#555",
+        "--text": "#e0e0e0",
         "--text-dim": "#a0a0a0",
-        "--user": "#8ae234",
-        "--path": "#729fcf"
-      },
-      "light": {
-        "--bg": "#ffffff",
-        "--bg-elevated": "#fafafa",
-        "--text": "#1a1a1a",
-        "--text-dim": "#555555",
-        "--user": "#2e7d32",
-        "--path": "#1565c0"
+        "--text-muted": "#666"
       }
-    },
-    "animations": {
-      "lineDelay": 250,
-      "bootSteps": 6,
-      "bootStepDelay": 400
     }
   },
   "security": {
     "maxCommandLength": 500,
-    "rateLimitMs": 300,
-    "forbiddenPatterns": ["/(.)\\1{10,}/", "/rm\\s+-rf\\s+\\//"]
+    "rateLimitMs": 300
   },
   "features": {
     "matrix": true,
     "fileEditor": true,
     "localStorage": true,
     "history": true
-  }
+  },
+  "helpMarkdown": "# WebTerminal v{{version}}\n\nЛёгкий эмулятор терминала, работающий прямо в браузере.\n\n## Файловая система\n• `ls` — список файлов\n• `cd <dir>` — перейти в папку\n• `pwd` — текущий путь\n• `cat <file>` — прочитать файл\n• `touch <file>` — создать файл\n• `edit <file>` — открыть редактор\n• `rm <file>` — удалить файл\n• `clear` — очистить экран\n\n## Хранилище\n• `lsstore` — ключи\n• `getstore <key>` — получить значение\n• `setstore <key> <val>` — установить\n• `delstore <key>` — удалить\n• `clearstore` — очистить пользовательские ключи\n\n## Система\n• `date` — дата и время\n• `calc <expr>` — калькулятор\n• `neofetch` — инфо о системе\n• `theme` — сменить тему\n• `matrix` — эффект Матрицы\n• `whoami` — текущий пользователь\n• `logout` — сброс профиля\n\n> Все данные сохраняются локально через `localStorage`."
 }
