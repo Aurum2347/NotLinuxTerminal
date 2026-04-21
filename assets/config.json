@@ -1,0 +1,46 @@
+{
+  "app": {
+    "name": "WebTerminal",
+    "version": "3.2",
+    "defaultHost": "webos",
+    "defaultUser": "user",
+    "storagePrefix": "webos_"
+  },
+  "ui": {
+    "theme": "mono",
+    "themes": {
+      "mono": {
+        "--bg": "#000000",
+        "--bg-elevated": "#0a0a0a",
+        "--text": "#e8e8e8",
+        "--text-dim": "#a0a0a0",
+        "--user": "#8ae234",
+        "--path": "#729fcf"
+      },
+      "light": {
+        "--bg": "#ffffff",
+        "--bg-elevated": "#fafafa",
+        "--text": "#1a1a1a",
+        "--text-dim": "#555555",
+        "--user": "#2e7d32",
+        "--path": "#1565c0"
+      }
+    },
+    "animations": {
+      "lineDelay": 250,
+      "bootSteps": 6,
+      "bootStepDelay": 400
+    }
+  },
+  "security": {
+    "maxCommandLength": 500,
+    "rateLimitMs": 300,
+    "forbiddenPatterns": ["/(.)\\1{10,}/", "/rm\\s+-rf\\s+\\//"]
+  },
+  "features": {
+    "matrix": true,
+    "fileEditor": true,
+    "localStorage": true,
+    "history": true
+  }
+}

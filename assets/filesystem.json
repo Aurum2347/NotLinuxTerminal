@@ -1,0 +1,36 @@
+{
+  "~": {
+    "type": "dir",
+    "children": {
+      "documents": {
+        "type": "dir",
+        "children": {
+          "readme.txt": {
+            "type": "file",
+            "content": "Welcome to WebTerminal v{{version}}\n\nFeatures:\n• GRUB-style boot screen\n• LocalStorage management\n• File create/edit\n• Clean monochrome UI\n• Ubuntu-style prompt",
+            "meta": { "created": "{{timestamp}}", "readonly": true }
+          },
+          "notes.txt": {
+            "type": "file",
+            "content": "",
+            "meta": { "created": "{{timestamp}}" }
+          }
+        }
+      },
+      "projects": {
+        "type": "dir",
+        "children": {}
+      },
+      ".config": {
+        "type": "dir",
+        "children": {
+          "settings.json": {
+            "type": "file",
+            "content": "{\n  \"theme\": \"{{theme}}\",\n  \"fontSize\": 14\n}",
+            "meta": { "created": "{{timestamp}}" }
+          }
+        }
+      }
+    }
+  }
+}

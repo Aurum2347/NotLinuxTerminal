@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebTerminal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --bg-elevated: #0a0a0a;
+      --border: #2a2a2a;
+      --border-hover: #444444;
+      --text: #e8e8e8;
+      --text-dim: #a0a0a0;
+      --text-muted: #5a5a5a;
+      --user: #8ae234;
+      --path: #729fcf;
+      --prompt: #ffffff;
+      --error: #ef2929;
+      --success: #8ae234;
+      --warning: #fce94f;
+      --info: #729fcf;
+      --radius: 6px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.5);
+      --transition: 120ms ease;
+      --font-ui: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-code: 'Ubuntu Mono', 'Fira Code', 'Consolas', monospace;
+      --font-size: 14px;
+      --line-height: 1.55;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ===================== */
+    /*    GRUB BOOT SCREEN   */
+    /* ===================== */
+    #boot-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 600ms ease, transform 600ms ease;
+    }
+
+    #boot-screen.hidden {
+      opacity: 0;
+      transform: scale(1.02);
+      pointer-events: none;
+    }
+
+    .grub-container {
+      width: 100%;
+      max-width: 640px;
+      padding: 20px;
+    }
+
+    .grub-header {
+      text-align: center;
+      margin-bottom: 32px;
+      animation: grubFadeIn 800ms ease-out;
+    }
+
+    .grub-logo {
+      font-family: var(--font-code);
+      font-size: 11px;
+      color: #729fcf;
+      margin-bottom: 16px;
+      line-height: 1.3;
+      white-space: pre;
+      opacity: 0.8;
+    }
+
+    .grub-title {
+      font-family: var(--font-code);
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .grub-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .grub-menu {
+      list-style: none;
+      border: 1px solid #333;
+      border-radius: 4px;
+      overflow: hidden;
+      animation: grubFadeIn 1s ease-out 200ms both;
+    }
+
+    .grub-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #1a1a1a;
+      cursor: pointer;
+      transition: background 100ms ease;
+      position: relative;
+    }
+
+    .grub-item:last-child { border-bottom: none; }
+    .grub-item:hover, .grub-item.active { background: #1a1a1a; }
+    .grub-item.active { background: #222; }
+
+    .grub-item.active::before {
+      content: '>';
+      color: var(--success);
+      font-family: var(--font-code);
+      font-weight: 700;
+      margin-right: 12px;
+      font-size: 16px;
+    }
+
+    .grub-item:not(.active)::before {
+      content: ' ';
+      width: 16px;
+      margin-right: 12px;
+    }
+
+    .grub-item-icon { margin-right: 10px; opacity: 0.7; }
+    .grub-item-icon svg { width: 16px; height: 16px; fill: var(--text-dim); }
+    .grub-item-label { font-family: var(--font-code); font-size: 14px; color: var(--text); }
+    .grub-item-desc { font-size: 11px; color: var(--text-muted); margin-left: auto; padding-left: 12px; }
+
+    .grub-profile {
+      margin-top: 24px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #0a0a0a;
+      padding: 20px;
+      animation: grubFadeIn 1s ease-out 400ms both;
+    }
+
+    .grub-profile-title {
+      font-family: var(--font-code);
+      font-size: 13px;
+      color: var(--info);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .grub-field { margin-bottom: 12px; }
+    .grub-field label {
+      display: block;
+      font-family: var(--font-code);
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .grub-input {
+      width: 100%;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 3px;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: 14px;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .grub-input:focus { border-color: var(--info); }
+    .grub-input::placeholder { color: #444; }
+    .grub-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    .grub-btn {
+      width: 100%;
+      padding: 10px;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 3px;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+      margin-top: 8px;
+    }
+
+    .grub-btn:hover { background: #333; border-color: #555; }
+    .grub-btn.primary { background: var(--success); color: #000; border-color: var(--success); font-weight: 500; }
+    .grub-btn.primary:hover { background: #7ad42a; }
+
+    .grub-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+      animation: grubFadeIn 1s ease-out 600ms both;
+    }
+
+    .grub-footer kbd {
+      background: #1a1a1a;
+      padding: 2px 6px;
+      border-radius: 2px;
+      border: 1px solid #333;
+      font-family: var(--font-code);
+      font-size: 10px;
+    }
+
+    @keyframes grubFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .boot-loading { text-align: center; animation: grubFadeIn 500ms ease-out; }
+    .boot-loading .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid #333;
+      border-top-color: var(--info);
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .boot-loading .status { font-family: var(--font-code); font-size: 13px; color: var(--text-dim); }
+
+    /* ===================== */
+    /*      TERMINAL          */
+    /* ===================== */
+    .terminal-wrapper {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 500ms ease 300ms, transform 500ms ease 300ms;
+    }
+
+    .terminal-wrapper.visible { opacity: 1; transform: scale(1); }
+
+    .terminal {
+      width: 100%;
+      max-width: 960px;
+      height: 92vh;
+      max-height: 750px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      will-change: transform;
+    }
+
+    .titlebar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      background: #141414;
+      border-bottom: 1px solid var(--border);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .controls { display: flex; gap: 7px; }
+
+    .control-btn {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      border: none;
+      background: #333;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform var(--transition), background var(--transition);
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .control-btn:hover { transform: scale(1.15); }
+    .control-btn:active { transform: scale(0.95); }
+    .control-btn svg { width: 7px; height: 7px; fill: #111; display: block; }
+    
+    .control-btn.close:hover { background: #ff5f57; }
+    .control-btn.close:hover svg { fill: #fff; }
+    .control-btn.minimize:hover { background: #febc2e; }
+    .control-btn.maximize:hover { background: #28c840; }
+    .control-btn.maximize:hover svg { fill: #fff; }
+
+    .title {
+      margin-left: 6px;
+      color: var(--text-dim);
+      font-size: 12px;
+      font-family: var(--font-code);
+      opacity: 0.9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .content {
+      flex: 1;
+      padding: 14px 18px;
+      overflow-y: auto;
+      font-family: var(--font-code);
+      line-height: 1.6;
+      contain: content;
+    }
+
+    .content::-webkit-scrollbar { width: 9px; }
+    .content::-webkit-scrollbar-track { background: transparent; }
+    .content::-webkit-scrollbar-thumb {
+      background: #252525;
+      border-radius: 4px;
+    }
+    .content::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+
+    .line {
+      margin: 3px 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      animation: lineAppear 250ms ease-out forwards;
+    }
+
+    @keyframes lineAppear {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .line.send-fade { animation: sendFade 300ms ease-out forwards; }
+
+    @keyframes sendFade {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0.35; transform: translateY(-2px); }
+    }
+
+    .welcome {
+      margin: 6px 0 14px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 4px;
+      border-left: 2px solid var(--border);
+      animation: lineAppear 400ms ease-out;
+    }
+
+    .welcome strong { color: var(--text); }
+    .welcome .hint { color: var(--text-dim); font-size: 13px; display: block; margin-top: 4px; }
+    .welcome code {
+      background: #1a1a1a;
+      padding: 1px 5px;
+      border-radius: 2px;
+      color: var(--success);
+      font-size: 12px;
+    }
+
+    .prompt-user { color: var(--user); font-weight: 500; }
+    .prompt-sep { color: var(--text-muted); }
+    .prompt-path { color: var(--path); }
+    .prompt-symbol { color: var(--prompt); margin-right: 6px; }
+
+    .error { color: var(--error); }
+    .success { color: var(--success); }
+    .warning { color: var(--warning); }
+    .info { color: var(--info); }
+    .muted { color: var(--text-muted); }
+    
+    .output {
+      color: var(--text-dim);
+      margin: 2px 0 2px 4px;
+      padding-left: 6px;
+      border-left: 1px solid var(--border);
+    }
+
+    .input-area {
+      display: flex;
+      align-items: baseline;
+      padding: 10px 18px 12px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .input-prompt {
+      font-family: var(--font-code);
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+
+    #cmd {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: inherit;
+      line-height: inherit;
+      caret-color: var(--prompt);
+      padding: 2px 4px;
+      min-width: 0;
+    }
+
+    #cmd::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 14px;
+      background: #0f0f0f;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-ui);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      width: 5px; height: 5px;
+      background: var(--success);
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* File editor modal */
+    .editor-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .editor-overlay.show { display: flex; }
+
+    .editor {
+      width: 100%;
+      max-width: 700px;
+      max-height: 80vh;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+      animation: editorAppear 200ms ease-out;
+    }
+
+    @keyframes editorAppear {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #141414;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-code);
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .editor-header .filename { color: var(--path); }
+    .editor-header .actions { display: flex; gap: 8px; }
+
+    .editor-btn {
+      padding: 4px 10px;
+      background: #252525;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .editor-btn:hover { background: #333; }
+    .editor-btn.save { background: var(--success); color: #000; border-color: var(--success); }
+    .editor-btn.save:hover { background: #7ad42a; }
+
+    .editor-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow: auto;
+      min-height: 200px;
+    }
+
+    .editor-body textarea {
+      width: 100%;
+      height: 100%;
+      min-height: 200px;
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 10px;
+      resize: none;
+      outline: none;
+    }
+
+    .editor-body textarea:focus { border-color: var(--border-hover); }
+
+    /* Matrix overlay */
+    #matrix {
+      position: fixed; inset: 0;
+      background: #000;
+      z-index: 1000;
+      display: none;
+      pointer-events: none;
+    }
+
+    /* SVG icons */
+    .icon { display: inline-block; vertical-align: -2px; margin-right: 4px; }
+    .icon svg { width: 14px; height: 14px; fill: currentColor; }
+    .icon-folder svg { color: var(--success); }
+    .icon-file svg { color: var(--text-dim); }
+    .icon-check svg { color: var(--success); }
+    .icon-error svg { color: var(--error); }
+    .icon-warning svg { color: var(--warning); }
+    .icon-info svg { color: var(--info); }
+    .icon-storage svg { color: var(--info); }
+
+    .category {
+      margin: 8px 0 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed var(--border);
+      color: var(--info);
+      font-weight: 500;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kv-item {
+      margin: 2px 0;
+      padding-left: 8px;
+      display: flex;
+      gap: 6px;
+    }
+    .kv-key { color: var(--path); white-space: nowrap; }
+    .kv-val { color: var(--text-dim); word-break: break-all; }
+
+    @media (max-width: 768px) {
+      body { padding: 8px; }
+      .terminal { height: 96vh; border-radius: 4px; }
+      .titlebar { padding: 7px 12px; }
+      .content { padding: 10px 14px; }
+      .input-area { padding: 8px 14px 10px; }
+      .statusbar { padding: 4px 12px; font-size: 10px; }
+      .grub-container { padding: 16px; }
+      .grub-logo { font-size: 8px; }
+      .grub-title { font-size: 18px; }
+    }
+
+    ::selection { background: var(--text); color: #000; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== -->
+<!--   GRUB BOOT SCREEN    -->
+<!-- ===================== -->
+<div id="boot-screen">
+  <div class="grub-container">
+    <div class="grub-header">
+      <pre class="grub-logo">
+    .--.
+   |o_o |
+   |:_/ |
+  //   \ \
+ (|     | )
+/'\_   _/`\
+\___)=(___/
+      </pre>
+      <div class="grub-title" id="grub-title">WebTerminal</div>
+      <div class="grub-subtitle">GNU/Linux style environment</div>
+    </div>
+
+    <ul class="grub-menu" id="grub-menu">
+      <li class="grub-item active" data-action="setup" onclick="selectGrubItem(this)">
+        <span class="grub-item-icon">
+          <svg viewBox="0 0 16 16"><path d="M8,2 L14,5 L14,11 L8,14 L2,11 L2,5 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </span>
+        <span class="grub-item-label">WebTerminal OS</span>
+        <span class="grub-item-desc">boot</span>
+      </li>
+      <li class="grub-item" data-action="advanced" onclick="selectGrubItem(this)">
+        <span class="grub-item-icon">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8,4 L8,8 L11,8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        <span class="grub-item-label">Advanced options</span>
+        <span class="grub-item-desc">recovery</span>
+      </li>
+      <li class="grub-item" data-action="memory" onclick="selectGrubItem(this)">
+        <span class="grub-item-icon">
+          <svg viewBox="0 0 16 16"><rect x="3" y="4" width="10" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6,4 L6,3 M8,4 L8,3 M10,4 L10,3 M6,13 L6,12 M8,13 L8,12 M10,13 L10,12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        <span class="grub-item-label">Memory test</span>
+        <span class="grub-item-desc">memtest86+</span>
+      </li>
+    </ul>
+
+    <div class="grub-profile" id="grub-profile" style="display:none;">
+      <div class="grub-profile-title">User Setup</div>
+      <div class="grub-field">
+        <label>Username</label>
+        <input type="text" class="grub-input" id="setup-username" placeholder="e.g. user" maxlength="20" autofocus>
+        <div class="grub-hint">Only lowercase letters, numbers, underscores, hyphens</div>
+      </div>
+      <div class="grub-field">
+        <label>Hostname</label>
+        <input type="text" class="grub-input" id="setup-hostname" placeholder="e.g. webos" maxlength="20" value="webos">
+      </div>
+      <button class="grub-btn primary" onclick="startBoot()">Boot System</button>
+      <button class="grub-btn" onclick="cancelSetup()" style="margin-top:6px;">Cancel</button>
+    </div>
+
+    <div class="boot-loading" id="boot-loading" style="display:none;">
+      <div class="spinner"></div>
+      <div class="status" id="boot-status">Loading kernel...</div>
+    </div>
+
+    <div class="grub-footer" id="grub-footer">
+      <kbd>Enter</kbd> to select &nbsp; <kbd>&uarr;&darr;</kbd> navigate &nbsp; <kbd>c</kbd> cancel
+    </div>
+  </div>
+</div>
+
+<!-- ===================== -->
+<!--      TERMINAL          -->
+<!-- ===================== -->
+<div class="terminal-wrapper" id="terminal-wrapper">
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="controls">
+        <button class="control-btn close" onclick="closeTerminal()" title="Close" aria-label="Close">
+          <svg viewBox="0 0 10 10"><path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+        </button>
+        <button class="control-btn minimize" title="Minimize" aria-label="Minimize">
+          <svg viewBox="0 0 10 10"><path d="M2,5 L8,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+        </button>
+        <button class="control-btn maximize" title="Maximize" aria-label="Maximize">
+          <svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <span class="title" id="title">user@webos: ~</span>
+    </div>
+
+    <div class="content" id="output"></div>
+
+    <div class="input-area">
+      <span class="input-prompt">
+        <span class="prompt-user" id="disp-user">user</span><span class="prompt-sep">@</span>
+        <span class="prompt-path" id="disp-host">webos</span><span class="prompt-sep">:</span>
+        <span class="prompt-path" id="cwd">~</span>
+        <span class="prompt-sep">$</span>
+      </span>
+      <input type="text" id="cmd" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off">
+    </div>
+
+    <div class="statusbar">
+      <span><span class="status-dot"></span><span id="status-text">ready</span></span>
+      <span id="clock">--:--</span>
+      <span id="theme-label">mono</span>
+    </div>
+  </div>
+</div>
+
+<!-- File Editor Modal -->
+<div class="editor-overlay" id="editor">
+  <div class="editor">
+    <div class="editor-header">
+      <span>Editing: <span class="filename" id="editor-filename"></span></span>
+      <div class="actions">
+        <button class="editor-btn" onclick="closeEditor()">Cancel</button>
+        <button class="editor-btn save" onclick="saveFile()">Save</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <textarea id="editor-content" spellcheck="false"></textarea>
+    </div>
+  </div>
+</div>
+
+<canvas id="matrix"></canvas>
+
+<!-- JSON Configs (embedded for offline support) -->
+<script id="config-json" type="application/json">
+{"app":{"name":"WebTerminal","version":"3.2","defaultHost":"webos","defaultUser":"user","storagePrefix":"webos_"},"ui":{"theme":"mono","themes":{"mono":{"--bg":"#000000","--bg-elevated":"#0a0a0a","--text":"#e8e8e8","--text-dim":"#a0a0a0","--user":"#8ae234","--path":"#729fcf"},"light":{"--bg":"#ffffff","--bg-elevated":"#fafafa","--text":"#1a1a1a","--text-dim":"#555555","--user":"#2e7d32","--path":"#1565c0"}},"animations":{"lineDelay":250,"bootSteps":6,"bootStepDelay":400}},"security":{"maxCommandLength":500,"rateLimitMs":300},"features":{"matrix":true,"fileEditor":true,"localStorage":true,"history":true}}
+</script>
+<script id="commands-json" type="application/json">
+{"help":{"description":"Show available commands","usage":"help","category":"system","handler":"static","output":"<span class=\"success\">Available commands:</span>\n\n<span class=\"info\">Filesystem:</span>\n  ls, cd, pwd, cat, touch, edit, rm, clear\n\n<span class=\"info\">LocalStorage:</span>\n  lsstore, getstore, setstore, delstore, clearstore\n\n<span class=\"info\">System:</span>\n  date, calc, neofetch, theme, matrix, whoami, logout"},"ls":{"description":"List directory contents","usage":"ls [path]","category":"filesystem","handler":"builtin:ls"},"cd":{"description":"Change directory","usage":"cd <path>","category":"filesystem","handler":"builtin:cd","args":{"required":1}},"pwd":{"description":"Print working directory","usage":"pwd","category":"filesystem","handler":"builtin:pwd"},"cat":{"description":"Display file contents","usage":"cat <file>","category":"filesystem","handler":"builtin:cat","args":{"required":1}},"touch":{"description":"Create empty file","usage":"touch <filename>","category":"filesystem","handler":"builtin:touch","args":{"required":1}},"edit":{"description":"Open file in editor","usage":"edit <filename>","category":"filesystem","handler":"builtin:edit","args":{"required":1},"ui":"modal"},"rm":{"description":"Remove file","usage":"rm <filename>","category":"filesystem","handler":"builtin:rm","args":{"required":1}},"clear":{"description":"Clear terminal screen","usage":"clear","category":"system","handler":"builtin:clear"},"lsstore":{"description":"List localStorage keys","usage":"lsstore","category":"storage","handler":"builtin:lsstore"},"getstore":{"description":"Get value from localStorage","usage":"getstore <key>","category":"storage","handler":"builtin:getstore","args":{"required":1}},"setstore":{"description":"Set value in localStorage","usage":"setstore <key> <value>","category":"storage","handler":"builtin:setstore","args":{"required":2}},"delstore":{"description":"Delete key from localStorage","usage":"delstore <key>","category":"storage","handler":"builtin:delstore","args":{"required":1},"protected":["webos_fs","webos_user","webos_host"]},"clearstore":{"description":"Clear non-system localStorage","usage":"clearstore","category":"storage","handler":"builtin:clearstore"},"date":{"description":"Show current date and time","usage":"date","category":"system","handler":"builtin:date"},"calc":{"description":"Evaluate math expression","usage":"calc <expression>","category":"system","handler":"builtin:calc"},"neofetch":{"description":"Display system information","usage":"neofetch","category":"system","handler":"builtin:neofetch"},"theme":{"description":"Toggle UI theme","usage":"theme [name]","category":"system","handler":"builtin:theme"},"matrix":{"description":"Start Matrix animation","usage":"matrix","category":"fun","handler":"builtin:matrix"},"echo":{"description":"Print arguments","usage":"echo <text>","category":"system","handler":"builtin:echo"},"whoami":{"description":"Show current user","usage":"whoami","category":"system","handler":"builtin:whoami"},"logout":{"description":"Reset profile and reload","usage":"logout","category":"system","handler":"builtin:logout","confirm":true},"sudo":{"description":"Execute as superuser (demo)","usage":"sudo <command>","category":"system","handler":"static","output":"<span class=\"warning\">[sudo] permission denied</span>"}}
+</script>
+<script id="filesystem-json" type="application/json">
+{"~":{"type":"dir","children":{"documents":{"type":"dir","children":{"readme.txt":{"type":"file","content":"Welcome to WebTerminal v{{version}}\n\nFeatures:\n• GRUB-style boot screen\n• LocalStorage management\n• File create/edit\n• Clean monochrome UI\n• Ubuntu-style prompt","meta":{"created":"{{timestamp}}","readonly":true}},"notes.txt":{"type":"file","content":"","meta":{"created":"{{timestamp}}"}}}},"projects":{"type":"dir","children":{}},".config":{"type":"dir","children":{"settings.json":{"type":"file","content":"{\n  \"theme\": \"{{theme}}\",\n  \"fontSize\": 14\n}","meta":{"created":"{{timestamp}}"}}}}}}}
+</script>
+
+<script>
+/**
+ * WebTerminal 3.2 - Modular Edition
+ * Full inline version with embedded JSON configs
+ */
+
+// === DOM HELPERS ===
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+
+// === CONFIG LOADER ===
+const Config = {
+  data: null,
+  commands: null,
+  filesystem: null,
+  
+  async load() {
+    // Try fetch from assets/ first (for GitHub Pages)
+    try {
+      const [cfg, cmd, fs] = await Promise.all([
+        fetch('assets/config.json?v=' + Date.now()).then(r => r.json()).catch(() => null),
+        fetch('assets/commands.json?v=' + Date.now()).then(r => r.json()).catch(() => null),
+        fetch('assets/filesystem.json?v=' + Date.now()).then(r => r.json()).catch(() => null)
+      ]);
+      if (cfg && cmd && fs) {
+        this.data = cfg;
+        this.commands = cmd;
+        this.filesystem = this.processTemplates(fs);
+        return true;
+      }
+    } catch(e) { console.log('Fetch failed, using embedded configs'); }
+    
+    // Fallback to embedded JSON
+    try {
+      this.data = JSON.parse($('#config-json').textContent);
+      this.commands = JSON.parse($('#commands-json').textContent);
+      this.filesystem = this.processTemplates(JSON.parse($('#filesystem-json').textContent));
+      return true;
+    } catch(e) {
+      console.error('Failed to load configs:', e);
+      this.loadDefaults();
+      return false;
+    }
+  },
+  
+  processTemplates(obj) {
+    const replace = (str) => {
+      if (typeof str !== 'string') return str;
+      return str.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+        const map = {
+          version: this.data?.app?.version || '3.2',
+          timestamp: Date.now(),
+          theme: this.data?.ui?.theme || 'mono',
+          name: this.data?.app?.name || 'WebTerminal'
+        };
+        return map[key] || `{{${key}}}`;
+      });
+    };
+    const walk = (o) => {
+      if (Array.isArray(o)) return o.map(walk);
+      if (typeof o === 'object' && o !== null) {
+        const res = {};
+        for (const [k, v] of Object.entries(o)) res[k] = walk(v);
+        return res;
+      }
+      return replace(o);
+    };
+    return walk(obj);
+  },
+  
+  loadDefaults() {
+    this.data = {
+      app: { name: 'WebTerminal', version: '3.2', defaultHost: 'webos', defaultUser: 'user', storagePrefix: 'webos_' },
+      ui: { theme: 'mono', themes: { mono: {}, light: {} }, animations: { lineDelay: 250, bootSteps: 6, bootStepDelay: 400 } },
+      security: { maxCommandLength: 500, rateLimitMs: 300 },
+      features: { matrix: true, fileEditor: true, localStorage: true, history: true }
+    };
+    this.commands = {};
+    this.filesystem = { '~': { type: 'dir', children: {} } };
+  }
+};
+
+// === SVG ICONS ===
+const SVG = {
+  folder: '<svg viewBox="0 0 14 14"><path d="M2,4 L4,2 L12,2 L12,10 L2,10 Z M2,6 L12,6"/></svg>',
+  file: '<svg viewBox="0 0 14 14"><path d="M3,2 L9,2 L11,4 L11,12 L3,12 Z M9,2 L9,4 L11,4"/></svg>',
+  check: '<svg viewBox="0 0 14 14"><path d="M3,7 L6,10 L11,3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  error: '<svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7,4 L7,8 M7,10 L7,11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  warning: '<svg viewBox="0 0 14 14"><path d="M7,2 L12,11 L2,11 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7,5 L7,9 M7,11 L7,12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  info: '<svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7,6 L7,10 M7,4 L7,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  storage: '<svg viewBox="0 0 14 14"><rect x="2" y="3" width="10" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="8" width="10" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="4.5" r="0.8" fill="currentColor"/><circle cx="5" cy="9.5" r="0.8" fill="currentColor"/></svg>'
+};
+
+// === COMMAND HANDLERS ===
+const Handlers = {
+  static: (cmdDef, args, ctx) => cmdDef.output,
+  
+  'builtin:ls': (cmdDef, args, ctx) => {
+    const node = ctx.resolvePath();
+    if (!node || node.type !== 'dir') return ctx.error('ls: cannot access directory');
+    const items = Object.keys(node.children || {}).sort();
+    if (!items.length) return ctx.muted('(empty)');
+    return items.map(name => {
+      const item = node.children[name];
+      const icon = item.type === 'dir' ? SVG.folder : SVG.file;
+      const cls = item.type === 'dir' ? 'success' : '';
+      return `  <span class="icon icon-${item.type === 'dir' ? 'folder' : 'file'}">${icon}</span><span class="${cls}">${name}${item.type === 'dir' ? '/' : ''}</span>`;
+    }).join('\n');
+  },
+  
+  'builtin:cd': (cmdDef, args, ctx) => {
+    const target = args[0];
+    if (!target || target === '~') { ctx.cwd = ['~']; ctx.updatePrompt(); return ''; }
+    if (target === '..') { if (ctx.cwd.length > 1) ctx.cwd.pop(); ctx.updatePrompt(); return ''; }
+    const node = ctx.resolvePath();
+    if (node?.children?.[target]?.type === 'dir') {
+      ctx.cwd.push(target);
+      ctx.updatePrompt();
+      return '';
+    }
+    return ctx.error(`cd: ${target}: No such directory`);
+  },
+  
+  'builtin:pwd': (cmdDef, args, ctx) => '/' + ctx.cwd.join('/').replace('~', ''),
+  
+  'builtin:cat': (cmdDef, args, ctx) => {
+    if (!args[0]) return ctx.error('cat: missing file operand');
+    const node = ctx.resolvePath();
+    const file = node?.children?.[args[0]];
+    if (file?.type === 'file') return file.content || ctx.muted('(empty file)');
+    if (node?.children?.[args[0]]?.type === 'dir') return ctx.warning(`cat: ${args[0]}: Is a directory`);
+    return ctx.error(`cat: ${args[0]}: No such file`);
+  },
+  
+  'builtin:touch': (cmdDef, args, ctx) => {
+    if (!args[0]) return ctx.error('touch: missing filename');
+    const node = ctx.resolvePath();
+    if (!node || node.type !== 'dir') return ctx.error('touch: not a directory');
+    if (node.children[args[0]]) return ctx.warning(`touch: ${args[0]}: already exists`);
+    node.children[args[0]] = { type: 'file', content: '', meta: { created: Date.now() } };
+    ctx.saveFS();
+    return ctx.success(`Created: ${args[0]}`);
+  },
+  
+  'builtin:edit': (cmdDef, args, ctx) => {
+    if (!args[0]) return ctx.error('edit: missing filename');
+    const node = ctx.resolvePath();
+    const file = node?.children?.[args[0]];
+    if (!file) return ctx.error(`edit: ${args[0]}: No such file`);
+    if (file.type !== 'file') return ctx.warning(`edit: ${args[0]}: Is a directory`);
+    ctx.openEditor(args[0], file.content || '');
+    return null;
+  },
+  
+  'builtin:rm': (cmdDef, args, ctx) => {
+    if (!args[0]) return ctx.error('rm: missing operand');
+    const node = ctx.resolvePath();
+    if (!node?.children?.[args[0]]) return ctx.error(`rm: ${args[0]}: No such file`);
+    if (node.children[args[0]].type === 'dir') return ctx.warning(`rm: ${args[0]}: Is a directory`);
+    delete node.children[args[0]];
+    ctx.saveFS();
+    return ctx.success(`Removed: ${args[0]}`);
+  },
+  
+  'builtin:clear': (cmdDef, args, ctx) => { ctx.output.innerHTML = ''; return null; },
+  
+  'builtin:lsstore': (cmdDef, args, ctx) => {
+    const keys = Object.keys(localStorage);
+    if (!keys.length) return ctx.muted('(empty)');
+    const webosKeys = keys.filter(k => k.startsWith(ctx.storagePrefix));
+    const otherKeys = keys.filter(k => !k.startsWith(ctx.storagePrefix));
+    let html = '';
+    const formatKey = (k, v) => `<div class="kv-item"><span class="kv-key">${ctx.esc(k)}:</span> <span class="kv-val">${ctx.trunc(ctx.esc(v), 60)}</span></div>`;
+    if (webosKeys.length) {
+      html += `<div class="category"><span class="icon icon-storage">${SVG.storage}</span>WebTerminal</div>`;
+      html += webosKeys.map(k => formatKey(k, localStorage[k])).join('');
+    }
+    if (otherKeys.length) {
+      html += `<div class="category"><span class="icon icon-info">${SVG.info}</span>Other</div>`;
+      html += otherKeys.map(k => formatKey(k, localStorage[k])).join('');
+    }
+    return html;
+  },
+  
+  'builtin:getstore': (cmdDef, args, ctx) => {
+    if (!args[0]) return ctx.error('getstore: missing key');
+    const val = localStorage.getItem(args[0]);
+    if (val === null) return ctx.error(`getstore: key "${ctx.esc(args[0])}" not found`);
+    return `<span class="kv-key">${ctx.esc(args[0])}:</span> <span class="kv-val">${ctx.esc(val)}</span>`;
+  },
+  
+  'builtin:setstore': (cmdDef, args, ctx) => {
+    if (args.length < 2) return ctx.error('setstore: usage: setstore key value');
+    const [key, ...valParts] = args;
+    try {
+      localStorage.setItem(key, valParts.join(' '));
+      return ctx.success(`Set: ${ctx.esc(key)} = "${ctx.trunc(ctx.esc(valParts.join(' ')), 40)}"`);
+    } catch(e) { return ctx.error(`setstore: ${e.message}`); }
+  },
+  
+  'builtin:delstore': (cmdDef, args, ctx) => {
+    if (!args[0]) return ctx.error('delstore: missing key');
+    const protectedKeys = cmdDef.protected || [];
+    if (protectedKeys.includes(args[0])) return ctx.warning('delstore: cannot delete internal data');
+    if (localStorage.getItem(args[0]) === null) return ctx.error(`delstore: key "${ctx.esc(args[0])}" not found`);
+    localStorage.removeItem(args[0]);
+    return ctx.success(`Deleted: ${ctx.esc(args[0])}`);
+  },
+  
+  'builtin:clearstore': (cmdDef, args, ctx) => {
+    const keys = Object.keys(localStorage).filter(k => !k.startsWith(ctx.storagePrefix));
+    keys.forEach(k => localStorage.removeItem(k));
+    return ctx.success(`Cleared ${keys.length} non-system keys`);
+  },
+  
+  'builtin:date': (cmdDef, args, ctx) => 
+    new Date().toLocaleString('ru-RU', {
+      weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    }),
+  
+  'builtin:calc': (cmdDef, args, ctx) => {
+    if (!args.length) return 'Usage: calc <expression>';
+    const expr = args.join(' ').replace(/[^0-9+\-*/().%\s]/g, '');
+    try {
+      const result = Function('"use strict";return (' + expr + ')')();
+      return Number.isFinite(result) ? ctx.success(`= ${result}`) : ctx.error('Error');
+    } catch { return ctx.error('Invalid expression'); }
+  },
+  
+  'builtin:neofetch': (cmdDef, args, ctx) => {
+    const ua = navigator.userAgent;
+    const browser = /Firefox/.test(ua) ? 'Firefox' : /Chrome/.test(ua) ? 'Chromium' : /Safari/.test(ua) ? 'Safari' : 'Unknown';
+    const mem = performance?.memory;
+    return `
+<span class="success">       _</span>     <span class="prompt-user">${ctx.user}</span>@<span class="prompt-path">${ctx.host}</span>
+<span class="success">      | |</span>    ─────────────
+<span class="success">   __ | |</span>    <span class="prompt-path">OS:</span> WebOS ${Config.data?.app?.version || '3.2'}
+<span class="success">  /  \\| |</span>    <span class="prompt-path">Shell:</span> WebTerminal
+<span class="success"> | () | |</span>    <span class="prompt-path">Browser:</span> ${browser}
+<span class="success">  \\__/|_|</span>    <span class="prompt-path">Theme:</span> ${ctx.theme}
+                   <span class="prompt-path">Memory:</span> ${mem ? Math.round(mem.usedJSHeapSize/1048576) : '?'}MB
+                   <span class="prompt-path">Storage:</span> ${Object.keys(localStorage).length} keys`;
+  },
+  
+  'builtin:theme': (cmdDef, args, ctx) => {
+    const themes = Object.keys(Config.data?.ui?.themes || { mono: {}, light: {} });
+    const current = ctx.theme || Config.data?.ui?.theme || 'mono';
+    const next = args[0] && themes.includes(args[0]) ? args[0] : themes[(themes.indexOf(current) + 1) % themes.length];
+    ctx.setTheme(next);
+    return ctx.success(`Theme: ${next}`);
+  },
+  
+  'builtin:matrix': (cmdDef, args, ctx) => {
+    if (!Config.data?.features?.matrix) return ctx.error('Matrix feature disabled');
+    ctx.startMatrix();
+    return ctx.muted('Matrix started. Press any key to exit.');
+  },
+  
+  'builtin:echo': (cmdDef, args, ctx) => args.join(' '),
+  'builtin:whoami': (cmdDef, args, ctx) => ctx.user,
+  
+  'builtin:logout': (cmdDef, args, ctx) => {
+    if (cmdDef.confirm && !confirm('Logout and reset profile?')) return null;
+    localStorage.removeItem(ctx.storagePrefix + 'user');
+    localStorage.removeItem(ctx.storagePrefix + 'host');
+    location.reload();
+    return null;
+  }
+};
+
+// === MAIN APP CLASS ===
+class TerminalApp {
+  constructor() {
+    this.user = 'user';
+    this.host = 'webos';
+    this.cwd = ['~'];
+    this.theme = 'mono';
+    this.storagePrefix = 'webos_';
+    this.history = [];
+    this.historyIdx = -1;
+    this.fs = null;
+    this.output = null;
+    this.input = null;
+    this.cwdEl = null;
+    this.titleEl = null;
+    this.editingFile = null;
+    this.isMatrix = false;
+    this.matrixAnim = null;
+    this.lastCommand = null;
+    this.lastCommandTime = 0;
+  }
+  
+  async init() {
+    await Config.load();
+    this.storagePrefix = Config.data?.app?.storagePrefix || 'webos_';
+    
+    this.output = $('#output');
+    this.input = $('#cmd');
+    this.cwdEl = $('#cwd');
+    this.titleEl = $('#title');
+    
+    // Load FS from storage or config
+    const savedFS = localStorage.getItem(this.storagePrefix + 'fs');
+    this.fs = savedFS ? JSON.parse(savedFS) : structuredClone(Config.filesystem);
+    
+    // Check saved profile
+    const savedUser = localStorage.getItem(this.storagePrefix + 'user');
+    if (savedUser) {
+      this.user = savedUser;
+      this.host = localStorage.getItem(this.storagePrefix + 'host') || Config.data?.app?.defaultHost || 'webos';
+      this.theme = localStorage.getItem(this.storagePrefix + 'theme') || Config.data?.ui?.theme || 'mono';
+      this.applyTheme(this.theme);
+      this.bootComplete();
+    }
+    
+    this.setupEvents();
+    this.startClock();
+    
+    // Update GRUB title
+    const grubTitle = $('#grub-title');
+    if (grubTitle) grubTitle.textContent = `${Config.data?.app?.name || 'WebTerminal'} ${Config.data?.app?.version || '3.2'}`;
+  }
+  
+  // === UTILS ===
+  esc(str) {
+    const map = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
+    return String(str).replace(/[&<>"']/g, m => map[m]);
+  }
+  
+  trunc(str, len) {
+    if (!str) return '';
+    return str.length > len ? str.slice(0, len) + '\u2026' : str;
+  }
+  
+  error(msg) { return `<span class="error">${msg}</span>`; }
+  success(msg) { return `<span class="icon icon-check">${SVG.check}</span><span class="success">${msg}</span>`; }
+  warning(msg) { return `<span class="warning">⚠ ${msg}</span>`; }
+  info(msg) { return `<span class="info">ℹ ${msg}</span>`; }
+  muted(msg) { return `<span class="muted">${msg}</span>`; }
+  
+  resolvePath() {
+    let node = this.fs['~'];
+    for (let i = 1; i < this.cwd.length; i++) {
+      const child = node.children?.[this.cwd[i]];
+      if (child?.type === 'dir') node = child;
+      else return null;
+    }
+    return node;
+  }
+  
+  saveFS() {
+    try { localStorage.setItem(this.storagePrefix + 'fs', JSON.stringify(this.fs)); } catch(e) {}
+  }
+  
+  updatePrompt() {
+    const path = this.cwd.join('/');
+    const short = path === '~' ? '~' : path.replace('~/', '~/');
+    if (this.cwdEl) this.cwdEl.textContent = short;
+    if (this.titleEl) this.titleEl.textContent = `${this.user}@${this.host}: ${short}`;
+    if ($('#disp-user')) $('#disp-user').textContent = this.user;
+    if ($('#disp-host')) $('#disp-host').textContent = this.host;
+  }
+  
+  print(html, cls = '') {
+    if (!this.output) return;
+    const div = document.createElement('div');
+    div.className = `line ${cls}`.trim();
+    div.innerHTML = html;
+    this.output.appendChild(div);
+    this.output.scrollTop = this.output.scrollHeight;
+  }
+  
+  setTheme(name) {
+    this.theme = name;
+    localStorage.setItem(this.storagePrefix + 'theme', name);
+    this.applyTheme(name);
+    const label = $('#theme-label');
+    if (label) label.textContent = name;
+  }
+  
+  applyTheme(name) {
+    const themes = Config.data?.ui?.themes || {};
+    const vars = themes[name] || themes.mono || {};
+    for (const [key, val] of Object.entries(vars)) {
+      document.documentElement.style.setProperty(key, val);
+    }
+  }
+  
+  startClock() {
+    const clock = $('#clock');
+    if (!clock) return;
+    const update = () => clock.textContent = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+    update();
+    setInterval(update, 1000);
+  }
+  
+  setupEvents() {
+    if (this.input) {
+      this.input.addEventListener('keydown', (e) => this.handleInput(e));
+    }
+    document.addEventListener('click', (e) => {
+      const editor = $('#editor');
+      if (editor?.classList.contains('show') && !e.target.closest('.editor') && !e.target.matches('#cmd')) {
+        this.closeEditor();
+      }
+    });
+    window.addEventListener('resize', () => {
+      if (this.isMatrix) {
+        const canvas = $('#matrix');
+        if (canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+      }
+    });
+  }
+  
+  // === COMMAND EXECUTION ===
+  handleInput(e) {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (this.history.length) {
+        this.historyIdx = Math.max(0, this.historyIdx - 1);
+        this.input.value = this.history[this.historyIdx] || '';
+      }
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.historyIdx = Math.min(this.history.length, this.historyIdx + 1);
+      this.input.value = this.history[this.historyIdx] || '';
+      return;
+    }
+    
+    if (e.key !== 'Enter') return;
+    
+    const cmd = this.input.value.trim();
+    if (!cmd) { this.print(''); this.input.value = ''; return; }
+    
+    if (!this.validateCommand(cmd)) {
+      this.print(this.error('Command rejected (rate limit)'));
+      this.input.value = '';
+      return;
+    }
+    
+    this.history.push(cmd);
+    this.historyIdx = this.history.length;
+    
+    // Print command with fade
+    const promptLine = document.createElement('div');
+    promptLine.className = 'line';
+    promptLine.innerHTML = `<span class="prompt-user">${this.user}</span><span class="prompt-sep">@</span><span class="prompt-path">${this.host}</span><span class="prompt-sep">:</span><span class="prompt-path">${this.cwdEl?.textContent || '~'}</span><span class="prompt-sep">$</span> ${this.esc(cmd)}`;
+    this.output.appendChild(promptLine);
+    requestAnimationFrame(() => requestAnimationFrame(() => promptLine.classList.add('send-fade')));
+    
+    this.input.value = '';
+    
+    if (this.isMatrix) { this.stopMatrix(); return; }
+    
+    const [name, ...args] = cmd.split(/\s+/);
+    const cmdDef = Config.commands?.[name];
+    
+    if (cmdDef) {
+      const handler = Handlers[cmdDef.handler];
+      if (handler) {
+        const result = handler(cmdDef, args, this);
+        if (result != null) this.print(result, 'output');
+      } else {
+        this.print(this.error(`Handler not found: ${cmdDef.handler}`));
+      }
+    } else {
+      this.print(this.error(`${this.esc(name)}: command not found`));
+    }
+    
+    this.updatePrompt();
+    this.input.focus();
+  }
+  
+  validateCommand(cmd) {
+    const sec = Config.data?.security || {};
+    if (cmd.length > (sec.maxCommandLength || 500)) return false;
+    if (/(.)\1{10,}/.test(cmd)) return false;
+    const now = Date.now();
+    const name = cmd.split(' ')[0];
+    if (name === this.lastCommand && now - this.lastCommandTime < (sec.rateLimitMs || 300)) return false;
+    this.lastCommand = name;
+    this.lastCommandTime = now;
+    return true;
+  }
+  
+  // === BOOT ===
+  bootComplete() {
+    $('#boot-screen')?.classList.add('hidden');
+    setTimeout(() => {
+      $('#boot-screen').style.display = 'none';
+      $('#terminal-wrapper')?.classList.add('visible');
+      this.updatePrompt();
+      this.input?.focus();
+      this.printWelcome();
+    }, 300);
+  }
+  
+  printWelcome() {
+    const welcome = `
+<div class="welcome">
+  <strong>${Config.data?.app?.name || 'WebTerminal'}</strong> <span class="muted">v${Config.data?.app?.version || '3.2'}</span> — 
+  <span class="prompt-user">${this.user}</span>@<span class="prompt-path">${this.host}</span>
+  <span class="hint">
+    <code>help</code> — команды &nbsp; <code>lsstore</code> — LocalStorage &nbsp; 
+    <code>touch</code>/<code>edit</code> — файлы
+  </span>
+</div>`;
+    this.output.innerHTML = welcome;
+  }
+  
+  // === FILE EDITOR ===
+  openEditor(filename, content) {
+    const overlay = $('#editor');
+    const filenameEl = $('#editor-filename');
+    const contentEl = $('#editor-content');
+    if (!overlay || !filenameEl || !contentEl) return;
+    
+    this.editingFile = filename;
+    filenameEl.textContent = filename;
+    contentEl.value = content || '';
+    overlay.classList.add('show');
+    contentEl.focus();
+    this.input?.blur();
+  }
+  
+  closeEditor() {
+    const overlay = $('#editor');
+    overlay?.classList.remove('show');
+    this.editingFile = null;
+    this.input?.focus();
+  }
+  
+  saveFile() {
+    if (!this.editingFile) return;
+    const contentEl = $('#editor-content');
+    const node = this.resolvePath();
+    if (node?.children?.[this.editingFile]?.type === 'file') {
+      node.children[this.editingFile].content = contentEl.value;
+      node.children[this.editingFile].meta = { ...(node.children[this.editingFile].meta || {}), modified: Date.now() };
+      this.saveFS();
+      this.print(this.success(`Saved: ${this.editingFile}`));
+    }
+    this.closeEditor();
+  }
+  
+  // === MATRIX ===
+  startMatrix() {
+    const canvas = $('#matrix');
+    if (!canvas) return;
+    
+    this.isMatrix = true;
+    canvas.style.display = 'block';
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const fontSize = 16;
+    const cols = Math.floor(canvas.width / fontSize);
+    const drops = new Float32Array(cols);
+    for (let i = 0; i < cols; i++) drops[i] = Math.random() * -50;
+    
+    const draw = () => {
+      if (!this.isMatrix) return;
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0f0';
+      ctx.font = `${fontSize}px monospace`;
+      
+      for (let i = 0; i < cols; i++) {
+        ctx.globalAlpha = Math.max(0.1, 1 - drops[i] * 0.02);
+        ctx.fillText(Math.random() > 0.5 ? '0' : '1', i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.99) drops[i] = 0;
+        drops[i] += 0.4;
+      }
+      ctx.globalAlpha = 1;
+      this.matrixAnim = requestAnimationFrame(draw);
+    };
+    
+    draw();
+    document.addEventListener('keydown', (e) => this.stopMatrix(e), { once: true });
+  }
+  
+  stopMatrix(e) {
+    if (!this.isMatrix) return;
+    if (e?.key && ['Shift','Control','Alt','Meta'].includes(e.key)) return;
+    this.isMatrix = false;
+    if (this.matrixAnim) cancelAnimationFrame(this.matrixAnim);
+    const canvas = $('#matrix');
+    if (canvas) {
+      canvas.style.display = 'none';
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    this.print(this.muted('Matrix stopped.'));
+    this.input?.focus();
+  }
+  
+  // === TERMINAL CONTROLS ===
+  closeTerminal() {
+    this.print(this.muted('Session ended. Refresh to restart.'));
+    if (this.input) { this.input.disabled = true; this.input.placeholder = 'closed'; }
+  }
+}
+
+// === GLOBAL APP INSTANCE ===
+const app = new TerminalApp();
+window.WebTerminal = { app, Config, Handlers };
+
+// === GRUB INTERACTIONS ===
+let grubActive = true;
+let grubSelected = 0;
+
+function selectGrubItem(el) {
+  $$('.grub-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  grubSelected = Array.from($$('.grub-item')).indexOf(el);
+}
+
+function startSetup() {
+  $$('.grub-item').forEach(i => i.style.display = 'none');
+  $('#grub-profile').style.display = 'block';
+  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> to boot &nbsp; <kbd>Esc</kbd> back';
+  setTimeout(() => $('#setup-username')?.focus(), 100);
+}
+
+function cancelSetup() {
+  $('#grub-profile').style.display = 'none';
+  $$('.grub-item').forEach((i, idx) => {
+    i.style.display = 'flex';
+    i.classList.toggle('active', idx === grubSelected);
+  });
+  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> to select &nbsp; <kbd>&uarr;&darr;</kbd> navigate &nbsp; <kbd>c</kbd> cancel';
+}
+
+async function startBoot() {
+  const username = $('#setup-username')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'user';
+  const hostname = $('#setup-hostname')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'webos';
+  
+  if (!username) {
+    const input = $('#setup-username');
+    if (input) {
+      input.style.borderColor = 'var(--error)';
+      input.focus();
+      setTimeout(() => input.style.borderColor = '', 1500);
+    }
+    return;
+  }
+  
+  localStorage.setItem(app.storagePrefix + 'user', username);
+  localStorage.setItem(app.storagePrefix + 'host', hostname);
+  
+  $$('.grub-item').forEach(i => i.style.display = 'none');
+  $('#grub-profile').style.display = 'none';
+  $('#grub-footer').style.display = 'none';
+  $('#boot-loading').style.display = 'block';
+  
+  const steps = ['Loading kernel...','Initializing filesystem...','Mounting /dev/sda1...','Loading user profile...',`Starting session for "${username}"...`,'Ready.'];
+  for (let i = 0; i < steps.length; i++) {
+    $('#boot-status').textContent = steps[i];
+    await new Promise(r => setTimeout(r, 400 + Math.random() * 300));
+  }
+  
+  grubActive = false;
+  $('#boot-screen').classList.add('hidden');
+  
+  setTimeout(() => {
+    $('#boot-screen').style.display = 'none';
+    $('#terminal-wrapper')?.classList.add('visible');
+    app.user = username;
+    app.host = hostname;
+    app.updatePrompt();
+    app.input?.focus();
+    app.printWelcome();
+  }, 300);
+}
+
+// === KEYBOARD HANDLERS ===
+document.addEventListener('keydown', (e) => {
+  if (grubActive) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      grubSelected = (grubSelected + 1) % $$('.grub-item').length;
+      $$('.grub-item').forEach((i, idx) => i.classList.toggle('active', idx === grubSelected));
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      grubSelected = (grubSelected - 1 + $$('.grub-item').length) % $$('.grub-item').length;
+      $$('.grub-item').forEach((i, idx) => i.classList.toggle('active', idx === grubSelected));
+    }
+    if (e.key === 'Enter') {
+      const profile = $('#grub-profile');
+      if (profile?.style.display !== 'none') {
+        e.preventDefault();
+        startBoot();
+      } else {
+        const action = $$('.grub-item')[grubSelected]?.dataset.action;
+        if (action === 'setup') { e.preventDefault(); startSetup(); }
+      }
+    }
+    if (e.key === 'Escape' || e.key.toLowerCase() === 'c') {
+      if ($('#grub-profile')?.style.display !== 'none') cancelSetup();
+    }
+  }
+});
+
+// Editor keyboard shortcuts
+$('#editor-content')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { e.preventDefault(); app.closeEditor(); }
+  if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); app.saveFile(); }
+});
+
+// Setup form handlers
+$('#setup-username')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); startBoot(); }});
+$('#setup-hostname')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); startBoot(); }});
+
+// === INIT ===
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => app.init());
+} else {
+  app.init();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+{
+  "help": {
+    "description": "Show available commands",
+    "usage": "help",
+    "category": "system",
+    "handler": "static",
+    "output": "<span class=\"success\">Available commands:</span>\n\n<span class=\"info\">Filesystem:</span>\n  ls, cd, pwd, cat, touch, edit, rm, clear\n\n<span class=\"info\">LocalStorage:</span>\n  lsstore, getstore, setstore, delstore, clearstore\n\n<span class=\"info\">System:</span>\n  date, calc, neofetch, theme, matrix, whoami, logout"
+  },
+  "ls": {
+    "description": "List directory contents",
+    "usage": "ls [path]",
+    "category": "filesystem",
+    "handler": "builtin:ls",
+    "flags": ["-a", "-l"]
+  },
+  "cd": {
+    "description": "Change directory",
+    "usage": "cd <path>",
+    "category": "filesystem",
+    "handler": "builtin:cd",
+    "args": {"required": 1, "optional": 0}
+  },
+  "pwd": {
+    "description": "Print working directory",
+    "usage": "pwd",
+    "category": "filesystem",
+    "handler": "builtin:pwd"
+  },
+  "cat": {
+    "description": "Display file contents",
+    "usage": "cat <file>",
+    "category": "filesystem",
+    "handler": "builtin:cat",
+    "args": {"required": 1}
+  },
+  "touch": {
+    "description": "Create empty file",
+    "usage": "touch <filename>",
+    "category": "filesystem",
+    "handler": "builtin:touch",
+    "args": {"required": 1}
+  },
+  "edit": {
+    "description": "Open file in editor",
+    "usage": "edit <filename>",
+    "category": "filesystem",
+    "handler": "builtin:edit",
+    "args": {"required": 1},
+    "ui": "modal"
+  },
+  "rm": {
+    "description": "Remove file",
+    "usage": "rm <filename>",
+    "category": "filesystem",
+    "handler": "builtin:rm",
+    "args": {"required": 1},
+    "confirm": true
+  },
+  "clear": {
+    "description": "Clear terminal screen",
+    "usage": "clear",
+    "category": "system",
+    "handler": "builtin:clear"
+  },
+  "lsstore": {
+    "description": "List localStorage keys",
+    "usage": "lsstore",
+    "category": "storage",
+    "handler": "builtin:lsstore"
+  },
+  "getstore": {
+    "description": "Get value from localStorage",
+    "usage": "getstore <key>",
+    "category": "storage",
+    "handler": "builtin:getstore",
+    "args": {"required": 1}
+  },
+  "setstore": {
+    "description": "Set value in localStorage",
+    "usage": "setstore <key> <value>",
+    "category": "storage",
+    "handler": "builtin:setstore",
+    "args": {"required": 2}
+  },
+  "delstore": {
+    "description": "Delete key from localStorage",
+    "usage": "delstore <key>",
+    "category": "storage",
+    "handler": "builtin:delstore",
+    "args": {"required": 1},
+    "protected": ["webos_fs", "webos_user", "webos_host"]
+  },
+  "clearstore": {
+    "description": "Clear non-system localStorage",
+    "usage": "clearstore",
+    "category": "storage",
+    "handler": "builtin:clearstore"
+  },
+  "date": {
+    "description": "Show current date and time",
+    "usage": "date",
+    "category": "system",
+    "handler": "builtin:date",
+    "locale": "ru-RU"
+  },
+  "calc": {
+    "description": "Evaluate math expression",
+    "usage": "calc <expression>",
+    "category": "system",
+    "handler": "builtin:calc",
+    "safeEval": true
+  },
+  "neofetch": {
+    "description": "Display system information",
+    "usage": "neofetch",
+    "category": "system",
+    "handler": "builtin:neofetch",
+    "template": "ascii-art"
+  },
+  "theme": {
+    "description": "Toggle UI theme",
+    "usage": "theme [name]",
+    "category": "system",
+    "handler": "builtin:theme",
+    "values": ["mono", "light"]
+  },
+  "matrix": {
+    "description": "Start Matrix animation",
+    "usage": "matrix",
+    "category": "fun",
+    "handler": "builtin:matrix",
+    "exitKey": "any"
+  },
+  "echo": {
+    "description": "Print arguments",
+    "usage": "echo <text>",
+    "category": "system",
+    "handler": "builtin:echo"
+  },
+  "whoami": {
+    "description": "Show current user",
+    "usage": "whoami",
+    "category": "system",
+    "handler": "builtin:whoami"
+  },
+  "logout": {
+    "description": "Reset profile and reload",
+    "usage": "logout",
+    "category": "system",
+    "handler": "builtin:logout",
+    "confirm": true
+  },
+  "sudo": {
+    "description": "Execute as superuser (demo)",
+    "usage": "sudo <command>",
+    "category": "system",
+    "handler": "static",
+    "output": "<span class=\"warning\">[sudo] permission denied</span>"
+  }
+}
