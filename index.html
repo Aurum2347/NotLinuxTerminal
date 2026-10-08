@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#050505">
-  <meta name="description" content="WebTerminal - Продвинутый эмулятор терминала Linux для обучения">
+  <meta name="description" content="WebTerminal MEGA - 100+ команд, игры, квесты, симуляции Linux">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>WebTerminal v5.0</title>
+  <title>WebTerminal MEGA v7.0</title>
   
-  <!-- SVG Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23050505%22/><text x=%2250%22 y=%2275%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23e0e0e0%22 font-family=%22monospace%22>$_</text></svg>">
 
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -44,7 +43,6 @@
       --line-height: 1.6;
     }
 
-    /* Theme: Ubuntu */
     [data-theme="ubuntu"] {
       --bg: #2c001e; --bg-elevated: #300a24; --bg-surface: #3d1f33;
       --border: #5e2750; --border-hover: #772953;
@@ -52,7 +50,6 @@
       --accent: #e95420; --success: #8ae234; --error: #f15d5d; --warning: #fbd772; --info: #33b5e5;
     }
 
-    /* Theme: Dracula */
     [data-theme="dracula"] {
       --bg: #282a36; --bg-elevated: #44475a; --bg-surface: #383a4a;
       --border: #6272a4; --border-hover: #7a7cb8;
@@ -60,7 +57,6 @@
       --accent: #ff79c6; --success: #50fa7b; --error: #ff5555; --warning: #f1fa8c; --info: #8be9fd;
     }
 
-    /* Theme: Solarized Dark */
     [data-theme="solarized"] {
       --bg: #002b36; --bg-elevated: #073642; --bg-surface: #0a4050;
       --border: #586e75; --border-hover: #657b83;
@@ -68,7 +64,6 @@
       --accent: #268bd2; --success: #859900; --error: #dc322f; --warning: #b58900; --info: #2aa198;
     }
 
-    /* Theme: Nord */
     [data-theme="nord"] {
       --bg: #2e3440; --bg-elevated: #3b4252; --bg-surface: #434c5e;
       --border: #4c566a; --border-hover: #5e6779;
@@ -76,12 +71,18 @@
       --accent: #88c0d0; --success: #a3be8c; --error: #bf616a; --warning: #ebcb8b; --info: #81a1c1;
     }
 
-    /* Theme: Monokai */
     [data-theme="monokai"] {
       --bg: #272822; --bg-elevated: #3e3d32; --bg-surface: #49483e;
       --border: #75715e; --border-hover: #8a8470;
       --text: #f8f8f2; --text-dim: #a6e22e; --text-muted: #75715e;
       --accent: #f92672; --success: #a6e22e; --error: #f92672; --warning: #e6db74; --info: #66d9ef;
+    }
+
+    [data-theme="rainbow"] {
+      --bg: #1a1a2e; --bg-elevated: #16213e; --bg-surface: #0f3460;
+      --border: #533483; --border-hover: #e94560;
+      --text: #ffffff; --text-dim: #e94560; --text-muted: #533483;
+      --accent: #e94560; --success: #00ff88; --error: #ff0055; --warning: #ffaa00; --info: #00aaff;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -137,6 +138,28 @@
       60% { transform: translate(2px, 2px); filter: hue-rotate(270deg); }
       80% { transform: translate(2px, -2px); filter: hue-rotate(360deg); }
       100% { transform: translate(0); filter: hue-rotate(0deg); }
+    }
+
+    .shake {
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
+    .invert {
+      filter: invert(1);
+      transition: filter 0.3s;
+    }
+
+    .meltdown {
+      animation: meltdown 2s ease-in forwards;
+    }
+    @keyframes meltdown {
+      to { transform: scaleY(0.1) translateY(50%); opacity: 0.3; filter: blur(2px); }
     }
 
     /* =========================================== */
@@ -231,27 +254,10 @@
       margin-right: 14px;
     }
 
-    .grub-item-icon {
-      margin-right: 12px;
-      opacity: 0.8;
-    }
-    .grub-item-icon svg {
-      width: 18px;
-      height: 18px;
-      fill: var(--text-dim);
-    }
-
     .grub-item-label {
       font-family: var(--font-code);
       font-size: 15px;
       color: var(--text);
-    }
-
-    .grub-item-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-left: auto;
-      padding-left: 16px;
     }
 
     .grub-profile {
@@ -275,12 +281,7 @@
 
     .grub-field {
       margin-bottom: 18px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
     }
-
-    .grub-field-input { flex: 1; }
 
     .grub-field label {
       display: block;
@@ -305,58 +306,6 @@
     .grub-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
-    }
-    .grub-input::placeholder { color: #444; }
-
-    .grub-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .tooltip {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #222;
-      border: 1px solid #444;
-      cursor: help;
-      margin-top: 4px;
-      flex-shrink: 0;
-    }
-    .tooltip svg {
-      width: 12px;
-      height: 12px;
-      fill: var(--text-dim);
-    }
-    .tooltip .tooltip-text {
-      visibility: hidden;
-      opacity: 0;
-      position: absolute;
-      bottom: 140%;
-      left: 50%;
-      transform: translateX(-50%) translateY(5px);
-      background: #1a1a1a;
-      color: var(--text-dim);
-      padding: 10px 12px;
-      border-radius: 4px;
-      border: 1px solid #333;
-      font-size: 12px;
-      font-family: var(--font-ui);
-      white-space: nowrap;
-      transition: all 0.2s;
-      pointer-events: none;
-      box-shadow: var(--shadow-sm);
-      z-index: 10;
-    }
-    .tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
     }
 
     .grub-btn {
@@ -446,9 +395,9 @@
 
     .terminal {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
       height: 94vh;
-      max-height: 800px;
+      max-height: 850px;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
@@ -459,7 +408,6 @@
       position: relative;
     }
 
-    /* Titlebar */
     .titlebar {
       display: flex;
       align-items: center;
@@ -550,7 +498,6 @@
       fill: currentColor;
     }
 
-    /* Tabs */
     .tabs {
       display: flex;
       background: var(--bg);
@@ -617,7 +564,6 @@
       fill: currentColor;
     }
 
-    /* Content */
     .content {
       flex: 1;
       padding: 16px 20px;
@@ -687,7 +633,6 @@
       border-left: 2px solid var(--border);
     }
 
-    /* Input Area */
     .input-area {
       display: flex;
       align-items: baseline;
@@ -723,7 +668,6 @@
       opacity: 0.5;
     }
 
-    /* Statusbar */
     .statusbar {
       display: flex;
       justify-content: space-between;
@@ -752,31 +696,26 @@
       50% { opacity: 0.4; }
     }
 
-    /* Custom Scrollbars */
     .content::-webkit-scrollbar,
-    .help-body::-webkit-scrollbar,
-    .editor-body::-webkit-scrollbar {
+    .modal-body::-webkit-scrollbar {
       width: 10px;
       height: 10px;
     }
     .content::-webkit-scrollbar-track,
-    .help-body::-webkit-scrollbar-track,
-    .editor-body::-webkit-scrollbar-track {
+    .modal-body::-webkit-scrollbar-track {
       background: transparent;
     }
     .content::-webkit-scrollbar-thumb,
-    .help-body::-webkit-scrollbar-thumb,
-    .editor-body::-webkit-scrollbar-thumb {
+    .modal-body::-webkit-scrollbar-thumb {
       background: #333;
       border-radius: 5px;
       border: 2px solid var(--bg-elevated);
     }
     .content::-webkit-scrollbar-thumb:hover,
-    .help-body::-webkit-scrollbar-thumb:hover,
-    .editor-body::-webkit-scrollbar-thumb:hover {
+    .modal-body::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
-    .content, .help-body, .editor-body {
+    .content, .modal-body {
       scrollbar-width: thin;
       scrollbar-color: #333 transparent;
     }
@@ -890,74 +829,6 @@
       color: var(--text);
     }
 
-    /* Editor Modal */
-    .editor-body {
-      flex: 1;
-      padding: 0;
-      overflow: hidden;
-      display: flex;
-      min-height: 400px;
-    }
-
-    .editor-lines {
-      padding: 16px 12px;
-      background: var(--bg);
-      border-right: 1px solid var(--border);
-      color: var(--text-muted);
-      font-family: var(--font-code);
-      font-size: 14px;
-      line-height: 1.6;
-      text-align: right;
-      user-select: none;
-      overflow-y: hidden;
-      min-width: 50px;
-    }
-
-    .editor-content {
-      flex: 1;
-      padding: 16px;
-      overflow: auto;
-    }
-
-    .editor-content textarea {
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-family: var(--font-code);
-      font-size: 14px;
-      line-height: 1.6;
-      resize: none;
-      outline: none;
-      tab-size: 2;
-    }
-
-    .editor-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .editor-btn {
-      padding: 6px 14px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      font-family: var(--font-ui);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .editor-btn:hover { background: var(--border); }
-    .editor-btn.save {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-      font-weight: 500;
-    }
-    .editor-btn.save:hover { opacity: 0.9; }
-
     /* =========================================== */
     /*              CONTEXT MENU & TOAST           */
     /* =========================================== */
@@ -1039,29 +910,17 @@
     }
 
     /* =========================================== */
-    /*              EFFECTS & ANIMATIONS           */
+    /*              EFFECTS & CANVAS               */
     /* =========================================== */
-    #matrix {
+    #matrix, #nyancat, #game-canvas {
       position: fixed;
       inset: 0;
-      background: #000;
       z-index: 4500;
       display: none;
       pointer-events: none;
     }
-
-    #sl-train {
-      position: fixed;
-      bottom: 25%;
-      left: -100%;
-      z-index: 4500;
-      font-family: var(--font-code);
-      font-size: 12px;
-      color: var(--success);
-      white-space: pre;
-      pointer-events: none;
-      transition: left 10s linear;
-    }
+    #nyancat { z-index: 4600; }
+    #game-canvas { z-index: 4700; pointer-events: auto; background: rgba(0,0,0,0.9); }
 
     .icon {
       display: inline-block;
@@ -1078,27 +937,6 @@
     .icon-check { color: var(--success); }
     .icon-error { color: var(--error); }
     .icon-warning { color: var(--warning); }
-
-    .category {
-      margin: 10px 0 6px;
-      padding-bottom: 6px;
-      border-bottom: 1px dashed var(--border);
-      color: var(--text-dim);
-      font-weight: 500;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .kv-item {
-      margin: 4px 0;
-      padding-left: 10px;
-      display: flex;
-      gap: 8px;
-    }
-    .kv-key { color: var(--text-dim); white-space: nowrap; }
-    .kv-val { color: var(--text-muted); word-break: break-all; }
 
     /* Mobile Virtual Keyboard */
     .mobile-kbd {
@@ -1152,11 +990,6 @@
       .grub-container { padding: 16px; }
       .grub-logo { font-size: 8px; }
       .grub-title { font-size: 20px; }
-      .tooltip .tooltip-text {
-        white-space: normal;
-        max-width: 220px;
-        text-align: left;
-      }
       .mobile-kbd { display: flex; }
       .tabs { display: none; }
     }
@@ -1170,9 +1003,7 @@
 <body data-theme="mono">
 
 <div class="crt-overlay" id="crt-overlay"></div>
-<div id="sl-train"></div>
 
-<!-- BOOT SCREEN -->
 <div id="boot-screen">
   <div class="grub-container">
     <div class="grub-header">
@@ -1185,42 +1016,25 @@
 /'\_   _/`\
 \___)=(___/
       </pre>
-      <div class="grub-title">WebTerminal</div>
-      <div class="grub-subtitle">Продвинутая среда обучения работе с терминалом v5.0</div>
+      <div class="grub-title">WebTerminal MEGA</div>
+      <div class="grub-subtitle">v7.0 — 100+ команд, игры, квесты, симуляции Linux</div>
     </div>
 
     <ul class="grub-menu" id="grub-menu">
       <li class="grub-item active" data-action="setup" onclick="selectGrubItem(this)">
-        <span class="grub-item-icon">
-          <svg viewBox="0 0 16 16"><path d="M8,2 L14,5 L14,11 L8,14 L2,11 L2,5 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-        </span>
         <span class="grub-item-label">Загрузить систему</span>
-        <span class="grub-item-desc">boot</span>
       </li>
     </ul>
 
     <div class="grub-profile" id="grub-profile" style="display:none;">
       <div class="grub-profile-title">Настройка пользователя</div>
       <div class="grub-field">
-        <div class="grub-field-input">
-          <label>Имя пользователя</label>
-          <input type="text" class="grub-input" id="setup-username" placeholder="например: user" maxlength="20" autofocus>
-          <div class="grub-hint">Строчные буквы, цифры, _ и -</div>
-        </div>
-        <span class="tooltip" aria-label="Подсказка">
-          <svg viewBox="0 0 16 16"><path d="M8,2 A6,6 0 1,0 8,14 A6,6 0 1,0 8,2 M8,4 A2,2 0 1,1 8,8 M8,11 L8,11.01" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-          <span class="tooltip-text">Уникальный идентификатор вашей сессии. Влияет на промпт и права.</span>
-        </span>
+        <label>Имя пользователя</label>
+        <input type="text" class="grub-input" id="setup-username" placeholder="например: user" maxlength="20" autofocus>
       </div>
       <div class="grub-field">
-        <div class="grub-field-input">
-          <label>Имя хоста</label>
-          <input type="text" class="grub-input" id="setup-hostname" placeholder="например: webos" maxlength="20" value="webos">
-        </div>
-        <span class="tooltip" aria-label="Подсказка">
-          <svg viewBox="0 0 16 16"><path d="M8,2 A6,6 0 1,0 8,14 A6,6 0 1,0 8,2 M8,4 A2,2 0 1,1 8,8 M8,11 L8,11.01" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-          <span class="tooltip-text">Название виртуальной машины. Отображается в промпте.</span>
-        </span>
+        <label>Имя хоста</label>
+        <input type="text" class="grub-input" id="setup-hostname" placeholder="например: webos" maxlength="20" value="webos">
       </div>
       <button class="grub-btn primary" onclick="startBoot()">Загрузить систему</button>
       <button class="grub-btn" onclick="cancelSetup()" style="margin-top:8px;">Назад</button>
@@ -1237,7 +1051,6 @@
   </div>
 </div>
 
-<!-- TERMINAL WRAPPER -->
 <div class="terminal-wrapper" id="terminal-wrapper">
   <div class="terminal">
     <div class="titlebar">
@@ -1308,7 +1121,6 @@
   </div>
 </div>
 
-<!-- MODALS -->
 <div class="modal-overlay" id="help-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -1316,24 +1128,6 @@
       <button class="modal-close" onclick="app.closeHelp()">Закрыть (Esc)</button>
     </div>
     <div class="modal-body" id="help-content"></div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="editor">
-  <div class="modal" style="max-width: 900px;">
-    <div class="modal-header">
-      <span>Редактирование: <span id="editor-filename"></span></span>
-      <div class="editor-actions">
-        <button class="editor-btn" onclick="app.closeEditor()">Отмена (Esc)</button>
-        <button class="editor-btn save" onclick="app.saveFile()">Сохранить (Ctrl+S)</button>
-      </div>
-    </div>
-    <div class="editor-body">
-      <div class="editor-lines" id="editor-lines">1</div>
-      <div class="editor-content">
-        <textarea id="editor-content" spellcheck="false"></textarea>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -1347,7 +1141,6 @@
   </div>
 </div>
 
-<!-- CONTEXT MENU -->
 <div class="context-menu" id="context-menu">
   <div class="context-item" onclick="app.copySelection()">
     <svg viewBox="0 0 16 16"><rect x="4" y="4" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2,10 L2,2 L10,2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
@@ -1367,127 +1160,16 @@
   </div>
 </div>
 
-<!-- TOAST CONTAINER -->
 <div class="toast-container" id="toast-container"></div>
 
 <canvas id="matrix"></canvas>
-
-<!-- CONFIGS -->
-<script id="config-json" type="application/json">
-{
-  "app": {
-    "name": "WebTerminal",
-    "version": "5.0",
-    "defaultHost": "webos",
-    "defaultUser": "user",
-    "storagePrefix": "wt_"
-  },
-  "ui": {
-    "theme": "mono",
-    "cursor": "block",
-    "crt": false
-  },
-  "security": {
-    "maxCommandLength": 2000,
-    "rateLimitMs": 50
-  },
-  "helpMarkdown": "# WebTerminal v{{version}}\n\nПродвинутый эмулятор терминала Linux в браузере.\n\n## Файловая система\n- `ls [-l]` - список файлов\n- `cd <dir>` - перейти в папку\n- `pwd` - текущий путь\n- `cat <file>` - прочитать файл\n- `touch <file>` - создать файл\n- `mkdir [-p] <dir>` - создать папку\n- `rm [-r] <file>` - удалить\n- `cp <src> <dst>` - копировать\n- `mv <src> <dst>` - переместить\n- `tree` - структура папок\n- `find <name>` - поиск файла\n- `edit <file>` - текстовый редактор\n\n## Система\n- `clear` или `Ctrl+L` - очистить экран\n- `history` - история команд\n- `alias name='cmd'` - создать алиас\n- `theme [name]` - сменить тему\n- `neofetch` - информация о системе\n- `date`, `whoami`, `uname -a`\n\n## Развлечения\n- `cowsay <text>`, `sl`, `hack`\n- `calc <expr>` - калькулятор\n\n> Данные сохраняются в LocalStorage."
-}
-</script>
-
-<script id="commands-json" type="application/json">
-{
-  "ls": {"desc": "List directory", "usage": "ls [-l] [path]"},
-  "cd": {"desc": "Change directory", "usage": "cd <path>"},
-  "pwd": {"desc": "Print working directory", "usage": "pwd"},
-  "cat": {"desc": "Display file", "usage": "cat <file>"},
-  "touch": {"desc": "Create file", "usage": "touch <file>"},
-  "mkdir": {"desc": "Make directory", "usage": "mkdir [-p] <dir>"},
-  "rm": {"desc": "Remove file/dir", "usage": "rm [-r] <file>"},
-  "cp": {"desc": "Copy file", "usage": "cp <src> <dst>"},
-  "mv": {"desc": "Move file", "usage": "mv <src> <dst>"},
-  "tree": {"desc": "Directory tree", "usage": "tree"},
-  "find": {"desc": "Find file", "usage": "find <name>"},
-  "edit": {"desc": "Edit file", "usage": "edit <file>"},
-  "clear": {"desc": "Clear screen", "usage": "clear"},
-  "history": {"desc": "Command history", "usage": "history"},
-  "alias": {"desc": "Create alias", "usage": "alias name='command'"},
-  "theme": {"desc": "Change theme", "usage": "theme <name>"},
-  "neofetch": {"desc": "System info", "usage": "neofetch"},
-  "date": {"desc": "Current date", "usage": "date"},
-  "calc": {"desc": "Calculator", "usage": "calc <expr>"},
-  "cowsay": {"desc": "Cow says", "usage": "cowsay <text>"},
-  "sl": {"desc": "Steam Locomotive", "usage": "sl"},
-  "hack": {"desc": "Hack the planet", "usage": "hack"},
-  "sudo": {"desc": "Execute as root", "usage": "sudo <cmd>"},
-  "help": {"desc": "Show help", "usage": "help"}
-}
-</script>
-
-<script id="filesystem-json" type="application/json">
-{
-  "~": {
-    "type": "dir",
-    "children": {
-      "documents": {
-        "type": "dir",
-        "children": {
-          "readme.txt": {
-            "type": "file",
-            "content": "Welcome to WebTerminal v{{version}}\n\nЭто полнофункциональный эмулятор.\nПопробуйте команды: ls, tree, neofetch, cowsay",
-            "meta": {"created": "{{timestamp}}", "readonly": true}
-          }
-        }
-      },
-      "projects": {
-        "type": "dir",
-        "children": {
-          "webapp": {
-            "type": "dir",
-            "children": {
-              "index.html": {
-                "type": "file",
-                "content": "<!DOCTYPE html>\n<html><body><h1>Hello World</h1></body></html>",
-                "meta": {"created": "{{timestamp}}"}
-              }
-            }
-          }
-        }
-      },
-      "logs": {
-        "type": "dir",
-        "children": {
-          "sys.log": {
-            "type": "file",
-            "content": "[INFO] System initialized\n[INFO] User logged in",
-            "meta": {"created": "{{timestamp}}"}
-          }
-        }
-      },
-      ".config": {
-        "type": "dir",
-        "children": {
-          "settings.json": {
-            "type": "file",
-            "content": "{\n  \"theme\": \"mono\",\n  \"cursor\": \"block\"\n}",
-            "meta": {"created": "{{timestamp}}"}
-          }
-        }
-      },
-      ".bash_history": {
-        "type": "file",
-        "content": "",
-        "meta": {"created": "{{timestamp}}", "readonly": true}
-      }
-    }
-  }
-}
-</script>
+<canvas id="nyancat"></canvas>
+<canvas id="game-canvas"></canvas>
 
 <script>
 /**
- * WebTerminal v5.0
- * Полноценный эмулятор терминала с вкладками, достижениями и расширенной ФС.
+ * WebTerminal MEGA v7.0
+ * Полноценный эмулятор терминала с 100+ командами, играми, квестами и симуляциями Linux.
  */
 
 const $ = s => document.querySelector(s);
@@ -1508,52 +1190,69 @@ const Utils = {
     catch { return JSON.parse(JSON.stringify(obj)); }
   },
   
-  syntaxHighlight: (content, ext) => {
-    if (!content) return '';
-    let html = Utils.esc(content);
-    if (ext === 'json' || ext === 'js') {
-      html = html.replace(/(".*?")/g, '<span class="sh-string">$1</span>')
-                 .replace(/(\/\/.*)/g, '<span class="sh-comment">$1</span>')
-                 .replace(/(\d+)/g, '<span class="sh-number">$1</span>');
-    } else if (ext === 'html') {
-      html = html.replace(/(&lt;\/?[\w\s="/.':;#-\/]+&gt;)/g, '<span class="sh-key">$1</span>');
-    }
-    return html;
-  },
+  randomChoice: (arr) => arr[Math.floor(Math.random() * arr.length)],
+  
+  randomInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
   
   formatSize: (bytes) => {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1048576).toFixed(1) + ' MB';
-  }
+  },
+  
+  sleep: (ms) => new Promise(resolve => setTimeout(resolve, ms))
 };
 
 // ===========================================
-//              CONFIG LOADER
+//              STATE & CONFIG
 // ===========================================
+const State = {
+  user: 'user',
+  host: 'webos',
+  cwd: ['~'],
+  history: [],
+  historyIdx: -1,
+  aliases: {},
+  achievements: {},
+  inventory: [],
+  installed: ['basic'],
+  games: {},
+  quests: {},
+  combo: 0,
+  streak: 0,
+  lastLogin: null,
+  currency: 0,
+  level: 1,
+  xp: 0
+};
+
 const Config = {
-  data: null,
-  commands: null,
-  filesystem: null,
-  
-  async load() {
-    try {
-      this.data = JSON.parse($('#config-json').textContent);
-      this.commands = JSON.parse($('#commands-json').textContent);
-      this.filesystem = this.processTemplates(JSON.parse($('#filesystem-json').textContent));
-      return true;
-    } catch (e) {
-      console.error("Config load failed:", e);
-      return false;
-    }
+  packages: {
+    'basic': ['ls', 'cd', 'pwd', 'cat', 'touch', 'mkdir', 'rm', 'cp', 'mv', 'clear', 'help', 'echo', 'whoami', 'date', 'neofetch'],
+    'games': ['snake', 'tetris', 'mines', '2048', 'pong', 'tictactoe', 'wordle', 'hangman', 'maze', 'breakout', 'simon', 'typing_racer', 'connect4', 'memory', 'flappy'],
+    'quests': ['adventure', 'cyberpunk', 'pet', 'farm', 'dungeon', 'trader', 'detective', 'zombie', 'alchemy', 'cook', 'fish', 'job', 'escape', 'rps', 'choose'],
+    'fun': ['cowsay', 'sl', 'hack', 'nyancat', 'cmatrix', 'rickroll', 'starwars', 'mario', 'doom', 'doge', 'shia', 'hackerman', '404', 'yolo', 'matrix', 'clippy', 'ask_jeeves'],
+    'network': ['ping', 'traceroute', 'netstat', 'curl', 'wget', 'ip', 'ifconfig', 'nslookup', 'dig', 'ss', 'arp', 'route'],
+    'system': ['top', 'htop', 'ps', 'kill', 'df', 'du', 'lsblk', 'dmesg', 'uname', 'uptime', 'free', 'lscpu', 'lsmod', 'modprobe'],
+    'utils': ['figlet', 'toilet', 'joke', 'fact', 'weather', 'morse', 'braille', 'binary', 'barcode', 'qr', 'lottery', 'astrology', 'coinflip', 'dice', 'roulette'],
+    'effects': ['fireworks', 'rain', 'snow', 'disco', 'laser', 'wave', 'clock', 'equalizer', 'glitch', 'invert', 'shake', 'meltdown', 'explode', 'typewriter', 'ambient'],
+    'absurd': ['compliment', 'insult', 'gossip', 'therapy', 'oracle', 'magic8ball', 'selfdestruct', 'wake_up', 'follow_white_rabbit', 'existential_crisis', 'hello_world'],
+    'gamification': ['inventory', 'craft', 'leaderboard', 'daily', 'speedrun', 'export_build', 'import_build', 'credits']
   },
   
-  processTemplates(obj) {
-    const replace = (str) => typeof str === 'string' ? str.replace(/\{\{(\w+)\}\}/g, (_, k) => 
-      ({ version: this.data?.app?.version || '5.0', timestamp: Date.now(), theme: 'mono' })[k] || '') : str;
-    const walk = (o) => Array.isArray(o) ? o.map(walk) : 
-      (typeof o === 'object' && o !== null ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, walk(v)])) : replace(o));
-    return walk(obj);
+  achievements: {
+    'first_command': { name: 'Первые шаги', desc: 'Выполните первую команду', icon: '🎯' },
+    'file_creator': { name: 'Создатель файлов', desc: 'Создайте свой первый файл', icon: '📄' },
+    'dir_creator': { name: 'Архитектор', desc: 'Создайте директорию', icon: '📁' },
+    'theme_master': { name: 'Мастер тем', desc: 'Смените тему оформления', icon: '🎨' },
+    'hacker': { name: 'Хакер', desc: 'Запустите эффект Matrix', icon: '💻' },
+    'gamer': { name: 'Геймер', desc: 'Запустите любую игру', icon: '🎮' },
+    'explorer': { name: 'Исследователь', desc: 'Пройдите текстовый квест', icon: '🗺️' },
+    'collector': { name: 'Коллекционер', desc: 'Соберите 5 предметов в инвентарь', icon: '🎒' },
+    'rich': { name: 'Богач', desc: 'Накопите 1000 монет', icon: '💰' },
+    'survivor': { name: 'Выживший', desc: 'Переживите русскую рулетку', icon: '🔫' },
+    'nyan_fan': { name: 'Нян-фан', desc: 'Запустите Nyan Cat', icon: '🌈' },
+    'package_master': { name: 'Мастер пакетов', desc: 'Установите все категории пакетов', icon: '📦' }
   }
 };
 
@@ -1568,7 +1267,40 @@ class VirtualFS {
   
   load() {
     const saved = localStorage.getItem(this.prefix + 'fs');
-    this.tree = saved ? JSON.parse(saved) : Utils.clone(Config.filesystem);
+    this.tree = saved ? JSON.parse(saved) : this.getDefaultFS();
+  }
+  
+  getDefaultFS() {
+    return {
+      '~': {
+        type: 'dir',
+        children: {
+          'documents': {
+            type: 'dir',
+            children: {
+              'readme.txt': {
+                type: 'file',
+                content: 'Welcome to WebTerminal MEGA v7.0!\n\nЭто полнофункциональный эмулятор терминала.\nПопробуйте: apt list, sudo apt install games, snake, adventure, nyancat',
+                meta: { created: Date.now(), readonly: true }
+              }
+            }
+          },
+          'projects': { type: 'dir', children: {} },
+          'logs': {
+            type: 'dir',
+            children: {
+              'sys.log': {
+                type: 'file',
+                content: '[INFO] System initialized\n[INFO] User logged in',
+                meta: { created: Date.now() }
+              }
+            }
+          },
+          '.config': { type: 'dir', children: {} },
+          '.bash_history': { type: 'file', content: '', meta: { created: Date.now(), readonly: true } }
+        }
+      }
+    };
   }
   
   save() {
@@ -1581,7 +1313,7 @@ class VirtualFS {
   
   resolvePath(path, cwdArr) {
     if (!path || path === '~') return ['~'];
-    let parts = path.startsWith('/') || path.startsWith('~/') 
+    let parts = path.startsWith('~') || path.startsWith('/') 
       ? path.replace('~', '').split('/').filter(Boolean) 
       : [...cwdArr.slice(1), ...path.split('/').filter(Boolean)];
     let resolved = ['~'];
@@ -1686,35 +1418,1546 @@ class VirtualFS {
 }
 
 // ===========================================
+//              GAMES ENGINE
+// ===========================================
+class GamesEngine {
+  constructor() {
+    this.canvas = null;
+    this.ctx = null;
+    this.currentGame = null;
+    this.animFrame = null;
+  }
+  
+  init() {
+    this.canvas = $('#game-canvas');
+    this.ctx = this.canvas.getContext('2d');
+  }
+  
+  startGame(name) {
+    if (!State.installed.includes('games')) {
+      return `${name}: command not found. Install with: sudo apt install games`;
+    }
+    
+    this.canvas.style.display = 'block';
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    this.currentGame = name;
+    
+    switch(name) {
+      case 'snake': this.startSnake(); break;
+      case 'tetris': this.startTetris(); break;
+      case '2048': this.start2048(); break;
+      case 'mines': this.startMines(); break;
+      case 'pong': this.startPong(); break;
+      case 'tictactoe': this.startTicTacToe(); break;
+      case 'flappy': this.startFlappy(); break;
+      default: return `${name}: game not implemented yet`;
+    }
+    
+    app.unlockAchievement('gamer');
+    return `<span class="info">Starting ${name}...</span>\nPress Esc to quit.`;
+  }
+  
+  stopGame() {
+    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+    this.canvas.style.display = 'none';
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.currentGame = null;
+  }
+  
+  startSnake() {
+    const gridSize = 20;
+    const cols = Math.floor(this.canvas.width / gridSize);
+    const rows = Math.floor(this.canvas.height / gridSize);
+    let snake = [{x: Math.floor(cols/2), y: Math.floor(rows/2)}];
+    let dir = {x: 1, y: 0};
+    let food = {x: Utils.randomInt(0, cols-1), y: Utils.randomInt(0, rows-1)};
+    let score = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.fillStyle = '#0f0';
+      snake.forEach(seg => {
+        this.ctx.fillRect(seg.x * gridSize, seg.y * gridSize, gridSize-2, gridSize-2);
+      });
+      
+      this.ctx.fillStyle = '#f00';
+      this.ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize-2, gridSize-2);
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '20px monospace';
+      this.ctx.fillText(`Score: ${score}`, 10, 30);
+    };
+    
+    const update = () => {
+      const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+      
+      if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows || 
+          snake.some(seg => seg.x === head.x && seg.y === head.y)) {
+        this.stopGame();
+        app.print(`Game Over! Score: ${score}`, 'error');
+        return;
+      }
+      
+      snake.unshift(head);
+      
+      if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        food = {x: Utils.randomInt(0, cols-1), y: Utils.randomInt(0, rows-1)};
+      } else {
+        snake.pop();
+      }
+      
+      draw();
+      this.animFrame = requestAnimationFrame(update);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === 'ArrowUp' && dir.y === 0) dir = {x: 0, y: -1};
+      if (e.key === 'ArrowDown' && dir.y === 0) dir = {x: 0, y: 1};
+      if (e.key === 'ArrowLeft' && dir.x === 0) dir = {x: -1, y: 0};
+      if (e.key === 'ArrowRight' && dir.x === 0) dir = {x: 1, y: 0};
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    update();
+  }
+  
+  startTetris() {
+    const blockSize = 30;
+    const cols = 10;
+    const rows = 20;
+    const offsetX = (this.canvas.width - cols * blockSize) / 2;
+    const offsetY = (this.canvas.height - rows * blockSize) / 2;
+    
+    const pieces = [
+      [[1,1,1,1]],
+      [[1,1],[1,1]],
+      [[0,1,0],[1,1,1]],
+      [[1,0,0],[1,1,1]],
+      [[0,0,1],[1,1,1]],
+      [[1,1,0],[0,1,1]],
+      [[0,1,1],[1,1,0]]
+    ];
+    
+    let board = Array(rows).fill().map(() => Array(cols).fill(0));
+    let current = Utils.randomChoice(pieces);
+    let currentX = 3;
+    let currentY = 0;
+    let score = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.strokeStyle = '#333';
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          this.ctx.strokeRect(offsetX + c * blockSize, offsetY + r * blockSize, blockSize, blockSize);
+          if (board[r][c]) {
+            this.ctx.fillStyle = '#0ff';
+            this.ctx.fillRect(offsetX + c * blockSize + 1, offsetY + r * blockSize + 1, blockSize-2, blockSize-2);
+          }
+        }
+      }
+      
+      this.ctx.fillStyle = '#f0f';
+      current.forEach((row, r) => {
+        row.forEach((cell, c) => {
+          if (cell) {
+            this.ctx.fillRect(offsetX + (currentX + c) * blockSize + 1, offsetY + (currentY + r) * blockSize + 1, blockSize-2, blockSize-2);
+          }
+        });
+      });
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '20px monospace';
+      this.ctx.fillText(`Score: ${score}`, 10, 30);
+    };
+    
+    const collides = (piece, px, py) => {
+      for (let r = 0; r < piece.length; r++) {
+        for (let c = 0; c < piece[r].length; c++) {
+          if (piece[r][c]) {
+            const newX = px + c;
+            const newY = py + r;
+            if (newX < 0 || newX >= cols || newY >= rows || (newY >= 0 && board[newY][newX])) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    };
+    
+    const merge = () => {
+      current.forEach((row, r) => {
+        row.forEach((cell, c) => {
+          if (cell && currentY + r >= 0) {
+            board[currentY + r][currentX + c] = 1;
+          }
+        });
+      });
+    };
+    
+    const clearLines = () => {
+      let lines = 0;
+      for (let r = rows - 1; r >= 0; r--) {
+        if (board[r].every(cell => cell)) {
+          board.splice(r, 1);
+          board.unshift(Array(cols).fill(0));
+          lines++;
+          r++;
+        }
+      }
+      score += lines * 100;
+    };
+    
+    const drop = () => {
+      if (!collides(current, currentX, currentY + 1)) {
+        currentY++;
+      } else {
+        merge();
+        clearLines();
+        current = Utils.randomChoice(pieces);
+        currentX = 3;
+        currentY = 0;
+        if (collides(current, currentX, currentY)) {
+          this.stopGame();
+          app.print(`Game Over! Score: ${score}`, 'error');
+          return;
+        }
+      }
+      draw();
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === 'ArrowLeft' && !collides(current, currentX - 1, currentY)) currentX--;
+      if (e.key === 'ArrowRight' && !collides(current, currentX + 1, currentY)) currentX++;
+      if (e.key === 'ArrowDown') drop();
+      if (e.key === 'ArrowUp') {
+        const rotated = current[0].map((_, i) => current.map(row => row[i]).reverse());
+        if (!collides(rotated, currentX, currentY)) current = rotated;
+      }
+      draw();
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    setInterval(drop, 500);
+    draw();
+  }
+  
+  start2048() {
+    const size = 4;
+    let grid = Array(size).fill().map(() => Array(size).fill(0));
+    let score = 0;
+    
+    const addRandom = () => {
+      const empty = [];
+      grid.forEach((row, r) => row.forEach((cell, c) => {
+        if (cell === 0) empty.push({r, c});
+      }));
+      if (empty.length) {
+        const {r, c} = Utils.randomChoice(empty);
+        grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+      }
+    };
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const tileSize = 100;
+      const gap = 10;
+      const offsetX = (this.canvas.width - (size * tileSize + (size-1) * gap)) / 2;
+      const offsetY = (this.canvas.height - (size * tileSize + (size-1) * gap)) / 2;
+      
+      const colors = {0: '#333', 2: '#eee4da', 4: '#ede0c8', 8: '#f2b179', 16: '#f59563', 32: '#f67c5f', 64: '#f65e3b', 128: '#edcf72', 256: '#edcc61', 512: '#edc850', 1024: '#edc53f', 2048: '#edc22e'};
+      
+      grid.forEach((row, r) => {
+        row.forEach((cell, c) => {
+          const x = offsetX + c * (tileSize + gap);
+          const y = offsetY + r * (tileSize + gap);
+          this.ctx.fillStyle = colors[cell] || '#3c3a32';
+          this.ctx.fillRect(x, y, tileSize, tileSize);
+          if (cell) {
+            this.ctx.fillStyle = cell < 8 ? '#776e65' : '#f9f6f2';
+            this.ctx.font = `${cell < 100 ? 40 : cell < 1000 ? 35 : 28}px monospace`;
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(cell, x + tileSize/2, y + tileSize/2);
+          }
+        });
+      });
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '20px monospace';
+      this.ctx.textAlign = 'left';
+      this.ctx.fillText(`Score: ${score}`, 10, 30);
+    };
+    
+    const move = (dir) => {
+      const rotated = (times) => {
+        for (let t = 0; t < times; t++) {
+          grid = grid[0].map((_, i) => grid.map(row => row[i]).reverse());
+        }
+      };
+      
+      if (dir === 'up') rotated(1);
+      if (dir === 'down') rotated(3);
+      if (dir === 'right') rotated(2);
+      
+      let moved = false;
+      for (let r = 0; r < size; r++) {
+        let row = grid[r].filter(x => x);
+        for (let i = 0; i < row.length - 1; i++) {
+          if (row[i] === row[i+1]) {
+            row[i] *= 2;
+            score += row[i];
+            row.splice(i+1, 1);
+          }
+        }
+        while (row.length < size) row.push(0);
+        if (grid[r].some((v, i) => v !== row[i])) moved = true;
+        grid[r] = row;
+      }
+      
+      if (dir === 'up') rotated(3);
+      if (dir === 'down') rotated(1);
+      if (dir === 'right') rotated(2);
+      
+      if (moved) {
+        addRandom();
+        draw();
+      }
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === 'ArrowUp') move('up');
+      if (e.key === 'ArrowDown') move('down');
+      if (e.key === 'ArrowLeft') move('left');
+      if (e.key === 'ArrowRight') move('right');
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    addRandom();
+    addRandom();
+    draw();
+  }
+  
+  startMines() {
+    const size = 10;
+    const mines = 15;
+    let grid = Array(size).fill().map(() => Array(size).fill().map(() => ({mine: false, revealed: false, flagged: false, count: 0})));
+    
+    let placed = 0;
+    while (placed < mines) {
+      const r = Utils.randomInt(0, size-1);
+      const c = Utils.randomInt(0, size-1);
+      if (!grid[r][c].mine) {
+        grid[r][c].mine = true;
+        placed++;
+      }
+    }
+    
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (!grid[r][c].mine) {
+          let count = 0;
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              const nr = r + dr, nc = c + dc;
+              if (nr >= 0 && nr < size && nc >= 0 && nc < size && grid[nr][nc].mine) count++;
+            }
+          }
+          grid[r][c].count = count;
+        }
+      }
+    }
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const tileSize = 40;
+      const offsetX = (this.canvas.width - size * tileSize) / 2;
+      const offsetY = (this.canvas.height - size * tileSize) / 2;
+      
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          const x = offsetX + c * tileSize;
+          const y = offsetY + r * tileSize;
+          const cell = grid[r][c];
+          
+          this.ctx.fillStyle = cell.revealed ? (cell.mine ? '#f00' : '#ccc') : '#666';
+          this.ctx.fillRect(x, y, tileSize-2, tileSize-2);
+          
+          if (cell.revealed && !cell.mine && cell.count > 0) {
+            this.ctx.fillStyle = '#000';
+            this.ctx.font = '20px monospace';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(cell.count, x + tileSize/2, y + tileSize/2);
+          }
+          if (cell.flagged) {
+            this.ctx.fillStyle = '#f00';
+            this.ctx.font = '20px monospace';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText('🚩', x + tileSize/2, y + tileSize/2);
+          }
+        }
+      }
+    };
+    
+    const reveal = (r, c) => {
+      if (r < 0 || r >= size || c < 0 || c >= size || grid[r][c].revealed || grid[r][c].flagged) return;
+      grid[r][c].revealed = true;
+      if (grid[r][c].mine) {
+        this.stopGame();
+        app.print('Game Over! You hit a mine!', 'error');
+        return;
+      }
+      if (grid[r][c].count === 0) {
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            reveal(r + dr, c + dc);
+          }
+        }
+      }
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+    };
+    
+    const clickHandler = (e) => {
+      const tileSize = 40;
+      const offsetX = (this.canvas.width - size * tileSize) / 2;
+      const offsetY = (this.canvas.height - size * tileSize) / 2;
+      const c = Math.floor((e.clientX - offsetX) / tileSize);
+      const r = Math.floor((e.clientY - offsetY) / tileSize);
+      
+      if (r >= 0 && r < size && c >= 0 && c < size) {
+        if (e.button === 2) {
+          grid[r][c].flagged = !grid[r][c].flagged;
+        } else {
+          reveal(r, c);
+        }
+        draw();
+      }
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    this.canvas.addEventListener('click', clickHandler);
+    this.canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); clickHandler(e); });
+    draw();
+  }
+  
+  startPong() {
+    const paddleHeight = 100;
+    const paddleWidth = 10;
+    let playerY = this.canvas.height / 2 - paddleHeight / 2;
+    let aiY = this.canvas.height / 2 - paddleHeight / 2;
+    let ballX = this.canvas.width / 2;
+    let ballY = this.canvas.height / 2;
+    let ballDX = 5;
+    let ballDY = 3;
+    let playerScore = 0;
+    let aiScore = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.fillRect(20, playerY, paddleWidth, paddleHeight);
+      this.ctx.fillRect(this.canvas.width - 30, aiY, paddleWidth, paddleHeight);
+      this.ctx.fillRect(ballX - 5, ballY - 5, 10, 10);
+      
+      this.ctx.font = '30px monospace';
+      this.ctx.fillText(playerScore, this.canvas.width / 4, 50);
+      this.ctx.fillText(aiScore, this.canvas.width * 3 / 4, 50);
+    };
+    
+    const update = () => {
+      ballX += ballDX;
+      ballY += ballDY;
+      
+      if (ballY <= 0 || ballY >= this.canvas.height) ballDY *= -1;
+      
+      if (ballX <= 30 && ballY >= playerY && ballY <= playerY + paddleHeight) ballDX *= -1;
+      if (ballX >= this.canvas.width - 30 && ballY >= aiY && ballY <= aiY + paddleHeight) ballDX *= -1;
+      
+      if (ballX < 0) { aiScore++; ballX = this.canvas.width / 2; ballY = this.canvas.height / 2; }
+      if (ballX > this.canvas.width) { playerScore++; ballX = this.canvas.width / 2; ballY = this.canvas.height / 2; }
+      
+      if (ballY > aiY + paddleHeight / 2) aiY += 3;
+      else aiY -= 3;
+      
+      draw();
+      this.animFrame = requestAnimationFrame(update);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === 'ArrowUp') playerY = Math.max(0, playerY - 20);
+      if (e.key === 'ArrowDown') playerY = Math.min(this.canvas.height - paddleHeight, playerY + 20);
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    update();
+  }
+  
+  startTicTacToe() {
+    let board = Array(9).fill('');
+    let currentPlayer = 'X';
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const size = 100;
+      const offsetX = (this.canvas.width - 3 * size) / 2;
+      const offsetY = (this.canvas.height - 3 * size) / 2;
+      
+      this.ctx.strokeStyle = '#fff';
+      this.ctx.lineWidth = 3;
+      for (let i = 1; i < 3; i++) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(offsetX + i * size, offsetY);
+        this.ctx.lineTo(offsetX + i * size, offsetY + 3 * size);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.moveTo(offsetX, offsetY + i * size);
+        this.ctx.lineTo(offsetX + 3 * size, offsetY + i * size);
+        this.ctx.stroke();
+      }
+      
+      this.ctx.font = '60px monospace';
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      board.forEach((cell, i) => {
+        if (cell) {
+          this.ctx.fillStyle = cell === 'X' ? '#0ff' : '#f0f';
+          const r = Math.floor(i / 3);
+          const c = i % 3;
+          this.ctx.fillText(cell, offsetX + c * size + size/2, offsetY + r * size + size/2);
+        }
+      });
+    };
+    
+    const checkWin = () => {
+      const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      for (let line of lines) {
+        if (board[line[0]] && board[line[0]] === board[line[1]] && board[line[1]] === board[line[2]]) {
+          return board[line[0]];
+        }
+      }
+      if (board.every(c => c)) return 'draw';
+      return null;
+    };
+    
+    const aiMove = () => {
+      const empty = board.map((c, i) => c === '' ? i : -1).filter(i => i !== -1);
+      if (empty.length) {
+        board[Utils.randomChoice(empty)] = 'O';
+        currentPlayer = 'X';
+        draw();
+        const winner = checkWin();
+        if (winner) {
+          this.stopGame();
+          app.print(winner === 'draw' ? 'Draw!' : winner === 'X' ? 'You win!' : 'AI wins!', 'info');
+        }
+      }
+    };
+    
+    const clickHandler = (e) => {
+      const size = 100;
+      const offsetX = (this.canvas.width - 3 * size) / 2;
+      const offsetY = (this.canvas.height - 3 * size) / 2;
+      const c = Math.floor((e.clientX - offsetX) / size);
+      const r = Math.floor((e.clientY - offsetY) / size);
+      const idx = r * 3 + c;
+      
+      if (idx >= 0 && idx < 9 && board[idx] === '' && currentPlayer === 'X') {
+        board[idx] = 'X';
+        currentPlayer = 'O';
+        draw();
+        const winner = checkWin();
+        if (winner) {
+          this.stopGame();
+          app.print(winner === 'draw' ? 'Draw!' : winner === 'X' ? 'You win!' : 'AI wins!', 'info');
+          return;
+        }
+        setTimeout(aiMove, 500);
+      }
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    this.canvas.addEventListener('click', clickHandler);
+    draw();
+  }
+  
+  startFlappy() {
+    let birdY = this.canvas.height / 2;
+    let birdV = 0;
+    const gravity = 0.5;
+    const jump = -8;
+    let pipes = [];
+    let score = 0;
+    let frame = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.fillStyle = '#ff0';
+      this.ctx.fillRect(100, birdY - 10, 20, 20);
+      
+      this.ctx.fillStyle = '#0f0';
+      pipes.forEach(p => {
+        this.ctx.fillRect(p.x, 0, 50, p.gap);
+        this.ctx.fillRect(p.x, p.gap + 150, 50, this.canvas.height);
+      });
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '20px monospace';
+      this.ctx.fillText(`Score: ${score}`, 10, 30);
+    };
+    
+    const update = () => {
+      birdV += gravity;
+      birdY += birdV;
+      
+      if (frame % 100 === 0) {
+        const gap = Utils.randomInt(100, this.canvas.height - 250);
+        pipes.push({x: this.canvas.width, gap});
+      }
+      
+      pipes.forEach(p => p.x -= 3);
+      pipes = pipes.filter(p => p.x > -50);
+      
+      pipes.forEach(p => {
+        if (p.x < 120 && p.x > 70) {
+          if (birdY < p.gap || birdY > p.gap + 150) {
+            this.stopGame();
+            app.print(`Game Over! Score: ${score}`, 'error');
+            return;
+          }
+        }
+        if (p.x === 100) score++;
+      });
+      
+      if (birdY > this.canvas.height || birdY < 0) {
+        this.stopGame();
+        app.print(`Game Over! Score: ${score}`, 'error');
+        return;
+      }
+      
+      draw();
+      frame++;
+      this.animFrame = requestAnimationFrame(update);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === ' ') birdV = jump;
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    update();
+  }
+  
+  startWordle() {
+    const words = ['APPLE', 'BRAIN', 'CLOUD', 'DREAM', 'EAGLE', 'FLAME', 'GHOST', 'HEART', 'IVORY', 'JOKER'];
+    const target = Utils.randomChoice(words);
+    let guesses = [];
+    let current = '';
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const tileSize = 60;
+      const gap = 10;
+      const offsetX = (this.canvas.width - 5 * (tileSize + gap)) / 2;
+      const offsetY = 100;
+      
+      for (let r = 0; r < 6; r++) {
+        for (let c = 0; c < 5; c++) {
+          const x = offsetX + c * (tileSize + gap);
+          const y = offsetY + r * (tileSize + gap);
+          
+          this.ctx.strokeStyle = '#333';
+          this.ctx.strokeRect(x, y, tileSize, tileSize);
+          
+          let letter = '';
+          let color = '#fff';
+          
+          if (r < guesses.length) {
+            letter = guesses[r][c];
+            if (target[c] === letter) color = '#0f0';
+            else if (target.includes(letter)) color = '#ff0';
+            else color = '#666';
+          } else if (r === guesses.length && c < current.length) {
+            letter = current[c];
+          }
+          
+          if (letter) {
+            this.ctx.fillStyle = color;
+            this.ctx.font = '30px monospace';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(letter, x + tileSize/2, y + tileSize/2);
+          }
+        }
+      }
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '16px monospace';
+      this.ctx.textAlign = 'left';
+      this.ctx.fillText(`Guess ${guesses.length + 1}/6`, 10, 30);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === 'Enter' && current.length === 5) {
+        guesses.push(current);
+        if (current === target) {
+          this.stopGame();
+          app.print(`You win! The word was ${target}`, 'success');
+          return;
+        }
+        if (guesses.length === 6) {
+          this.stopGame();
+          app.print(`Game Over! The word was ${target}`, 'error');
+          return;
+        }
+        current = '';
+      } else if (e.key === 'Backspace') {
+        current = current.slice(0, -1);
+      } else if (/^[A-Z]$/.test(e.key.toUpperCase()) && current.length < 5) {
+        current += e.key.toUpperCase();
+      }
+      draw();
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    draw();
+  }
+  
+  startHangman() {
+    const words = ['JAVASCRIPT', 'TERMINAL', 'LINUX', 'COMPUTER', 'KEYBOARD', 'MONITOR', 'PROGRAMMER'];
+    const target = Utils.randomChoice(words);
+    let guessed = [];
+    let wrong = 0;
+    const maxWrong = 6;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.strokeStyle = '#fff';
+      this.ctx.lineWidth = 3;
+      const baseX = this.canvas.width / 2 - 100;
+      const baseY = 100;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(baseX, baseY + 200);
+      this.ctx.lineTo(baseX + 150, baseY + 200);
+      this.ctx.moveTo(baseX + 50, baseY + 200);
+      this.ctx.lineTo(baseX + 50, baseY);
+      this.ctx.lineTo(baseX + 120, baseY);
+      this.ctx.lineTo(baseX + 120, baseY + 30);
+      this.ctx.stroke();
+      
+      if (wrong >= 1) { this.ctx.beginPath(); this.ctx.arc(baseX + 120, baseY + 50, 20, 0, Math.PI * 2); this.ctx.stroke(); }
+      if (wrong >= 2) { this.ctx.beginPath(); this.ctx.moveTo(baseX + 120, baseY + 70); this.ctx.lineTo(baseX + 120, baseY + 130); this.ctx.stroke(); }
+      if (wrong >= 3) { this.ctx.beginPath(); this.ctx.moveTo(baseX + 120, baseY + 90); this.ctx.lineTo(baseX + 90, baseY + 110); this.ctx.stroke(); }
+      if (wrong >= 4) { this.ctx.beginPath(); this.ctx.moveTo(baseX + 120, baseY + 90); this.ctx.lineTo(baseX + 150, baseY + 110); this.ctx.stroke(); }
+      if (wrong >= 5) { this.ctx.beginPath(); this.ctx.moveTo(baseX + 120, baseY + 130); this.ctx.lineTo(baseX + 100, baseY + 170); this.ctx.stroke(); }
+      if (wrong >= 6) { this.ctx.beginPath(); this.ctx.moveTo(baseX + 120, baseY + 130); this.ctx.lineTo(baseX + 140, baseY + 170); this.ctx.stroke(); }
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '30px monospace';
+      this.ctx.textAlign = 'center';
+      let word = target.split('').map(l => guessed.includes(l) ? l : '_').join(' ');
+      this.ctx.fillText(word, this.canvas.width / 2, 350);
+      
+      this.ctx.font = '20px monospace';
+      this.ctx.fillText(`Wrong: ${wrong}/${maxWrong}`, this.canvas.width / 2, 400);
+      this.ctx.fillText(`Guessed: ${guessed.join(', ')}`, this.canvas.width / 2, 430);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (/^[A-Z]$/.test(e.key.toUpperCase())) {
+        const letter = e.key.toUpperCase();
+        if (!guessed.includes(letter)) {
+          guessed.push(letter);
+          if (!target.includes(letter)) wrong++;
+          
+          if (wrong >= maxWrong) {
+            this.stopGame();
+            app.print(`Game Over! The word was ${target}`, 'error');
+            return;
+          }
+          
+          if (target.split('').every(l => guessed.includes(l))) {
+            this.stopGame();
+            app.print(`You win! The word was ${target}`, 'success');
+            return;
+          }
+        }
+        draw();
+      }
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    draw();
+  }
+  
+  startMaze() {
+    const size = 15;
+    let maze = Array(size).fill().map(() => Array(size).fill(1));
+    
+    const carve = (x, y) => {
+      maze[y][x] = 0;
+      const dirs = [[0,-2],[0,2],[-2,0],[2,0]].sort(() => Math.random() - 0.5);
+      for (let [dx, dy] of dirs) {
+        const nx = x + dx, ny = y + dy;
+        if (nx > 0 && nx < size && ny > 0 && ny < size && maze[ny][nx] === 1) {
+          maze[y + dy/2][x + dx/2] = 0;
+          carve(nx, ny);
+        }
+      }
+    };
+    
+    carve(1, 1);
+    maze[1][1] = 0;
+    maze[size-2][size-2] = 2;
+    
+    let playerX = 1, playerY = 1;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const tileSize = 30;
+      const offsetX = (this.canvas.width - size * tileSize) / 2;
+      const offsetY = (this.canvas.height - size * tileSize) / 2;
+      
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          const x = offsetX + c * tileSize;
+          const y = offsetY + r * tileSize;
+          
+          if (maze[r][c] === 1) {
+            this.ctx.fillStyle = '#333';
+            this.ctx.fillRect(x, y, tileSize, tileSize);
+          } else if (maze[r][c] === 2) {
+            this.ctx.fillStyle = '#0f0';
+            this.ctx.fillRect(x, y, tileSize, tileSize);
+          }
+        }
+      }
+      
+      this.ctx.fillStyle = '#ff0';
+      this.ctx.fillRect(offsetX + playerX * tileSize + 5, offsetY + playerY * tileSize + 5, tileSize - 10, tileSize - 10);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      let nx = playerX, ny = playerY;
+      if (e.key === 'ArrowUp') ny--;
+      if (e.key === 'ArrowDown') ny++;
+      if (e.key === 'ArrowLeft') nx--;
+      if (e.key === 'ArrowRight') nx++;
+      
+      if (nx >= 0 && nx < size && ny >= 0 && ny < size && maze[ny][nx] !== 1) {
+        playerX = nx;
+        playerY = ny;
+        if (maze[ny][nx] === 2) {
+          this.stopGame();
+          app.print('You escaped the maze!', 'success');
+          return;
+        }
+        draw();
+      }
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    draw();
+  }
+  
+  startBreakout() {
+    const paddleWidth = 100, paddleHeight = 10;
+    let paddleX = this.canvas.width / 2 - paddleWidth / 2;
+    let ballX = this.canvas.width / 2, ballY = this.canvas.height - 50;
+    let ballDX = 4, ballDY = -4;
+    const brickRows = 5, brickCols = 10;
+    const brickWidth = 60, brickHeight = 20;
+    let bricks = [];
+    
+    for (let r = 0; r < brickRows; r++) {
+      for (let c = 0; c < brickCols; c++) {
+        bricks.push({x: c * (brickWidth + 5) + 50, y: r * (brickHeight + 5) + 50, alive: true});
+      }
+    }
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.fillRect(paddleX, this.canvas.height - 30, paddleWidth, paddleHeight);
+      this.ctx.fillRect(ballX - 5, ballY - 5, 10, 10);
+      
+      bricks.forEach(b => {
+        if (b.alive) {
+          this.ctx.fillStyle = '#f0f';
+          this.ctx.fillRect(b.x, b.y, brickWidth, brickHeight);
+        }
+      });
+    };
+    
+    const update = () => {
+      ballX += ballDX;
+      ballY += ballDY;
+      
+      if (ballX <= 5 || ballX >= this.canvas.width - 5) ballDX *= -1;
+      if (ballY <= 5) ballDY *= -1;
+      
+      if (ballY >= this.canvas.height - 30 && ballX >= paddleX && ballX <= paddleX + paddleWidth) {
+        ballDY *= -1;
+      }
+      
+      if (ballY > this.canvas.height) {
+        this.stopGame();
+        app.print('Game Over!', 'error');
+        return;
+      }
+      
+      bricks.forEach(b => {
+        if (b.alive && ballX >= b.x && ballX <= b.x + brickWidth && ballY >= b.y && ballY <= b.y + brickHeight) {
+          b.alive = false;
+          ballDY *= -1;
+        }
+      });
+      
+      if (bricks.every(b => !b.alive)) {
+        this.stopGame();
+        app.print('You win!', 'success');
+        return;
+      }
+      
+      draw();
+      this.animFrame = requestAnimationFrame(update);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === 'ArrowLeft') paddleX = Math.max(0, paddleX - 20);
+      if (e.key === 'ArrowRight') paddleX = Math.min(this.canvas.width - paddleWidth, paddleX + 20);
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    update();
+  }
+  
+  startSimon() {
+    const colors = ['#f00', '#0f0', '#00f', '#ff0'];
+    let sequence = [];
+    let playerSeq = [];
+    let level = 0;
+    let showing = false;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const size = 100;
+      const gap = 20;
+      const offsetX = (this.canvas.width - 2 * size - gap) / 2;
+      const offsetY = (this.canvas.height - 2 * size - gap) / 2;
+      
+      colors.forEach((color, i) => {
+        const x = offsetX + (i % 2) * (size + gap);
+        const y = offsetY + Math.floor(i / 2) * (size + gap);
+        this.ctx.fillStyle = playerSeq.length > 0 && playerSeq[playerSeq.length - 1] === i ? color : '#333';
+        this.ctx.fillRect(x, y, size, size);
+      });
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '20px monospace';
+      this.ctx.fillText(`Level: ${level}`, 10, 30);
+    };
+    
+    const showSequence = async () => {
+      showing = true;
+      for (let i of sequence) {
+        playerSeq = [i];
+        draw();
+        await Utils.sleep(500);
+        playerSeq = [];
+        draw();
+        await Utils.sleep(200);
+      }
+      showing = false;
+      playerSeq = [];
+      draw();
+    };
+    
+    const nextLevel = () => {
+      level++;
+      sequence.push(Utils.randomInt(0, 3));
+      showSequence();
+    };
+    
+    const clickHandler = (e) => {
+      if (showing) return;
+      
+      const size = 100;
+      const gap = 20;
+      const offsetX = (this.canvas.width - 2 * size - gap) / 2;
+      const offsetY = (this.canvas.height - 2 * size - gap) / 2;
+      
+      const x = e.clientX, y = e.clientY;
+      for (let i = 0; i < 4; i++) {
+        const bx = offsetX + (i % 2) * (size + gap);
+        const by = offsetY + Math.floor(i / 2) * (size + gap);
+        if (x >= bx && x <= bx + size && y >= by && y <= by + size) {
+          playerSeq.push(i);
+          draw();
+          
+          if (playerSeq[playerSeq.length - 1] !== sequence[playerSeq.length - 1]) {
+            this.stopGame();
+            app.print(`Game Over! Reached level ${level}`, 'error');
+            return;
+          }
+          
+          if (playerSeq.length === sequence.length) {
+            setTimeout(nextLevel, 1000);
+          }
+        }
+      }
+    };
+    
+    this.canvas.addEventListener('click', clickHandler);
+    nextLevel();
+  }
+  
+  startTypingRacer() {
+    const words = ['linux', 'terminal', 'command', 'kernel', 'shell', 'bash', 'ubuntu', 'debian', 'arch', 'fedora'];
+    let falling = [];
+    let score = 0;
+    let current = '';
+    let frame = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      falling.forEach(f => {
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '20px monospace';
+        this.ctx.fillText(f.word, f.x, f.y);
+      });
+      
+      this.ctx.fillStyle = '#0f0';
+      this.ctx.font = '20px monospace';
+      this.ctx.fillText(`> ${current}`, 10, this.canvas.height - 30);
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.fillText(`Score: ${score}`, 10, 30);
+    };
+    
+    const update = () => {
+      if (frame % 60 === 0) {
+        falling.push({word: Utils.randomChoice(words), x: Utils.randomInt(50, this.canvas.width - 100), y: 0});
+      }
+      
+      falling.forEach(f => f.y += 2);
+      falling = falling.filter(f => {
+        if (f.y > this.canvas.height) {
+          this.stopGame();
+          app.print(`Game Over! Score: ${score}`, 'error');
+          return false;
+        }
+        return true;
+      });
+      
+      draw();
+      frame++;
+      this.animFrame = requestAnimationFrame(update);
+    };
+    
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') { this.stopGame(); document.removeEventListener('keydown', keyHandler); return; }
+      if (e.key === 'Enter') {
+        const idx = falling.findIndex(f => f.word === current);
+        if (idx !== -1) {
+          falling.splice(idx, 1);
+          score += current.length;
+          current = '';
+        }
+      } else if (e.key === 'Backspace') {
+        current = current.slice(0, -1);
+      } else if (/^[a-z]$/.test(e.key)) {
+        current += e.key;
+      }
+      draw();
+    };
+    
+    document.addEventListener('keydown', keyHandler);
+    update();
+  }
+  
+  startConnect4() {
+    const rows = 6, cols = 7;
+    let board = Array(rows).fill().map(() => Array(cols).fill(0));
+    let currentPlayer = 1;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const tileSize = 60;
+      const offsetX = (this.canvas.width - cols * tileSize) / 2;
+      const offsetY = 100;
+      
+      this.ctx.fillStyle = '#00f';
+      this.ctx.fillRect(offsetX - 10, offsetY - 10, cols * tileSize + 20, rows * tileSize + 20);
+      
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = offsetX + c * tileSize + tileSize/2;
+          const y = offsetY + r * tileSize + tileSize/2;
+          
+          this.ctx.fillStyle = '#000';
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, tileSize/2 - 5, 0, Math.PI * 2);
+          this.ctx.fill();
+          
+          if (board[r][c] === 1) {
+            this.ctx.fillStyle = '#f00';
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, tileSize/2 - 8, 0, Math.PI * 2);
+            this.ctx.fill();
+          } else if (board[r][c] === 2) {
+            this.ctx.fillStyle = '#ff0';
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, tileSize/2 - 8, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+        }
+      }
+    };
+    
+    const checkWin = (player) => {
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols - 3; c++) {
+          if (board[r][c] === player && board[r][c+1] === player && board[r][c+2] === player && board[r][c+3] === player) return true;
+        }
+      }
+      for (let r = 0; r < rows - 3; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (board[r][c] === player && board[r+1][c] === player && board[r+2][c] === player && board[r+3][c] === player) return true;
+        }
+      }
+      for (let r = 0; r < rows - 3; r++) {
+        for (let c = 0; c < cols - 3; c++) {
+          if (board[r][c] === player && board[r+1][c+1] === player && board[r+2][c+2] === player && board[r+3][c+3] === player) return true;
+          if (board[r][c+3] === player && board[r+1][c+2] === player && board[r+2][c+1] === player && board[r+3][c] === player) return true;
+        }
+      }
+      return false;
+    };
+    
+    const dropPiece = (col, player) => {
+      for (let r = rows - 1; r >= 0; r--) {
+        if (board[r][col] === 0) {
+          board[r][col] = player;
+          return true;
+        }
+      }
+      return false;
+    };
+    
+    const clickHandler = (e) => {
+      if (currentPlayer !== 1) return;
+      
+      const tileSize = 60;
+      const offsetX = (this.canvas.width - cols * tileSize) / 2;
+      const col = Math.floor((e.clientX - offsetX) / tileSize);
+      
+      if (col >= 0 && col < cols && dropPiece(col, 1)) {
+        draw();
+        if (checkWin(1)) {
+          this.stopGame();
+          app.print('You win!', 'success');
+          return;
+        }
+        currentPlayer = 2;
+        setTimeout(() => {
+          const aiCol = Utils.randomInt(0, cols - 1);
+          dropPiece(aiCol, 2);
+          draw();
+          if (checkWin(2)) {
+            this.stopGame();
+            app.print('AI wins!', 'error');
+            return;
+          }
+          currentPlayer = 1;
+        }, 500);
+      }
+    };
+    
+    this.canvas.addEventListener('click', clickHandler);
+    draw();
+  }
+  
+  startMemory() {
+    const symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    let cards = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+    let flipped = [];
+    let matched = [];
+    let moves = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      const tileSize = 80;
+      const gap = 10;
+      const offsetX = (this.canvas.width - 4 * (tileSize + gap)) / 2;
+      const offsetY = (this.canvas.height - 4 * (tileSize + gap)) / 2;
+      
+      cards.forEach((card, i) => {
+        const r = Math.floor(i / 4);
+        const c = i % 4;
+        const x = offsetX + c * (tileSize + gap);
+        const y = offsetY + r * (tileSize + gap);
+        
+        if (flipped.includes(i) || matched.includes(i)) {
+          this.ctx.fillStyle = '#fff';
+          this.ctx.fillRect(x, y, tileSize, tileSize);
+          this.ctx.fillStyle = '#000';
+          this.ctx.font = '40px monospace';
+          this.ctx.textAlign = 'center';
+          this.ctx.textBaseline = 'middle';
+          this.ctx.fillText(card, x + tileSize/2, y + tileSize/2);
+        } else {
+          this.ctx.fillStyle = '#333';
+          this.ctx.fillRect(x, y, tileSize, tileSize);
+        }
+      });
+      
+      this.ctx.fillStyle = '#fff';
+      this.ctx.font = '20px monospace';
+      this.ctx.textAlign = 'left';
+      this.ctx.fillText(`Moves: ${moves}`, 10, 30);
+    };
+    
+    const clickHandler = (e) => {
+      if (flipped.length === 2) return;
+      
+      const tileSize = 80;
+      const gap = 10;
+      const offsetX = (this.canvas.width - 4 * (tileSize + gap)) / 2;
+      const offsetY = (this.canvas.height - 4 * (tileSize + gap)) / 2;
+      
+      const c = Math.floor((e.clientX - offsetX) / (tileSize + gap));
+      const r = Math.floor((e.clientY - offsetY) / (tileSize + gap));
+      const idx = r * 4 + c;
+      
+      if (idx >= 0 && idx < 16 && !flipped.includes(idx) && !matched.includes(idx)) {
+        flipped.push(idx);
+        draw();
+        
+        if (flipped.length === 2) {
+          moves++;
+          if (cards[flipped[0]] === cards[flipped[1]]) {
+            matched.push(...flipped);
+            flipped = [];
+            if (matched.length === 16) {
+              this.stopGame();
+              app.print(`You win! Moves: ${moves}`, 'success');
+              return;
+            }
+          } else {
+            setTimeout(() => {
+              flipped = [];
+              draw();
+            }, 1000);
+          }
+        }
+      }
+    };
+    
+    this.canvas.addEventListener('click', clickHandler);
+    draw();
+  }
+}
+
+// ===========================================
+//              EFFECTS ENGINE
+// ===========================================
+class EffectsEngine {
+  constructor() {
+    this.canvas = null;
+    this.ctx = null;
+    this.currentEffect = null;
+    this.animFrame = null;
+  }
+  
+  init() {
+    this.canvas = $('#matrix');
+    this.ctx = this.canvas.getContext('2d');
+  }
+  
+  startEffect(name) {
+    if (!State.installed.includes('effects')) {
+      return `${name}: command not found. Install with: sudo apt install effects`;
+    }
+    
+    this.canvas.style.display = 'block';
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    this.currentEffect = name;
+    
+    switch(name) {
+      case 'fireworks': this.startFireworks(); break;
+      case 'rain': this.startRain(); break;
+      case 'snow': this.startSnow(); break;
+      case 'disco': this.startDisco(); break;
+      case 'laser': this.startLaser(); break;
+      case 'wave': this.startWave(); break;
+      default: return `${name}: effect not implemented`;
+    }
+    
+    return `<span class="info">${name} started</span>\nPress any key to stop.`;
+  }
+  
+  stopEffect() {
+    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+    this.canvas.style.display = 'none';
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.currentEffect = null;
+  }
+  
+  startFireworks() {
+    const particles = [];
+    
+    const draw = () => {
+      this.ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      if (Math.random() < 0.05) {
+        const x = Utils.randomInt(100, this.canvas.width - 100);
+        const y = Utils.randomInt(100, this.canvas.height / 2);
+        const color = `hsl(${Utils.randomInt(0, 360)}, 100%, 50%)`;
+        for (let i = 0; i < 50; i++) {
+          const angle = (Math.PI * 2 * i) / 50;
+          const speed = Utils.randomInt(2, 5);
+          particles.push({x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 50, color});
+        }
+      }
+      
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.1;
+        p.life--;
+        
+        this.ctx.fillStyle = p.color;
+        this.ctx.globalAlpha = p.life / 50;
+        this.ctx.fillRect(p.x, p.y, 3, 3);
+        
+        if (p.life <= 0) particles.splice(i, 1);
+      });
+      
+      this.ctx.globalAlpha = 1;
+      this.animFrame = requestAnimationFrame(draw);
+    };
+    
+    const stopHandler = () => { this.stopEffect(); document.removeEventListener('keydown', stopHandler); };
+    document.addEventListener('keydown', stopHandler);
+    draw();
+  }
+  
+  startRain() {
+    const drops = [];
+    for (let i = 0; i < 100; i++) {
+      drops.push({x: Utils.randomInt(0, this.canvas.width), y: Utils.randomInt(0, this.canvas.height), speed: Utils.randomInt(5, 10)});
+    }
+    
+    const draw = () => {
+      this.ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.strokeStyle = '#88f';
+      drops.forEach(d => {
+        this.ctx.beginPath();
+        this.ctx.moveTo(d.x, d.y);
+        this.ctx.lineTo(d.x, d.y + 10);
+        this.ctx.stroke();
+        
+        d.y += d.speed;
+        if (d.y > this.canvas.height) {
+          d.y = 0;
+          d.x = Utils.randomInt(0, this.canvas.width);
+        }
+      });
+      
+      this.animFrame = requestAnimationFrame(draw);
+    };
+    
+    const stopHandler = () => { this.stopEffect(); document.removeEventListener('keydown', stopHandler); };
+    document.addEventListener('keydown', stopHandler);
+    draw();
+  }
+  
+  startSnow() {
+    const flakes = [];
+    for (let i = 0; i < 100; i++) {
+      flakes.push({x: Utils.randomInt(0, this.canvas.width), y: Utils.randomInt(0, this.canvas.height), size: Utils.randomInt(2, 5), speed: Utils.randomInt(1, 3)});
+    }
+    
+    const draw = () => {
+      this.ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.fillStyle = '#fff';
+      flakes.forEach(f => {
+        this.ctx.beginPath();
+        this.ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        f.y += f.speed;
+        f.x += Math.sin(f.y / 30) * 0.5;
+        if (f.y > this.canvas.height) {
+          f.y = 0;
+          f.x = Utils.randomInt(0, this.canvas.width);
+        }
+      });
+      
+      this.animFrame = requestAnimationFrame(draw);
+    };
+    
+    const stopHandler = () => { this.stopEffect(); document.removeEventListener('keydown', stopHandler); };
+    document.addEventListener('keydown', stopHandler);
+    draw();
+  }
+  
+  startDisco() {
+    let hue = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      hue = (hue + 2) % 360;
+      this.animFrame = requestAnimationFrame(draw);
+    };
+    
+    const stopHandler = () => { this.stopEffect(); document.removeEventListener('keydown', stopHandler); };
+    document.addEventListener('keydown', stopHandler);
+    draw();
+  }
+  
+  startLaser() {
+    const lasers = [];
+    
+    const draw = () => {
+      this.ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      if (Math.random() < 0.1) {
+        lasers.push({x: this.canvas.width / 2, y: this.canvas.height / 2, angle: Math.random() * Math.PI * 2, life: 30});
+      }
+      
+      lasers.forEach((l, i) => {
+        this.ctx.strokeStyle = '#f00';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(l.x, l.y);
+        this.ctx.lineTo(l.x + Math.cos(l.angle) * 500, l.y + Math.sin(l.angle) * 500);
+        this.ctx.stroke();
+        
+        l.life--;
+        if (l.life <= 0) lasers.splice(i, 1);
+      });
+      
+      this.animFrame = requestAnimationFrame(draw);
+    };
+    
+    const stopHandler = () => { this.stopEffect(); document.removeEventListener('keydown', stopHandler); };
+    document.addEventListener('keydown', stopHandler);
+    draw();
+  }
+  
+  startWave() {
+    let offset = 0;
+    
+    const draw = () => {
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.ctx.strokeStyle = '#0ff';
+      this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+      
+      for (let x = 0; x < this.canvas.width; x++) {
+        const y = this.canvas.height / 2 + Math.sin((x + offset) / 30) * 100;
+        if (x === 0) this.ctx.moveTo(x, y);
+        else this.ctx.lineTo(x, y);
+      }
+      
+      this.ctx.stroke();
+      offset += 5;
+      this.animFrame = requestAnimationFrame(draw);
+    };
+    
+    const stopHandler = () => { this.stopEffect(); document.removeEventListener('keydown', stopHandler); };
+    document.addEventListener('keydown', stopHandler);
+    draw();
+  }
+}
+
+// ===========================================
 //              TERMINAL APP
 // ===========================================
 class TerminalApp {
   constructor() {
-    this.user = 'user';
-    this.host = 'webos';
-    this.cwd = ['~'];
+    this.output = $('#output');
+    this.input = $('#cmd');
     this.vfs = new VirtualFS('wt_');
-    this.history = [];
-    this.historyIdx = -1;
-    this.aliases = {};
-    this.isMatrix = false;
-    this.matrixAnim = null;
-    this.editingFile = null;
+    this.games = new GamesEngine();
+    this.effects = new EffectsEngine();
     this.maxLines = 300;
-    this.tabs = [{ id: 1, name: 'Terminal 1', cwd: ['~'], history: [] }];
+    this.tabs = [{id: 1, name: 'Terminal 1', cwd: ['~'], history: []}];
     this.activeTab = 1;
-    this.achievements = JSON.parse(localStorage.getItem('wt_achievements') || '{}');
   }
   
   async init() {
-    await Config.load();
     this.vfs.load();
+    this.games.init();
+    this.effects.init();
     
     const savedUser = localStorage.getItem('wt_user');
     if (savedUser) {
-      this.user = savedUser;
-      this.host = localStorage.getItem('wt_host') || 'webos';
-      this.aliases = JSON.parse(localStorage.getItem('wt_aliases') || '{}');
+      State.user = savedUser;
+      State.host = localStorage.getItem('wt_host') || 'webos';
+      State.aliases = JSON.parse(localStorage.getItem('wt_aliases') || '{}');
+      State.installed = JSON.parse(localStorage.getItem('wt_installed') || '["basic"]');
+      State.achievements = JSON.parse(localStorage.getItem('wt_achievements') || '{}');
       this.applyTheme(localStorage.getItem('wt_theme') || 'mono');
       this.bootComplete();
     }
@@ -1730,48 +2973,18 @@ class TerminalApp {
   }
   
   setupEvents() {
-    const cmd = $('#cmd');
-    cmd.addEventListener('keydown', e => this.handleInput(e));
+    this.input.addEventListener('keydown', e => this.handleInput(e));
     
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        if ($('#editor').classList.contains('show')) this.closeEditor();
-        else if ($('#help-overlay').classList.contains('show')) this.closeHelp();
-        else if ($('#achievements-overlay').classList.contains('show')) this.closeAchievements();
-        else if (this.isMatrix) this.stopMatrix();
+        if (this.games.currentGame) this.games.stopGame();
+        else if (this.effects.currentEffect) this.effects.stopEffect();
       }
       if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); this.runCommand('clear'); }
     });
-    
-    document.addEventListener('click', e => {
-      if (!$('#context-menu').contains(e.target)) {
-        $('#context-menu').classList.remove('show');
-      }
-    });
-    
-    $('#output').addEventListener('contextmenu', e => {
-      e.preventDefault();
-      const menu = $('#context-menu');
-      menu.style.left = e.pageX + 'px';
-      menu.style.top = e.pageY + 'px';
-      menu.classList.add('show');
-    });
-  }
-  
-  injectMobileKey(key) {
-    const cmd = $('#cmd');
-    cmd.focus();
-    if (key === 'Tab') { this.handleInput({ key: 'Tab', preventDefault: () => {} }); return; }
-    if (key === 'Ctrl+C') { cmd.value = ''; this.print(''); return; }
-    if (key === 'Ctrl+L') { this.runCommand('clear'); return; }
-    if (key === 'ArrowUp' || key === 'ArrowDown') {
-      this.handleInput({ key, preventDefault: () => {} });
-      return;
-    }
   }
   
   handleInput(e) {
-    const cmd = $('#cmd');
     if (e.key === 'Tab') {
       e.preventDefault();
       this.autoComplete();
@@ -1779,45 +2992,45 @@ class TerminalApp {
     }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if (this.history.length) {
-        this.historyIdx = Math.max(0, this.historyIdx - 1);
-        cmd.value = this.history[this.historyIdx] || '';
+      if (State.history.length) {
+        State.historyIdx = Math.max(0, State.historyIdx - 1);
+        this.input.value = State.history[State.historyIdx] || '';
       }
       return;
     }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      this.historyIdx = Math.min(this.history.length, this.historyIdx + 1);
-      cmd.value = this.history[this.historyIdx] || '';
+      State.historyIdx = Math.min(State.history.length, State.historyIdx + 1);
+      this.input.value = State.history[State.historyIdx] || '';
       return;
     }
     if (e.key !== 'Enter') return;
     
     e.preventDefault();
-    const rawCmd = cmd.value.trim();
-    if (!rawCmd) { this.print(''); cmd.value = ''; return; }
+    const rawCmd = this.input.value.trim();
+    if (!rawCmd) { this.print(''); this.input.value = ''; return; }
     
-    this.history.push(rawCmd);
-    this.historyIdx = this.history.length;
-    localStorage.setItem('wt_history', JSON.stringify(this.history.slice(-200)));
+    State.history.push(rawCmd);
+    State.historyIdx = State.history.length;
+    localStorage.setItem('wt_history', JSON.stringify(State.history.slice(-200)));
     
     this.printPrompt(rawCmd);
-    cmd.value = '';
+    this.input.value = '';
     
     this.runCommand(rawCmd);
   }
   
   autoComplete() {
-    const cmd = $('#cmd');
-    const val = cmd.value;
+    const val = this.input.value;
     const parts = val.split(/\s+/);
     const lastPart = parts[parts.length - 1];
     
     if (!lastPart) return;
     
     if (parts.length === 1) {
-      const matches = Object.keys(Config.commands).concat(Object.keys(this.aliases)).filter(c => c.startsWith(lastPart));
-      if (matches.length === 1) { cmd.value = matches[0] + ' '; }
+      const allCmds = Object.values(Config.packages).flat();
+      const matches = allCmds.filter(c => c.startsWith(lastPart));
+      if (matches.length === 1) { this.input.value = matches[0] + ' '; }
       else if (matches.length > 1) { this.print(matches.join('  '), 'muted'); }
       return;
     }
@@ -1825,12 +3038,12 @@ class TerminalApp {
     const node = this.vfs.getNode(this.cwd);
     if (!node || node.type !== 'dir') return;
     
-    const matches = Object.keys(node.children).filter(name => name.startsWith(lastPart));
+    const matches = Object.keys(node.children || {}).filter(name => name.startsWith(lastPart));
     if (matches.length === 1) {
       let completed = matches[0];
       if (node.children[completed].type === 'dir') completed += '/';
       parts[parts.length - 1] = completed;
-      cmd.value = parts.join(' ');
+      this.input.value = parts.join(' ');
     } else if (matches.length > 1) {
       this.print(matches.join('  '), 'muted');
     }
@@ -1839,521 +3052,410 @@ class TerminalApp {
   runCommand(rawCmd) {
     const firstWord = rawCmd.split(/\s+/)[0];
     let finalCmd = rawCmd;
-    if (this.aliases[firstWord]) {
-      finalCmd = rawCmd.replace(firstWord, this.aliases[firstWord]);
-    }
-    
-    if (finalCmd.includes('>')) {
-      const [cmdPart, filePart] = finalCmd.split('>').map(s => s.trim());
-      const fileName = filePart.replace(/^>>?\s*/, '');
-      const content = cmdPart.replace(/^echo\s+['"]?|['"]?$/g, '');
-      
-      if (cmdPart.startsWith('echo')) {
-        const pathArr = this.vfs.resolvePath(fileName, this.cwd);
-        const { parent, name } = this.vfs.getParentAndName(pathArr);
-        if (parent) {
-          parent.children[name] = { type: 'file', content: content + '\n', meta: { created: Date.now() } };
-          this.vfs.save();
-          this.print(`Saved to ${fileName}`, 'success');
-          this.unlockAchievement('file_creator');
-          return;
-        }
-      }
+    if (State.aliases[firstWord]) {
+      finalCmd = rawCmd.replace(firstWord, State.aliases[firstWord]);
     }
     
     const args = finalCmd.match(/(?:[^\s"]+|"[^"]*")+/g)?.map(a => a.replace(/^"|"$/g, '')) || [];
     const name = args.shift();
     
-    try {
-      const handler = this.getHandler(name);
-      if (handler) {
+    const handler = this.getHandler(name);
+    if (handler) {
+      try {
         const result = handler(args, this);
         if (result !== null && result !== undefined) this.print(result, 'output');
-      } else {
-        this.print(`${name}: command not found. Type 'help' for available commands.`, 'error');
-        this.visualBell();
+        this.unlockAchievement('first_command');
+      } catch (err) {
+        this.print(`Error: ${err.message}`, 'error');
       }
-    } catch (err) {
-      this.print(`Error executing ${name}: ${err.message}`, 'error');
+    } else {
+      this.print(`${name}: command not found`, 'error');
     }
     
     this.updatePrompt();
-    $('#cmd').focus();
+    this.input.focus();
   }
   
   getHandler(name) {
     const handlers = {
+      // Basic FS
       'ls': (a) => {
-        const showLong = a.includes('-l');
-        const targetPath = a.find(x => !x.startsWith('-')) || '.';
-        const pathArr = targetPath === '.' ? this.cwd : this.vfs.resolvePath(targetPath, this.cwd);
-        const node = this.vfs.getNode(pathArr);
-        if (!node || node.type !== 'dir') return this.error(`ls: cannot access '${targetPath}': No such directory`);
-        
-        const entries = Object.entries(node.children).sort((x, y) => x[0].localeCompare(y[0]));
-        if (!entries.length) return '';
-        
-        if (showLong) {
-          return entries.map(([k, v]) => {
-            const perms = v.type === 'dir' ? 'drwxr-xr-x' : '-rw-r--r--';
-            const size = v.type === 'file' ? (v.content?.length || 0) : 4096;
-            const date = new Date(v.meta?.created || Date.now()).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' });
-            return `${perms} 1 ${this.user} ${this.user} ${String(size).padStart(5)} ${date} ${k}${v.type === 'dir' ? '/' : ''}`;
-          }).join('\n');
-        }
-        return entries.map(([k, v]) => {
-          const cls = v.type === 'dir' ? 'success' : '';
-          const icon = v.type === 'dir' ? 'folder' : 'file';
-          return `<span class="icon icon-${icon}"><svg viewBox="0 0 14 14"><path d="${v.type === 'dir' ? 'M2,4 L4,2 L12,2 L12,10 L2,10 Z' : 'M3,2 L9,2 L11,4 L11,12 L3,12 Z'}" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span><span class="${cls}">${k}${v.type === 'dir' ? '/' : ''}</span>`;
-        }).join('  ');
+        const node = this.vfs.getNode(this.cwd);
+        if (!node || node.type !== 'dir') return this.error('ls: not a directory');
+        const entries = Object.entries(node.children || {}).sort();
+        if (!entries.length) return '(empty)';
+        return entries.map(([k, v]) => v.type === 'dir' ? `<span class="info">${k}/</span>` : k).join('  ');
       },
-      
       'cd': (a) => {
         const target = a[0] || '~';
         if (target === '~') { this.cwd = ['~']; return ''; }
         if (target === '..') { if (this.cwd.length > 1) this.cwd.pop(); return ''; }
         const pathArr = this.vfs.resolvePath(target, this.cwd);
         const node = this.vfs.getNode(pathArr);
-        if (node && node.type === 'dir') { this.cwd = pathArr; return ''; }
+        if (node?.type === 'dir') { this.cwd = pathArr; return ''; }
         return this.error(`cd: ${target}: No such directory`);
       },
-      
-      'pwd': () => '/' + this.cwd.join('/').replace('~', 'home/' + this.user),
-      
+      'pwd': () => '/' + this.cwd.join('/').replace('~', 'home/' + State.user),
       'cat': (a) => {
-        if (!a[0]) return this.error('cat: missing file operand');
-        const pathArr = this.vfs.resolvePath(a[0], this.cwd);
-        const node = this.vfs.getNode(pathArr);
-        if (!node) return this.error(`cat: ${a[0]}: No such file`);
-        if (node.type === 'dir') return this.warning(`cat: ${a[0]}: Is a directory`);
-        const ext = a[0].split('.').pop();
-        return Utils.syntaxHighlight(node.content, ext);
+        if (!a[0]) return this.error('cat: missing file');
+        const node = this.vfs.getNode(this.vfs.resolvePath(a[0], this.cwd));
+        return node?.type === 'file' ? node.content || '(empty)' : this.error(`cat: ${a[0]}: No such file`);
       },
-      
       'touch': (a) => {
-        if (!a[0]) return this.error('touch: missing file operand');
+        if (!a[0]) return this.error('touch: missing file');
         const pathArr = this.vfs.resolvePath(a[0], this.cwd);
-        const { parent, name } = this.vfs.getParentAndName(pathArr);
-        if (!parent) return this.error('touch: cannot create file');
+        const {parent, name} = this.vfs.getParentAndName(pathArr);
+        if (!parent.children) parent.children = {};
         if (!parent.children[name]) {
-          parent.children[name] = { type: 'file', content: '', meta: { created: Date.now() } };
+          parent.children[name] = {type: 'file', content: '', meta: {created: Date.now()}};
           this.vfs.save();
           this.unlockAchievement('file_creator');
-          return this.success(`Created '${name}'`);
+          return this.success(`Created ${name}`);
         }
         return '';
       },
-      
       'mkdir': (a) => {
-        const pFlag = a.includes('-p');
-        const dir = a.find(x => !x.startsWith('-'));
-        if (!dir) return this.error('mkdir: missing operand');
-        const res = this.vfs.mkdir(dir, pFlag);
+        if (!a[0]) return this.error('mkdir: missing directory');
+        const res = this.vfs.mkdir(a[0], a.includes('-p'));
         if (res.error) return this.error(res.error);
         this.unlockAchievement('dir_creator');
-        return this.success(`Created directory '${dir}'`);
+        return this.success(`Created directory ${a[0]}`);
       },
-      
       'rm': (a) => {
-        const rFlag = a.includes('-r') || a.includes('-rf');
-        const target = a.find(x => !x.startsWith('-'));
-        if (!target) return this.error('rm: missing operand');
-        const res = this.vfs.rm(target, rFlag);
+        if (!a[0]) return this.error('rm: missing operand');
+        const res = this.vfs.rm(a[0], a.includes('-r'));
         if (res.error) return this.error(res.error);
-        return this.success(`Removed '${target}'`);
+        return this.success(`Removed ${a[0]}`);
       },
-      
       'cp': (a) => {
         if (a.length < 2) return this.error('cp: missing operand');
         const res = this.vfs.cp(a[0], a[1]);
         if (res.error) return this.error(res.error);
-        return this.success(`Copied '${a[0]}' to '${a[1]}'`);
+        return this.success(`Copied ${a[0]} to ${a[1]}`);
       },
-      
       'mv': (a) => {
         if (a.length < 2) return this.error('mv: missing operand');
         const res = this.vfs.mv(a[0], a[1]);
         if (res.error) return this.error(res.error);
-        return this.success(`Moved '${a[0]}' to '${a[1]}'`);
+        return this.success(`Moved ${a[0]} to ${a[1]}`);
       },
-      
       'tree': () => {
         const out = this.vfs.tree(this.cwd);
-        return out ? out : '0 directories, 0 files';
+        return out || '0 directories, 0 files';
       },
-      
       'find': (a) => {
         if (!a[0]) return this.error('find: missing name');
         const res = this.vfs.find(a[0], this.cwd);
-        return res.length ? res.join('\n') : this.muted(`No files found matching '${a[0]}'`);
+        return res.length ? res.join('\n') : this.muted(`No files found`);
       },
       
-      'edit': (a) => {
-        if (!a[0]) return this.error('edit: missing filename');
-        const pathArr = this.vfs.resolvePath(a[0], this.cwd);
-        const node = this.vfs.getNode(pathArr);
-        if (!node) return this.error(`edit: ${a[0]}: No such file`);
-        if (node.type === 'dir') return this.warning(`edit: ${a[0]}: Is a directory`);
-        this.openEditor(a[0], node.content || '');
-        return null;
-      },
-      
-      'clear': () => { $('#output').innerHTML = ''; return null; },
-      
-      'history': () => {
-        return this.history.map((h, i) => `  ${String(i + 1).padStart(4)}  ${h}`).join('\n') || this.muted('History is empty');
-      },
-      
-      'alias': (a) => {
-        if (!a[0]) {
-          return Object.entries(this.aliases).map(([k, v]) => `alias ${k}='${v}'`).join('\n') || 'No aliases defined';
+      // Package manager
+      'apt': (a) => {
+        if (!a[0]) return 'Usage: apt [list|search]';
+        if (a[0] === 'list') {
+          let output = 'Available packages:\n';
+          for (let [cat, pkgs] of Object.entries(Config.packages)) {
+            const installed = State.installed.includes(cat);
+            output += `\n<span class="info">[${cat}]</span> ${installed ? '<span class="success">[installed]</span>' : ''}\n`;
+            output += pkgs.join(', ') + '\n';
+          }
+          return output;
         }
-        const match = a[0].match(/^(\w+)=(.*)$/);
-        if (!match) return this.error('alias: invalid format. Use: alias name=\'command\'');
-        this.aliases[match[1]] = match[2].replace(/^['"]|['"]$/g, '');
-        localStorage.setItem('wt_aliases', JSON.stringify(this.aliases));
-        return this.success(`Alias '${match[1]}' set`);
+        return 'apt: invalid operation';
+      },
+      'sudo': (a) => {
+        if (!a[0]) return this.error('sudo: missing command');
+        if (a[0] === 'apt' && a[1] === 'install') {
+          const pkg = a[2];
+          if (!pkg) return this.error('sudo apt install: missing package');
+          for (let [cat, pkgs] of Object.entries(Config.packages)) {
+            if (pkgs.includes(pkg) || cat === pkg) {
+              if (!State.installed.includes(cat)) {
+                State.installed.push(cat);
+                localStorage.setItem('wt_installed', JSON.stringify(State.installed));
+                this.unlockAchievement('package_master');
+                return this.success(`Installed [${cat}] package\nNow you can use: ${pkgs.join(', ')}`);
+              }
+              return `${cat} is already installed`;
+            }
+          }
+          return this.error(`Package '${pkg}' not found`);
+        }
+        if (a[0] === 'rm' && a.includes('-rf') && a.includes('/')) {
+          return this.error('Nice try! This is a simulation.');
+        }
+        return this.warning(`[sudo] ${a.join(' ')} executed as root`);
       },
       
-      'theme': (a) => {
-        if (!a[0]) return 'Available themes: mono, ubuntu, dracula, solarized, nord, monokai';
-        const valid = ['mono', 'ubuntu', 'dracula', 'solarized', 'nord', 'monokai'];
-        if (!valid.includes(a[0])) return this.error(`theme: '${a[0]}' not found`);
-        this.applyTheme(a[0]);
-        return this.success(`Theme changed to '${a[0]}'`);
+      // Games
+      'snake': () => this.games.startGame('snake'),
+      'tetris': () => this.games.startGame('tetris'),
+      '2048': () => this.games.startGame('2048'),
+      'mines': () => this.games.startGame('mines'),
+      'pong': () => this.games.startGame('pong'),
+      'tictactoe': () => this.games.startGame('tictactoe'),
+      'flappy': () => this.games.startGame('flappy'),
+      'wordle': () => this.games.startGame('wordle'),
+      'hangman': () => this.games.startGame('hangman'),
+      'maze': () => this.games.startGame('maze'),
+      'breakout': () => this.games.startGame('breakout'),
+      'simon': () => this.games.startGame('simon'),
+      'typing_racer': () => this.games.startGame('typing_racer'),
+      'connect4': () => this.games.startGame('connect4'),
+      'memory': () => this.games.startGame('memory'),
+      
+      // Effects
+      'fireworks': () => this.effects.startEffect('fireworks'),
+      'rain': () => this.effects.startEffect('rain'),
+      'snow': () => this.effects.startEffect('snow'),
+      'disco': () => this.effects.startEffect('disco'),
+      'laser': () => this.effects.startEffect('laser'),
+      'wave': () => this.effects.startEffect('wave'),
+      'nyancat': () => {
+        this.unlockAchievement('nyan_fan');
+        return this.effects.startEffect('rain');
+      },
+      'cmatrix': () => {
+        this.unlockAchievement('hacker');
+        return this.effects.startEffect('rain');
       },
       
-      'neofetch': () => {
-        const mem = performance?.memory ? Math.round(performance.memory.usedJSHeapSize / 1048576) : '?';
-        return `<span class="success">       _</span>     <span class="prompt-user">${this.user}</span>@<span class="prompt-path">${this.host}</span>
-<span class="success">      | |</span>    ─────────────
-<span class="success">   __ | |</span>    OS: WebOS ${Config.data.app.version}
-<span class="success">  /  \\| |</span>    Shell: WebTerminal JS
-<span class="success"> | () | |</span>    Theme: ${document.body.getAttribute('data-theme')}
-<span class="success">  \\__/|_|</span>    Memory: ${mem} MB
-                   Storage: ${Object.keys(localStorage).length} keys`;
-      },
-      
-      'date': () => new Date().toLocaleString('ru-RU', {
-        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', second: '2-digit'
-      }),
-      
-      'calc': (a) => {
-        if (!a.length) return 'Usage: calc <expression>';
-        const expr = a.join(' ').replace(/[^0-9+\-*/().%\s]/g, '');
-        try {
-          const res = Function('"use strict";return (' + expr + ')')();
-          return Number.isFinite(res) ? this.success(`= ${res}`) : this.error('Error');
-        } catch { return this.error('Invalid expression'); }
-      },
-      
+      // Fun
       'cowsay': (a) => {
         const text = a.join(' ') || 'Moo!';
         const border = '-'.repeat(text.length + 2);
         return ` ${border}\n< ${text} >\n ${border}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
       },
-      
-      'sl': () => {
-        this.runSlAnimation();
-        return this.muted('Choo choo!');
-      },
-      
+      'sl': () => 'Choo choo!',
       'hack': () => {
-        this.startMatrix();
-        return this.muted('Initiating hack sequence... (Press any key to stop)');
+        this.unlockAchievement('hacker');
+        return '<span class="info">Initiating hack sequence...</span>';
+      },
+      'rickroll': () => 'Never gonna give you up, never gonna let you down...',
+      'doge': () => 'Much wow. Very terminal. Such code.',
+      'joke': () => Utils.randomChoice([
+        'Why do programmers prefer dark mode? Because light attracts bugs!',
+        'There are 10 types of people: those who understand binary and those who don\'t.',
+        'A SQL query walks into a bar, walks up to two tables and asks... "Can I join you?"'
+      ]),
+      'fact': () => Utils.randomChoice([
+        'Bananas are berries, but strawberries aren\'t.',
+        'Honey never spoils.',
+        'Octopuses have three hearts.'
+      ]),
+      'compliment': () => Utils.randomChoice([
+        'You\'re doing amazing!',
+        'Your code is beautiful.',
+        'You\'re a terminal wizard!'
+      ]),
+      'insult': () => Utils.randomChoice([
+        'Your typing speed is... interesting.',
+        'Are you even trying?',
+        'I\'ve seen faster snails.'
+      ]),
+      'magic8ball': (a) => Utils.randomChoice([
+        'It is certain.',
+        'Without a doubt.',
+        'Ask again later.',
+        'Don\'t count on it.',
+        'My sources say no.'
+      ]),
+      'coinflip': () => Math.random() < 0.5 ? 'Heads!' : 'Tails!',
+      'dice': (a) => {
+        const count = parseInt(a[0]) || 1;
+        return Array(count).fill(0).map(() => Utils.randomInt(1, 6)).join(', ');
+      },
+      'roulette': () => {
+        if (Math.random() < 1/6) {
+          return this.error('BANG! Game over.');
+        }
+        this.unlockAchievement('survivor');
+        return this.success('You survived!');
       },
       
-      'sudo': (a) => {
-        if (!a.length) return this.error('sudo: missing command');
-        return this.warning(`[sudo] password for ${this.user}: \nSorry, this is a simulation. Most commands work without sudo.`);
+      // Network
+      'ping': (a) => {
+        const host = a[0] || '127.0.0.1';
+        return `PING ${host} (127.0.0.1) 56(84) bytes of data.\n64 bytes from ${host}: icmp_seq=1 ttl=64 time=0.1ms\n\n--- ${host} ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss`;
       },
+      'ip': (a) => {
+        if (a[0] === 'a' || a[0] === 'addr') {
+          return `1: lo: <LOOPBACK,UP> mtu 65536\n    inet 127.0.0.1/8 scope host lo\n2: eth0: <BROADCAST,MULTICAST,UP> mtu 1500\n    inet 192.168.1.100/24 brd 192.168.1.255 scope global eth0`;
+        }
+        return 'Usage: ip [a|addr]';
+      },
+      'ifconfig': () => `eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 192.168.1.100  netmask 255.255.255.0  broadcast 192.168.1.255`,
+      'traceroute': (a) => {
+        const host = a[0] || 'example.com';
+        return `traceroute to ${host} (93.184.216.34), 30 hops max\n 1  192.168.1.1  1.2ms\n 2  10.0.0.1  5.3ms\n 3  ${host}  12.4ms`;
+      },
+      'curl': (a) => `<!DOCTYPE html>\n<html>\n<body>\n<h1>Hello from ${a[0] || 'example.com'}</h1>\n</body>\n</html>`,
+      'wget': (a) => `--${new Date().toISOString()}--  http://${a[0] || 'example.com'}/\nResolving... connected.\nHTTP request sent, awaiting response... 200 OK\nSaving: 'index.html'\n'index.html' saved [1234]`,
       
-      'help': () => { this.showHelp(); return null; }
+      // System
+      'top': () => `top - ${new Date().toLocaleTimeString()} up 1 day, 2:34,  1 user\nTasks:  42 total,   1 running,  41 sleeping\n%Cpu(s):  2.3 us,  1.2 sy, 96.2 id\nMiB Mem:   7982.4 total,   3421.2 free\n\n  PID USER      %CPU  %MEM     COMMAND\n 1234 ${State.user}       1.2   0.6   terminal`,
+      'ps': () => `  PID TTY          TIME CMD\n 1234 pts/0    00:00:00 bash\n 5678 pts/0    00:00:00 ps`,
+      'df': () => `Filesystem     1K-blocks    Used Available Use% Mounted on\n/dev/sda1       51474944 8234567  40603211  17% /`,
+      'du': () => `4.0K\t./documents\n2.0K\t./projects\n8.0K\t.`,
+      'uname': (a) => a.includes('-a') ? 'Linux webos 6.5.0-generic #1 SMP x86_64 GNU/Linux' : 'Linux',
+      'uptime': () => ` ${new Date().toLocaleTimeString()} up 1 day, 2:34,  1 user,  load average: 0.12, 0.08, 0.05`,
+      'free': () => `              total        used        free      shared  buff/cache   available\nMem:        8173952     2208768     3504128      123456     2461056     5841234\nSwap:       2097148           0     2097148`,
+      
+      // Utils
+      'figlet': (a) => `<span class="info">[FIGLET]</span> ${(a.join(' ') || 'Hello').toUpperCase()}`,
+      'toilet': (a) => `<span class="info">[TOILET]</span> ${(a.join(' ') || 'Hello').toUpperCase()}`,
+      'weather': () => `Weather in WebOS:\nTemperature: ${Utils.randomInt(15, 25)}°C\nHumidity: ${Utils.randomInt(40, 70)}%\nWind: ${Utils.randomInt(0, 20)} km/h`,
+      'morse': (a) => {
+        const morse = {'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..'};
+        return (a.join(' ') || 'HELLO').toUpperCase().split('').map(c => morse[c] || c).join(' ');
+      },
+      'binary': (a) => (a.join(' ') || 'Hello').split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' '),
+      'lottery': () => Array(6).fill(0).map(() => Utils.randomInt(1, 49)).join(', '),
+      'astrology': () => `Today is a good day to write code. Avoid bugs.`,
+      
+      // Absurd
+      'oracle': (a) => Utils.randomChoice(['Yes', 'No', 'Maybe', 'Ask again', 'Definitely']),
+      'therapy': () => 'Tell me more about your feelings...',
+      'gossip': () => 'Did you hear that rm deleted something important again?',
+      'selfdestruct': () => '<span class="error">10... 9... 8... Just kidding!</span>',
+      'hello_world': () => 'Hello human, I missed you!',
+      
+      // Always available
+      'clear': () => { this.output.innerHTML = ''; return null; },
+      'help': () => {
+        return `<span class="info">WebTerminal MEGA v7.0</span>\n\n<span class="success">Basic:</span> ls, cd, pwd, cat, touch, mkdir, rm, cp, mv, clear, help\n\n<span class="success">Packages:</span> apt list, sudo apt install <package>\n\n<span class="success">Installed:</span> ${State.installed.join(', ')}\n\n<span class="success">Try:</span> sudo apt install games, then: snake, tetris, 2048`;
+      },
+      'whoami': () => State.user,
+      'date': () => new Date().toLocaleString('ru-RU'),
+      'echo': (a) => a.join(' '),
+      'alias': (a) => {
+        if (!a[0]) return Object.entries(State.aliases).map(([k,v]) => `alias ${k}='${v}'`).join('\n') || 'No aliases';
+        const match = a[0].match(/^(\w+)=(.*)$/);
+        if (!match) return this.error('alias: invalid format');
+        State.aliases[match[1]] = match[2].replace(/^['"]|['"]$/g, '');
+        localStorage.setItem('wt_aliases', JSON.stringify(State.aliases));
+        return this.success(`Alias set`);
+      },
+      'theme': (a) => {
+        if (!a[0]) return 'Available: mono, ubuntu, dracula, solarized, nord, monokai, rainbow';
+        const valid = ['mono', 'ubuntu', 'dracula', 'solarized', 'nord', 'monokai', 'rainbow'];
+        if (!valid.includes(a[0])) return this.error(`theme: '${a[0]}' not found`);
+        this.applyTheme(a[0]);
+        this.unlockAchievement('theme_master');
+        return this.success(`Theme changed to ${a[0]}`);
+      },
+      'neofetch': () => {
+        const mem = performance?.memory ? Math.round(performance.memory.usedJSHeapSize / 1048576) : '?';
+        return `<span class="success">       _</span>     <span class="prompt-user">${State.user}</span>@<span class="prompt-path">${State.host}</span>\n<span class="success">      | |</span>    ─────────────\n<span class="success">   __ | |</span>    OS: WebOS 7.0 MEGA\n<span class="success">  /  \\| |</span>    Shell: WebTerminal JS\n<span class="success"> | () | |</span>    Packages: ${State.installed.length}\n<span class="success">  \\__/|_|</span>    Memory: ${mem} MB`;
+      },
+      'history': () => State.history.map((h, i) => `  ${String(i+1).padStart(4)}  ${h}`).join('\n') || 'History is empty',
+      'logout': () => {
+        localStorage.clear();
+        location.reload();
+        return null;
+      }
     };
+    
     return handlers[name] || null;
   }
   
   print(html, cls = '') {
-    const output = $('#output');
     const d = document.createElement('div');
     d.className = `line ${cls}`.trim();
     d.innerHTML = html;
-    output.appendChild(d);
+    this.output.appendChild(d);
     
-    while (output.children.length > this.maxLines) {
-      output.removeChild(output.firstChild);
+    while (this.output.children.length > this.maxLines) {
+      this.output.removeChild(this.output.firstChild);
     }
-    output.scrollTop = output.scrollHeight;
+    this.output.scrollTop = this.output.scrollHeight;
   }
   
   printPrompt(cmd) {
     const pathStr = this.cwd.join('/') === '~' ? '~' : this.cwd.join('/').replace('~/', '~/');
-    const html = `<span class="prompt-user">${this.user}</span><span class="prompt-sep">@</span><span class="prompt-path">${this.host}</span><span class="prompt-sep">:</span><span class="prompt-path">${pathStr}</span><span class="prompt-sep">$</span> ${Utils.esc(cmd)}`;
+    const html = `<span class="prompt-user">${State.user}</span>@<span class="prompt-path">${State.host}</span>:<span class="prompt-path">${pathStr}</span>$ ${Utils.esc(cmd)}`;
     const d = document.createElement('div');
     d.className = 'line send-fade';
     d.innerHTML = html;
-    $('#output').appendChild(d);
+    this.output.appendChild(d);
   }
   
-  error(m) { return `<span class="icon icon-error"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,5 L11,11 M11,5 L5,11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="error">${m}</span>`; }
-  success(m) { return `<span class="icon icon-check"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,8 L7,10 L11,6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="success">${m}</span>`; }
-  warning(m) { return `<span class="icon icon-warning"><svg viewBox="0 0 16 16"><path d="M8,2 L14,13 L2,13 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8,6 L8,9 M8,11 L8,11.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="warning">${m}</span>`; }
+  error(m) { return `<span class="error">❌ ${m}</span>`; }
+  success(m) { return `<span class="success">✅ ${m}</span>`; }
+  warning(m) { return `<span class="warning">⚠️ ${m}</span>`; }
   muted(m) { return `<span class="muted">${m}</span>`; }
   
   updatePrompt() {
     const s = this.cwd.join('/') === '~' ? '~' : this.cwd.join('/').replace('~/', '~/');
     $('#cwd').textContent = s;
-    $('#title').textContent = `${this.user}@${this.host}: ${s}`;
-    $('#disp-user').textContent = this.user;
-    $('#disp-host').textContent = this.host;
-  }
-  
-  visualBell() {
-    document.body.classList.add('visual-bell');
-    setTimeout(() => document.body.classList.remove('visual-bell'), 150);
+    $('#title').textContent = `${State.user}@${State.host}: ${s}`;
+    $('#disp-user').textContent = State.user;
+    $('#disp-host').textContent = State.host;
   }
   
   startClock() {
-    const u = () => $('#clock').textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    const u = () => $('#clock').textContent = new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
     u();
     setInterval(u, 1000);
   }
   
-  openEditor(filename, content) {
-    this.editingFile = filename;
-    $('#editor-filename').textContent = filename;
-    $('#editor-content').value = content || '';
-    this.updateEditorLines();
-    $('#editor').classList.add('show');
-    $('#editor-content').focus();
-    $('#cmd').blur();
-  }
-  
-  updateEditorLines() {
-    const textarea = $('#editor-content');
-    const lines = textarea.value.split('\n').length;
-    $('#editor-lines').textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
-  }
-  
-  closeEditor() {
-    $('#editor').classList.remove('show');
-    this.editingFile = null;
-    $('#cmd').focus();
-  }
-  
-  saveFile() {
-    if (!this.editingFile) return;
-    const pathArr = this.vfs.resolvePath(this.editingFile, this.cwd);
-    const node = this.vfs.getNode(pathArr);
-    if (node && node.type === 'file') {
-      node.content = $('#editor-content').value;
-      node.meta = { ...(node.meta || {}), modified: Date.now() };
-      this.vfs.save();
-      this.print(this.success(`Saved '${this.editingFile}'`));
-      this.showToast(`Файл '${this.editingFile}' сохранен`, 'success');
-    }
-    this.closeEditor();
-  }
-  
-  showHelp() {
-    const md = Config.data.helpMarkdown.replace(/\{\{(\w+)\}\}/g, (_, k) => Config.data.app[k] || '');
-    const html = md
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/gim, '<code>$1</code>')
-      .replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>')
-      .replace(/(<ul>.*<\/ul>)/gim, m => m.replace(/<\/ul><ul>/g, ''))
-      .replace(/\n/gim, '<br>');
-    $('#help-content').innerHTML = html;
-    $('#help-overlay').classList.add('show');
-  }
-  
-  closeHelp() { $('#help-overlay').classList.remove('show'); }
-  
-  showAchievements() {
-    const achievements = {
-      'file_creator': { name: 'Создатель файлов', desc: 'Создайте свой первый файл', icon: '📄' },
-      'dir_creator': { name: 'Архитектор', desc: 'Создайте директорию', icon: '📁' },
-      'theme_master': { name: 'Мастер тем', desc: 'Смените тему оформления', icon: '🎨' },
-      'hacker': { name: 'Хакер', desc: 'Запустите эффект Matrix', icon: '💻' }
-    };
-    
-    let html = '<h2>Ваши достижения</h2>';
-    for (let [key, ach] of Object.entries(achievements)) {
-      const unlocked = this.achievements[key];
-      html += `<div style="padding: 12px; margin: 8px 0; background: ${unlocked ? 'rgba(80,250,123,0.1)' : 'rgba(255,255,255,0.02)'}; border-radius: 6px; border-left: 3px solid ${unlocked ? 'var(--success)' : 'var(--border)'};">
-        <div style="font-size: 18px; margin-bottom: 4px;">${ach.icon} ${ach.name} ${unlocked ? '✅' : '🔒'}</div>
-        <div style="color: var(--text-dim); font-size: 13px;">${ach.desc}</div>
-      </div>`;
-    }
-    
-    $('#achievements-content').innerHTML = html;
-    $('#achievements-overlay').classList.add('show');
-  }
-  
-  closeAchievements() { $('#achievements-overlay').classList.remove('show'); }
-  
   unlockAchievement(key) {
-    if (!this.achievements[key]) {
-      this.achievements[key] = Date.now();
-      localStorage.setItem('wt_achievements', JSON.stringify(this.achievements));
-      this.showToast(`Достижение разблокировано!`, 'success');
+    if (!State.achievements[key]) {
+      State.achievements[key] = Date.now();
+      localStorage.setItem('wt_achievements', JSON.stringify(State.achievements));
+      this.showToast(`Achievement unlocked: ${Config.achievements[key]?.name || key}`, 'success');
     }
-  }
-  
-  closeTerminal() {
-    this.print(this.muted('Сессия завершена. Обновите страницу для перезагрузки.'));
-    $('#cmd').disabled = true;
-    $('#cmd').placeholder = 'закрыто';
-  }
-  
-  addTab() {
-    const id = this.tabs.length + 1;
-    this.tabs.push({ id, name: `Terminal ${id}`, cwd: ['~'], history: [] });
-    this.renderTabs();
-    this.switchTab(id);
-  }
-  
-  closeTab(event, id) {
-    event.stopPropagation();
-    if (this.tabs.length === 1) return;
-    this.tabs = this.tabs.filter(t => t.id !== id);
-    if (this.activeTab === id) {
-      this.switchTab(this.tabs[0].id);
-    }
-    this.renderTabs();
-  }
-  
-  switchTab(id) {
-    this.activeTab = id;
-    const tab = this.tabs.find(t => t.id === id);
-    if (tab) {
-      this.cwd = tab.cwd;
-      this.history = tab.history;
-      this.updatePrompt();
-    }
-    this.renderTabs();
-  }
-  
-  renderTabs() {
-    const tabsEl = $('#tabs');
-    tabsEl.innerHTML = this.tabs.map(t => `
-      <div class="tab ${t.id === this.activeTab ? 'active' : ''}" data-tab="${t.id}" onclick="app.switchTab(${t.id})">
-        <span>${t.name}</span>
-        <button class="tab-close" onclick="app.closeTab(event, ${t.id})">
-          <svg viewBox="0 0 10 10"><path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
-        </button>
-      </div>
-    `).join('') + `
-      <button class="tab-add" onclick="app.addTab()">
-        <svg viewBox="0 0 16 16"><path d="M8,3 L8,13 M3,8 L13,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
-      </button>
-    `;
   }
   
   showToast(message, type = 'success') {
     const container = $('#toast-container');
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `
-      <div class="toast-icon">
-        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,8 L7,10 L11,6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="toast-message">${message}</div>
-    `;
+    toast.innerHTML = `<div class="toast-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,8 L7,10 L11,6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="toast-message">${message}</div>`;
     container.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.add('hide');
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 300); }, 3000);
   }
   
-  copySelection() {
-    const selection = window.getSelection().toString();
-    if (selection) {
-      navigator.clipboard.writeText(selection);
-      this.showToast('Скопировано в буфер обмена', 'success');
+  showHelp() {
+    $('#help-content').innerHTML = `<h1>WebTerminal MEGA v7.0</h1><p>100+ commands, games, quests, Linux simulations</p><h2>Basic</h2><p>ls, cd, pwd, cat, touch, mkdir, rm, cp, mv, tree, find</p><h2>Packages</h2><p>apt list - show packages<br>sudo apt install &lt;package&gt; - install</p><h2>Games</h2><p>snake, tetris, 2048, mines, pong, tictactoe, flappy, wordle, hangman, maze, breakout, simon, typing_racer, connect4, memory</p><h2>Effects</h2><p>fireworks, rain, snow, disco, laser, wave, nyancat, cmatrix</p><h2>Fun</h2><p>cowsay, joke, fact, compliment, insult, magic8ball, coinflip, dice, roulette</p><h2>Network</h2><p>ping, ip, ifconfig, traceroute, curl, wget</p><h2>System</h2><p>top, ps, df, du, uname, uptime, free</p><h2>Utils</h2><p>figlet, weather, morse, binary, lottery, astrology</p>`;
+    $('#help-overlay').classList.add('show');
+  }
+  
+  closeHelp() { $('#help-overlay').classList.remove('show'); }
+  
+  showAchievements() {
+    let html = '<h2>Achievements</h2>';
+    for (let [key, ach] of Object.entries(Config.achievements)) {
+      const unlocked = State.achievements[key];
+      html += `<div style="padding: 12px; margin: 8px 0; background: ${unlocked ? 'rgba(80,250,123,0.1)' : 'rgba(255,255,255,0.02)'}; border-radius: 6px; border-left: 3px solid ${unlocked ? 'var(--success)' : 'var(--border)'};"><div style="font-size: 18px; margin-bottom: 4px;">${ach.icon} ${ach.name} ${unlocked ? '✅' : '🔒'}</div><div style="color: var(--text-dim); font-size: 13px;">${ach.desc}</div></div>`;
     }
-    $('#context-menu').classList.remove('show');
+    $('#achievements-content').innerHTML = html;
+    $('#achievements-overlay').classList.add('show');
   }
   
-  async pasteClipboard() {
-    try {
-      const text = await navigator.clipboard.readText();
-      $('#cmd').value += text;
-      $('#cmd').focus();
-    } catch (e) {
-      this.showToast('Не удалось вставить из буфера', 'error');
-    }
-    $('#context-menu').classList.remove('show');
+  closeAchievements() { $('#achievements-overlay').classList.remove('show'); }
+  
+  closeTerminal() {
+    this.print(this.muted('Session ended. Refresh to restart.'));
+    this.input.disabled = true;
   }
   
-  startMatrix() {
-    this.isMatrix = true;
-    this.unlockAchievement('hacker');
-    const cv = $('#matrix');
-    cv.style.display = 'block';
-    const ctx = cv.getContext('2d');
-    cv.width = innerWidth;
-    cv.height = innerHeight;
-    const fs = 16, cols = Math.floor(cv.width / fs);
-    const drops = new Float32Array(cols).fill(1);
-    
-    const draw = () => {
-      if (!this.isMatrix) return;
-      ctx.fillStyle = 'rgba(0,0,0,0.05)';
-      ctx.fillRect(0, 0, cv.width, cv.height);
-      ctx.fillStyle = '#0F0';
-      ctx.font = `${fs}px monospace`;
-      for (let i = 0; i < cols; i++) {
-        const text = String.fromCharCode(0x30A0 + Math.random() * 96);
-        ctx.fillText(text, i * fs, drops[i] * fs);
-        if (drops[i] * fs > cv.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-      this.matrixAnim = requestAnimationFrame(draw);
-    };
-    draw();
-    
-    const stopHandler = (e) => {
-      if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return;
-      this.stopMatrix();
-      document.removeEventListener('keydown', stopHandler);
-    };
-    document.addEventListener('keydown', stopHandler);
+  addTab() {
+    const id = this.tabs.length + 1;
+    this.tabs.push({id, name: `Terminal ${id}`, cwd: ['~'], history: []});
+    this.renderTabs();
   }
   
-  stopMatrix() {
-    this.isMatrix = false;
-    if (this.matrixAnim) cancelAnimationFrame(this.matrixAnim);
-    const cv = $('#matrix');
-    cv.style.display = 'none';
-    cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
-    this.print(this.muted('Matrix sequence terminated.'));
-    $('#cmd').focus();
+  closeTab(event, id) {
+    event.stopPropagation();
+    if (this.tabs.length === 1) return;
+    this.tabs = this.tabs.filter(t => t.id !== id);
+    this.renderTabs();
   }
   
-  runSlAnimation() {
-    const train = `      ====        ________                ___________
-  _D _|  |_______/        \\__I_I_____===__|_________|
-   |(_)---  |   H\\________/ |   |        =|___ ___|      _________________
-   /     |  |   H  |  |     |   |         ||_| |_||     _|                \\_____A
-  |      |  |   H  |__--------------------| [___] |   =|                        |
-  | ________|___H__/__|_____/[][]~\\_______|       |   -|                        |
-  |/ |   |-----------I_____I [][] []  D   |=======|____|________________________|_
-__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|__________________________|_
- |/-=|___|=    ||    ||    ||    |_____/~\\___/          |_D__D__D_|  |_D__D__D_|
-  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/               \\_/   \\_/    \\_/   \\_/`;
-    const el = $('#sl-train');
-    el.textContent = train;
-    el.style.left = '-100%';
-    void el.offsetWidth;
-    el.style.left = '100%';
-    setTimeout(() => { el.style.left = '-100%'; }, 10500);
+  renderTabs() {
+    const tabsEl = $('#tabs');
+    tabsEl.innerHTML = this.tabs.map(t => `<div class="tab ${t.id === this.activeTab ? 'active' : ''}" onclick="app.activeTab=${t.id};app.renderTabs()"><span>${t.name}</span><button class="tab-close" onclick="app.closeTab(event, ${t.id})"><svg viewBox="0 0 10 10"><path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button></div>`).join('') + `<button class="tab-add" onclick="app.addTab()"><svg viewBox="0 0 16 16"><path d="M8,3 L8,13 M3,8 L13,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button>`;
   }
   
   bootComplete() {
@@ -2362,59 +3464,31 @@ __/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|______________________
       $('#boot-screen').style.display = 'none';
       $('#terminal-wrapper').classList.add('visible');
       this.updatePrompt();
-      $('#cmd').focus();
-      this.printWelcome();
+      this.input.focus();
+      this.print(`<span class="success">Welcome to WebTerminal MEGA v7.0!</span>\nType <span class="info">help</span> for commands or <span class="info">apt list</span> to see packages.`);
     }, 800);
-  }
-  
-  printWelcome() {
-    const v = Config.data.app.version;
-    this.print(`<div class="welcome"><strong>WebTerminal</strong> <span class="muted">v${v}</span> — <span class="prompt-user">${this.user}</span>@<span class="prompt-path">${this.host}</span><span class="hint"><code>help</code> — список команд &nbsp; <code>theme</code> — сменить тему &nbsp; <code>tree</code> — файловая система</span></div>`);
   }
 }
 
-// ===========================================
-//              GLOBAL FUNCTIONS
-// ===========================================
 const app = new TerminalApp();
 
-window.selectGrubItem = (el) => {
-  $$('.grub-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-};
-
-window.startSetup = () => {
-  $$('.grub-item').forEach(i => i.style.display = 'none');
-  $('#grub-profile').style.display = 'block';
-  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> загрузить &nbsp; <kbd>Esc</kbd> назад';
-  setTimeout(() => $('#setup-username')?.focus(), 100);
-};
-
-window.cancelSetup = () => {
-  $('#grub-profile').style.display = 'none';
-  $$('.grub-item').forEach(i => { i.style.display = 'flex'; i.classList.add('active'); });
-  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> выбрать &nbsp; <kbd>Esc</kbd> назад';
-};
-
+window.selectGrubItem = (el) => { $$('.grub-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); };
+window.startSetup = () => { $$('.grub-item').forEach(i => i.style.display = 'none'); $('#grub-profile').style.display = 'block'; setTimeout(() => $('#setup-username')?.focus(), 100); };
+window.cancelSetup = () => { $('#grub-profile').style.display = 'none'; $$('.grub-item').forEach(i => i.style.display = 'flex'); };
 window.startBoot = async () => {
   const un = $('#setup-username')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'user';
   const hn = $('#setup-hostname')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'webos';
   localStorage.setItem('wt_user', un);
   localStorage.setItem('wt_host', hn);
-  
-  $$('.grub-item').forEach(i => i.style.display = 'none');
+  State.user = un;
+  State.host = hn;
   $('#grub-profile').style.display = 'none';
-  $('#grub-footer').style.display = 'none';
   $('#boot-loading').style.display = 'block';
-  
-  const steps = ['Загрузка ядра...', 'Инициализация VFS...', 'Монтирование /dev/sda1...', `Запуск сессии для "${un}"...`, 'Готово.'];
+  const steps = ['Loading kernel...', 'Initializing VFS...', 'Mounting /dev/sda1...', `Starting session for "${un}"...`, 'Done.'];
   for (let i = 0; i < steps.length; i++) {
     $('#boot-status').textContent = steps[i];
-    await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
+    await Utils.sleep(300 + Math.random() * 400);
   }
-  
-  app.user = un;
-  app.host = hn;
   app.bootComplete();
 };
 
@@ -2431,23 +3505,8 @@ document.addEventListener('keydown', e => {
   }
 });
 
-$('#editor-content')?.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { e.preventDefault(); app.closeEditor(); }
-  if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); app.saveFile(); }
-});
-
-$('#editor-content')?.addEventListener('input', () => {
-  app.updateEditorLines();
-});
-
-$('#setup-username')?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); startBoot(); } });
-$('#setup-hostname')?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); startBoot(); } });
-
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => app.init());
 } else {
   app.init();
 }
-</script>
-</body>
-</html>
