@@ -3470,43 +3470,124 @@ class TerminalApp {
   }
 }
 
+// ===========================================
+//              GLOBAL APP INSTANCE
+// ===========================================
 const app = new TerminalApp();
 
-window.selectGrubItem = (el) => { $$('.grub-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); };
-window.startSetup = () => { $$('.grub-item').forEach(i => i.style.display = 'none'); $('#grub-profile').style.display = 'block'; setTimeout(() => $('#setup-username')?.focus(), 100); };
-window.cancelSetup = () => { $('#grub-profile').style.display = 'none'; $$('.grub-item').forEach(i => i.style.display = 'flex'); };
-window.startBoot = async () => {
+// ===========================================
+//              GLOBAL FUNCTIONS (for HTML onclick)
+// ===========================================
+window.app = app; // Явно экспортируем app в window
+
+window.selectGrubItem = function(el) {
+  $$('.grub-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+};
+
+window.startSetup = function() {
+  $$('.grub-item').forEach(i => i.style.display = 'none');
+  $('#grub-profile').style.display = 'block';
+  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> загрузить &nbsp; <kbd>Esc</kbd> назад';
+  setTimeout(() => $('#setup-username')?.focus(), 100);
+};
+
+window.cancelSetup = function() {
+  $('#grub-profile').style.display = 'none';
+  $$('.grub-item').forEach(i => { i.style.display = 'flex'; i.classList.add('active'); });
+  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> выбрать &nbsp; <kbd>Esc</kbd> назад';
+};
+
+window.startBoot = async function() {
   const un = $('#setup-username')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'user';
   const hn = $('#setup-hostname')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'webos';
+  
+  if (!un) {
+    const i = $('#setup-username');
+    if (i) { i.style.borderColor = '#a33'; i.focus(); setTimeout(() => i.style.borderColor = '', 1500); }
+    return;
+  }
+  
   localStorage.setItem('wt_user', un);
   localStorage.setItem('wt_host', hn);
   State.user = un;
   State.host = hn;
+  
+  $$('.grub-item').forEach(i => i.style.display = 'none');
   $('#grub-profile').style.display = 'none';
+  $('#grub-footer').style.display = 'none';
   $('#boot-loading').style.display = 'block';
-  const steps = ['Loading kernel...', 'Initializing VFS...', 'Mounting /dev/sda1...', `Starting session for "${un}"...`, 'Done.'];
+  
+  const steps = [
+    'Загрузка ядра...',
+    'Инициализация VFS...',
+    'Монтирование /dev/sda1...',
+    `Запуск сессии для "${un}"...`,
+    'Готово.'
+  ];
+  
   for (let i = 0; i < steps.length; i++) {
     $('#boot-status').textContent = steps[i];
     await Utils.sleep(300 + Math.random() * 400);
   }
+  
   app.bootComplete();
 };
 
+// ===========================================
+//              KEYBOARD HANDLERS
+// ===========================================
 document.addEventListener('keydown', e => {
   if ($('#boot-screen').style.display === 'none') return;
+  
   if (e.key === 'Enter') {
     e.preventDefault();
     const p = $('#grub-profile');
-    if (p?.style.display !== 'none') startBoot();
-    else startSetup();
+    if (p?.style.display !== 'none') {
+      window.startBoot();
+    } else {
+      window.startSetup();
+    }
   }
+  
   if (e.key === 'Escape') {
-    if ($('#grub-profile')?.style.display !== 'none') cancelSetup();
+    if ($('#grub-profile')?.style.display !== 'none') {
+      window.cancelSetup();
+    }
   }
 });
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => app.init());
-} else {
-  app.init();
+// Editor hotkeys
+$('#editor-content')?.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.preventDefault(); app.closeEditor(); }
+  if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); app.saveFile(); }
+});
+
+$('#setup-username')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); window.startBoot(); }
+});
+
+$('#setup-hostname')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); window.startBoot(); }
+});
+
+// ===========================================
+//              INITIALIZATION
+// ===========================================
+try {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        app.init();
+      } catch (err) {
+        console.error('Init error:', err);
+        alert('Ошибка инициализации: ' + err.message);
+      }
+    });
+  } else {
+    app.init();
+  }
+} catch (err) {
+  console.error('Fatal error:', err);
+  alert('Критическая ошибка: ' + err.message);
 }
