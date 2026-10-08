@@ -4,257 +4,1167 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#050505">
-  <meta name="description" content="WebTerminal - Интерактивный эмулятор терминала Linux для обучения">
-  <title>WebTerminal v4.0</title>
-  
-  <!-- PWA Meta Tags -->
+  <meta name="description" content="WebTerminal - Продвинутый эмулятор терминала Linux для обучения">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>WebTerminal v5.0</title>
+  
+  <!-- SVG Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23050505%22/><text x=%2250%22 y=%2275%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23e0e0e0%22 font-family=%22monospace%22>$_</text></svg>">
 
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <style>
-    /* ===================== */
-    /*    CORE VARIABLES     */
-    /* ===================== */
+    /* =========================================== */
+    /*              CORE VARIABLES & THEMES        */
+    /* =========================================== */
     :root {
       --bg: #050505;
       --bg-elevated: #0a0a0a;
+      --bg-surface: #141414;
       --border: #333;
       --border-hover: #555;
       --text: #e0e0e0;
       --text-dim: #a0a0a0;
       --text-muted: #666;
       --accent: #fff;
-      --error: #a33;
-      --success: #6a6;
-      --warning: #aa8;
-      --info: #88a;
+      --error: #ff5555;
+      --success: #50fa7b;
+      --warning: #f1fa8c;
+      --info: #8be9fd;
       --radius: 6px;
-      --shadow: 0 4px 24px rgba(0,0,0,0.6);
-      --transition: 120ms ease;
+      --radius-lg: 12px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.8);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+      --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
       --font-ui: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --font-code: 'Ubuntu Mono', 'Fira Code', 'Consolas', monospace;
       --font-size: 14px;
-      --line-height: 1.55;
-      --cursor-shape: block; /* block, underline, bar */
+      --line-height: 1.6;
     }
 
-    /* Themes */
+    /* Theme: Ubuntu */
     [data-theme="ubuntu"] {
-      --bg: #2c001e; --bg-elevated: #300a24; --border: #5e2750;
+      --bg: #2c001e; --bg-elevated: #300a24; --bg-surface: #3d1f33;
+      --border: #5e2750; --border-hover: #772953;
       --text: #ffffff; --text-dim: #cdcaca; --text-muted: #969696;
-      --accent: #e95420; --success: #8ae234; --error: #f15d5d;
+      --accent: #e95420; --success: #8ae234; --error: #f15d5d; --warning: #fbd772; --info: #33b5e5;
     }
+
+    /* Theme: Dracula */
     [data-theme="dracula"] {
-      --bg: #282a36; --bg-elevated: #44475a; --border: #6272a4;
+      --bg: #282a36; --bg-elevated: #44475a; --bg-surface: #383a4a;
+      --border: #6272a4; --border-hover: #7a7cb8;
       --text: #f8f8f2; --text-dim: #bd93f9; --text-muted: #6272a4;
-      --accent: #ff79c6; --success: #50fa7b; --error: #ff5555;
+      --accent: #ff79c6; --success: #50fa7b; --error: #ff5555; --warning: #f1fa8c; --info: #8be9fd;
     }
+
+    /* Theme: Solarized Dark */
     [data-theme="solarized"] {
-      --bg: #002b36; --bg-elevated: #073642; --border: #586e75;
+      --bg: #002b36; --bg-elevated: #073642; --bg-surface: #0a4050;
+      --border: #586e75; --border-hover: #657b83;
       --text: #839496; --text-dim: #93a1a1; --text-muted: #586e75;
-      --accent: #268bd2; --success: #859900; --error: #dc322f;
+      --accent: #268bd2; --success: #859900; --error: #dc322f; --warning: #b58900; --info: #2aa198;
+    }
+
+    /* Theme: Nord */
+    [data-theme="nord"] {
+      --bg: #2e3440; --bg-elevated: #3b4252; --bg-surface: #434c5e;
+      --border: #4c566a; --border-hover: #5e6779;
+      --text: #eceff4; --text-dim: #d8dee9; --text-muted: #4c566a;
+      --accent: #88c0d0; --success: #a3be8c; --error: #bf616a; --warning: #ebcb8b; --info: #81a1c1;
+    }
+
+    /* Theme: Monokai */
+    [data-theme="monokai"] {
+      --bg: #272822; --bg-elevated: #3e3d32; --bg-surface: #49483e;
+      --border: #75715e; --border-hover: #8a8470;
+      --text: #f8f8f2; --text-dim: #a6e22e; --text-muted: #75715e;
+      --accent: #f92672; --success: #a6e22e; --error: #f92672; --warning: #e6db74; --info: #66d9ef;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { 
-      background: var(--bg); color: var(--text); font-family: var(--font-ui); 
-      font-size: var(--font-size); line-height: var(--line-height); 
-      min-height: 100vh; overflow: hidden; touch-action: manipulation;
+    
+    html, body {
+      height: 100%;
+      overflow: hidden;
     }
 
-    /* ===================== */
-    /*    CRT EFFECT (Opt-in)*/
-    /* ===================== */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+      touch-action: manipulation;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =========================================== */
+    /*              CRT & VISUAL EFFECTS           */
+    /* =========================================== */
     .crt-overlay {
-      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      background-size: 100% 3px, 3px 100%;
-      opacity: 0; transition: opacity 0.3s;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+      background-size: 100% 2px, 3px 100%;
+      opacity: 0;
+      transition: opacity 0.5s;
     }
     .crt-overlay.active { opacity: 1; }
-    .visual-bell { animation: flash 100ms ease-out; }
-    @keyframes flash { 0%, 100% { background: var(--bg); } 50% { background: var(--text-dim); } }
 
-    /* ===================== */
-    /*    GRUB BOOT SCREEN   */
-    /* ===================== */
-    #boot-screen { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 600ms ease, transform 600ms ease; }
-    #boot-screen.hidden { opacity: 0; transform: scale(1.02); pointer-events: none; }
-    .grub-container { width: 100%; max-width: 640px; padding: 20px; }
-    .grub-header { text-align: center; margin-bottom: 32px; animation: grubFadeIn 800ms ease-out; }
-    .grub-logo { font-family: var(--font-code); font-size: 11px; color: #888; margin-bottom: 16px; line-height: 1.3; white-space: pre; opacity: 0.8; }
-    .grub-title { font-family: var(--font-code); font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .grub-subtitle { font-size: 13px; color: var(--text-muted); }
+    .visual-bell {
+      animation: flash 150ms ease-out;
+    }
+    @keyframes flash {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.5); }
+    }
 
-    .grub-menu { list-style: none; border: 1px solid #333; border-radius: 4px; overflow: hidden; animation: grubFadeIn 1s ease-out 200ms both; }
-    .grub-item { display: flex; align-items: center; padding: 14px 18px; background: #0a0a0a; border-bottom: 1px solid #1a1a1a; cursor: pointer; transition: background 100ms ease; position: relative; }
+    .glitch {
+      animation: glitch 300ms linear;
+    }
+    @keyframes glitch {
+      0% { transform: translate(0); filter: hue-rotate(0deg); }
+      20% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+      40% { transform: translate(-2px, -2px); filter: hue-rotate(180deg); }
+      60% { transform: translate(2px, 2px); filter: hue-rotate(270deg); }
+      80% { transform: translate(2px, -2px); filter: hue-rotate(360deg); }
+      100% { transform: translate(0); filter: hue-rotate(0deg); }
+    }
+
+    /* =========================================== */
+    /*              BOOT SCREEN (GRUB)             */
+    /* =========================================== */
+    #boot-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 800ms ease, transform 800ms ease;
+    }
+    #boot-screen.hidden {
+      opacity: 0;
+      transform: scale(1.05);
+      pointer-events: none;
+    }
+
+    .grub-container {
+      width: 100%;
+      max-width: 700px;
+      padding: 24px;
+    }
+
+    .grub-header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: grubFadeIn 1s ease-out;
+    }
+
+    .grub-logo {
+      font-family: var(--font-code);
+      font-size: 10px;
+      color: #888;
+      margin-bottom: 20px;
+      line-height: 1.2;
+      white-space: pre;
+      opacity: 0.9;
+    }
+
+    .grub-title {
+      font-family: var(--font-code);
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .grub-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .grub-menu {
+      list-style: none;
+      border: 1px solid #333;
+      border-radius: 6px;
+      overflow: hidden;
+      animation: grubFadeIn 1s ease-out 0.2s both;
+      box-shadow: var(--shadow);
+    }
+
+    .grub-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #1a1a1a;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
     .grub-item:last-child { border-bottom: none; }
     .grub-item:hover, .grub-item.active { background: #1a1a1a; }
     .grub-item.active { background: #222; }
-    .grub-item.active::before { content: '>'; color: #fff; font-family: var(--font-code); font-weight: 700; margin-right: 12px; font-size: 16px; }
-    .grub-item:not(.active)::before { content: ' '; width: 16px; margin-right: 12px; }
-    .grub-item-icon { margin-right: 10px; opacity: 0.7; }
-    .grub-item-icon svg { width: 16px; height: 16px; fill: var(--text-dim); }
-    .grub-item-label { font-family: var(--font-code); font-size: 14px; color: var(--text); }
-    .grub-item-desc { font-size: 11px; color: var(--text-muted); margin-left: auto; padding-left: 12px; }
+    .grub-item.active::before {
+      content: '>';
+      color: var(--accent);
+      font-family: var(--font-code);
+      font-weight: 700;
+      margin-right: 14px;
+      font-size: 18px;
+    }
+    .grub-item:not(.active)::before {
+      content: ' ';
+      width: 18px;
+      margin-right: 14px;
+    }
 
-    .grub-profile { margin-top: 24px; border: 1px solid #333; border-radius: 4px; background: #0a0a0a; padding: 20px; animation: grubFadeIn 1s ease-out 400ms both; }
-    .grub-profile-title { font-family: var(--font-code); font-size: 13px; color: var(--text-dim); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
-    .grub-field { margin-bottom: 14px; display: flex; align-items: flex-start; gap: 10px; }
+    .grub-item-icon {
+      margin-right: 12px;
+      opacity: 0.8;
+    }
+    .grub-item-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--text-dim);
+    }
+
+    .grub-item-label {
+      font-family: var(--font-code);
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .grub-item-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto;
+      padding-left: 16px;
+    }
+
+    .grub-profile {
+      margin-top: 28px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #0a0a0a;
+      padding: 24px;
+      animation: grubFadeIn 1s ease-out 0.4s both;
+      box-shadow: var(--shadow);
+    }
+
+    .grub-profile-title {
+      font-family: var(--font-code);
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .grub-field {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
     .grub-field-input { flex: 1; }
-    .grub-field label { display: block; font-family: var(--font-code); font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
-    .grub-input { width: 100%; background: #000; border: 1px solid #333; border-radius: 3px; color: var(--text); font-family: var(--font-code); font-size: 14px; padding: 8px 12px; outline: none; transition: border-color var(--transition); }
-    .grub-input:focus { border-color: var(--text-dim); box-shadow: 0 0 0 2px rgba(255,255,255,0.1); }
+
+    .grub-field label {
+      display: block;
+      font-family: var(--font-code);
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .grub-input {
+      width: 100%;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: 15px;
+      padding: 10px 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .grub-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+    }
     .grub-input::placeholder { color: #444; }
-    .grub-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
-    .tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: #222; border: 1px solid #444; cursor: help; margin-top: 2px; flex-shrink: 0; }
-    .tooltip svg { width: 12px; height: 12px; fill: var(--text-dim); }
-    .tooltip .tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: var(--text-dim); padding: 8px 10px; border-radius: 4px; border: 1px solid #333; font-size: 11px; font-family: var(--font-ui); white-space: nowrap; transition: opacity 150ms ease, transform 150ms ease; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.5); z-index: 10; }
-    .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(-2px); }
-    .tooltip .tooltip-text::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 5px; border-style: solid; border-color: #1a1a1a transparent transparent transparent; }
+    .grub-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
 
-    .grub-btn { width: 100%; padding: 10px; background: #222; border: 1px solid #444; border-radius: 3px; color: var(--text); font-family: var(--font-code); font-size: 14px; cursor: pointer; transition: background var(--transition), border-color var(--transition); margin-top: 8px; }
-    .grub-btn:hover { background: #333; border-color: #555; }
-    .grub-btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 500; }
-    .grub-btn.primary:hover { background: #ccc; }
+    .tooltip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #222;
+      border: 1px solid #444;
+      cursor: help;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .tooltip svg {
+      width: 12px;
+      height: 12px;
+      fill: var(--text-dim);
+    }
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 140%;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      background: #1a1a1a;
+      color: var(--text-dim);
+      padding: 10px 12px;
+      border-radius: 4px;
+      border: 1px solid #333;
+      font-size: 12px;
+      font-family: var(--font-ui);
+      white-space: nowrap;
+      transition: all 0.2s;
+      pointer-events: none;
+      box-shadow: var(--shadow-sm);
+      z-index: 10;
+    }
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
 
-    .grub-footer { text-align: center; margin-top: 20px; font-size: 11px; color: var(--text-muted); animation: grubFadeIn 1s ease-out 600ms both; }
-    .grub-footer kbd { background: #1a1a1a; padding: 2px 6px; border-radius: 2px; border: 1px solid #333; font-family: var(--font-code); font-size: 10px; }
+    .grub-btn {
+      width: 100%;
+      padding: 12px;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+    .grub-btn:hover {
+      background: #333;
+      border-color: #555;
+    }
+    .grub-btn.primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 500;
+    }
+    .grub-btn.primary:hover { opacity: 0.9; }
 
-    @keyframes grubFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .boot-loading { text-align: center; animation: grubFadeIn 500ms ease-out; }
-    .boot-loading .spinner { width: 24px; height: 24px; border: 2px solid #333; border-top-color: #888; border-radius: 50%; animation: spin 600ms linear infinite; margin: 0 auto 12px; }
+    .grub-footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      animation: grubFadeIn 1s ease-out 0.6s both;
+    }
+    .grub-footer kbd {
+      background: #1a1a1a;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid #333;
+      font-family: var(--font-code);
+      font-size: 11px;
+    }
+
+    @keyframes grubFadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .boot-loading {
+      text-align: center;
+      animation: grubFadeIn 0.5s ease-out;
+    }
+    .boot-loading .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #333;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .boot-loading .status { font-family: var(--font-code); font-size: 13px; color: var(--text-dim); }
+    .boot-loading .status {
+      font-family: var(--font-code);
+      font-size: 14px;
+      color: var(--text-dim);
+    }
 
-    /* ===================== */
-    /*      TERMINAL          */
-    /* ===================== */
-    .terminal-wrapper { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; transform: scale(0.98); transition: opacity 500ms ease 300ms, transform 500ms ease 300ms; }
-    .terminal-wrapper.visible { opacity: 1; transform: scale(1); }
-    .terminal { width: 100%; max-width: 960px; height: 92vh; max-height: 750px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; box-shadow: var(--shadow); overflow: hidden; position: relative; }
-    
-    .titlebar { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: #141414; border-bottom: 1px solid var(--border); user-select: none; flex-shrink: 0; }
-    .titlebar-left { display: flex; align-items: center; gap: 10px; }
-    .titlebar-right { display: flex; align-items: center; gap: 8px; }
-    .controls { display: flex; gap: 7px; }
-    .control-btn { width: 13px; height: 13px; border-radius: 50%; border: none; background: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform var(--transition), background var(--transition); padding: 0; flex-shrink: 0; }
-    .control-btn:hover { transform: scale(1.15); }
-    .control-btn:active { transform: scale(0.95); }
-    .control-btn svg { width: 7px; height: 7px; fill: #111; display: block; }
+    /* =========================================== */
+    /*              TERMINAL WRAPPER               */
+    /* =========================================== */
+    .terminal-wrapper {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .terminal-wrapper.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .terminal {
+      width: 100%;
+      max-width: 1100px;
+      height: 94vh;
+      max-height: 800px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Titlebar */
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .titlebar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .titlebar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .control-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: none;
+      background: #444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .control-btn:hover { transform: scale(1.2); }
+    .control-btn:active { transform: scale(0.9); }
+    .control-btn svg {
+      width: 8px;
+      height: 8px;
+      fill: #111;
+      display: block;
+    }
     .control-btn.close:hover { background: #ff5f56; }
     .control-btn.minimize:hover { background: #ffbd2e; }
     .control-btn.maximize:hover { background: #27c93f; }
-    .title { margin-left: 6px; color: var(--text-dim); font-size: 12px; font-family: var(--font-code); opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .help-btn { background: transparent; border: 1px solid #444; color: var(--text-dim); font-size: 11px; font-family: var(--font-ui); padding: 3px 8px; border-radius: 3px; cursor: pointer; transition: all var(--transition); }
-    .help-btn:hover { background: #333; color: var(--text); border-color: #555; }
 
-    .content { flex: 1; padding: 14px 18px; overflow-y: auto; font-family: var(--font-code); line-height: 1.6; scroll-behavior: smooth; }
-    .line { margin: 3px 0; white-space: pre-wrap; word-break: break-word; animation: lineAppear 250ms ease-out forwards; }
-    @keyframes lineAppear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .line.send-fade { animation: sendFade 300ms ease-out forwards; }
-    @keyframes sendFade { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0.35; transform: translateY(-2px); } }
+    .title {
+      margin-left: 8px;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-family: var(--font-code);
+      opacity: 0.9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-    .welcome { margin: 6px 0 14px; padding: 10px 12px; background: rgba(255,255,255,0.02); border-radius: 4px; border-left: 2px solid var(--border); animation: lineAppear 400ms ease-out; }
+    .titlebar-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 12px;
+      font-family: var(--font-ui);
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .titlebar-btn:hover {
+      background: var(--bg-surface);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+    .titlebar-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+    .tabs::-webkit-scrollbar { height: 0; }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .tab:hover { background: var(--bg-surface); }
+    .tab.active {
+      background: var(--bg-elevated);
+      color: var(--text);
+      border-bottom: 2px solid var(--accent);
+    }
+    .tab-close {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .tab-close:hover {
+      background: var(--error);
+      color: #fff;
+    }
+    .tab-close svg {
+      width: 10px;
+      height: 10px;
+      fill: currentColor;
+    }
+
+    .tab-add {
+      padding: 8px 12px;
+      background: var(--bg);
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-add:hover { color: var(--text); }
+    .tab-add svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 16px 20px;
+      overflow-y: auto;
+      font-family: var(--font-code);
+      line-height: 1.7;
+      scroll-behavior: smooth;
+    }
+
+    .line {
+      margin: 4px 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      animation: lineAppear 0.3s ease-out forwards;
+    }
+    @keyframes lineAppear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .line.send-fade {
+      animation: sendFade 0.4s ease-out forwards;
+    }
+    @keyframes sendFade {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0.4; transform: translateY(-3px); }
+    }
+
+    .welcome {
+      margin: 8px 0 20px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+      animation: lineAppear 0.5s ease-out;
+    }
     .welcome strong { color: var(--text); }
-    .welcome .hint { color: var(--text-dim); font-size: 13px; display: block; margin-top: 4px; }
-    .welcome code { background: #1a1a1a; padding: 1px 5px; border-radius: 2px; color: var(--text-dim); font-size: 12px; }
+    .welcome .hint {
+      color: var(--text-dim);
+      font-size: 13px;
+      display: block;
+      margin-top: 6px;
+    }
+    .welcome code {
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--info);
+      font-size: 12px;
+    }
 
     .prompt-user { font-weight: 500; color: var(--success); }
     .prompt-sep { color: var(--text-muted); }
     .prompt-path { color: var(--info); }
-    .prompt-symbol { color: var(--accent); margin-right: 6px; }
+    .prompt-symbol { color: var(--accent); margin-right: 8px; }
 
     .error { color: var(--error); font-weight: 500; }
     .success { color: var(--success); font-weight: 500; }
     .warning { color: var(--warning); font-weight: 500; }
     .info { color: var(--info); font-weight: 500; }
-    .muted { color: var(--text-muted); font-weight: 500; }
-    .output { color: var(--text-dim); margin: 2px 0 2px 4px; padding-left: 6px; border-left: 1px solid var(--border); }
+    .muted { color: var(--text-muted); }
 
-    .input-area { display: flex; align-items: baseline; padding: 10px 18px 12px; background: var(--bg); border-top: 1px solid var(--border); gap: 8px; flex-shrink: 0; }
-    .input-prompt { font-family: var(--font-code); white-space: nowrap; flex-shrink: 0; line-height: 1.55; }
-    #cmd { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font-code); font-size: inherit; line-height: inherit; caret-color: var(--accent); padding: 2px 4px; min-width: 0; }
-    #cmd::placeholder { color: var(--text-muted); opacity: 0.5; }
-    
-    /* Cursor shapes */
-    #cmd[data-cursor="block"] { caret-shape: block; }
-    #cmd[data-cursor="underline"] { caret-shape: underscore; }
-    #cmd[data-cursor="bar"] { caret-shape: bar; }
+    .output {
+      color: var(--text-dim);
+      margin: 4px 0 4px 6px;
+      padding-left: 8px;
+      border-left: 2px solid var(--border);
+    }
 
-    .statusbar { display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; background: #0f0f0f; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); font-family: var(--font-ui); user-select: none; flex-shrink: 0; }
-    .status-dot { width: 5px; height: 5px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    /* Input Area */
+    .input-area {
+      display: flex;
+      align-items: baseline;
+      padding: 12px 20px 14px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .input-prompt {
+      font-family: var(--font-code);
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.7;
+    }
+
+    #cmd {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: inherit;
+      line-height: inherit;
+      caret-color: var(--accent);
+      padding: 2px 6px;
+      min-width: 0;
+    }
+    #cmd::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    /* Statusbar */
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 16px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-ui);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
 
     /* Custom Scrollbars */
-    .content::-webkit-scrollbar, .help-body::-webkit-scrollbar, .editor-body::-webkit-scrollbar { width: 8px; height: 8px; }
-    .content::-webkit-scrollbar-track, .help-body::-webkit-scrollbar-track, .editor-body::-webkit-scrollbar-track { background: transparent; }
-    .content::-webkit-scrollbar-thumb, .help-body::-webkit-scrollbar-thumb, .editor-body::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-    .content::-webkit-scrollbar-thumb:hover, .help-body::-webkit-scrollbar-thumb:hover, .editor-body::-webkit-scrollbar-thumb:hover { background: #555; }
-    .content, .help-body, .editor-body { scrollbar-width: thin; scrollbar-color: #333 transparent; }
+    .content::-webkit-scrollbar,
+    .help-body::-webkit-scrollbar,
+    .editor-body::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    .content::-webkit-scrollbar-track,
+    .help-body::-webkit-scrollbar-track,
+    .editor-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .content::-webkit-scrollbar-thumb,
+    .help-body::-webkit-scrollbar-thumb,
+    .editor-body::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 5px;
+      border: 2px solid var(--bg-elevated);
+    }
+    .content::-webkit-scrollbar-thumb:hover,
+    .help-body::-webkit-scrollbar-thumb:hover,
+    .editor-body::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    .content, .help-body, .editor-body {
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent;
+    }
 
-    /* Modals */
-    .help-overlay, .editor-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 3000; padding: 20px; backdrop-filter: blur(4px); }
-    .help-overlay.show, .editor-overlay.show { display: flex; }
-    .help-modal, .editor { width: 100%; max-width: 700px; max-height: 80vh; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; box-shadow: var(--shadow); animation: editorAppear 200ms ease-out; }
-    .help-header, .editor-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #141414; border-bottom: 1px solid var(--border); font-family: var(--font-code); font-size: 13px; flex-shrink: 0; }
-    .help-body, .editor-body { flex: 1; padding: 16px; overflow-y: auto; font-family: var(--font-ui); line-height: 1.6; color: var(--text-dim); }
-    .help-body h1, .help-body h2, .help-body h3 { color: var(--text); margin: 12px 0 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
-    .help-body h1 { font-size: 18px; } .help-body h2 { font-size: 16px; } .help-body h3 { font-size: 14px; }
-    .help-body p { margin: 8px 0; }
-    .help-body ul, .help-body ol { padding-left: 20px; margin: 8px 0; }
-    .help-body li { margin: 4px 0; }
-    .help-body code { background: #111; padding: 2px 6px; border-radius: 3px; font-family: var(--font-code); font-size: 12px; color: var(--accent); }
-    .help-body pre { background: #0a0a0a; border: 1px solid var(--border); padding: 10px; border-radius: 4px; overflow-x: auto; margin: 8px 0; }
-    .help-body pre code { background: none; padding: 0; color: var(--text-dim); }
-    .help-close, .editor-btn { background: #252525; border: 1px solid var(--border); color: var(--text-dim); padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; transition: all var(--transition); }
-    .help-close:hover, .editor-btn:hover { background: #333; color: var(--text); }
-    .editor-btn.save { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 500; }
+    /* =========================================== */
+    /*              MODALS                         */
+    /* =========================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      padding: 24px;
+      backdrop-filter: blur(8px);
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 800px;
+      max-height: 85vh;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+      animation: modalAppear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes modalAppear {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-code);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .modal-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      font-family: var(--font-ui);
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    .modal-body h1, .modal-body h2, .modal-body h3 {
+      color: var(--text);
+      margin: 16px 0 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .modal-body h1 { font-size: 20px; }
+    .modal-body h2 { font-size: 18px; }
+    .modal-body h3 { font-size: 16px; }
+
+    .modal-body p { margin: 10px 0; }
+    .modal-body ul, .modal-body ol {
+      padding-left: 24px;
+      margin: 10px 0;
+    }
+    .modal-body li { margin: 6px 0; }
+
+    .modal-body code {
+      background: var(--bg-surface);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+      font-size: 13px;
+      color: var(--info);
+    }
+
+    .modal-body pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+    .modal-body pre code {
+      background: none;
+      padding: 0;
+      color: var(--text-dim);
+    }
+
+    .modal-close {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .modal-close:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    /* Editor Modal */
+    .editor-body {
+      flex: 1;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      min-height: 400px;
+    }
+
+    .editor-lines {
+      padding: 16px 12px;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-code);
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: right;
+      user-select: none;
+      overflow-y: hidden;
+      min-width: 50px;
+    }
+
+    .editor-content {
+      flex: 1;
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .editor-content textarea {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-code);
+      font-size: 14px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .editor-btn {
+      padding: 6px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .editor-btn:hover { background: var(--border); }
+    .editor-btn.save {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 500;
+    }
     .editor-btn.save:hover { opacity: 0.9; }
-    .editor-body textarea { width: 100%; height: 100%; min-height: 200px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 3px; color: var(--text); font-family: var(--font-code); font-size: 13px; line-height: 1.5; padding: 10px; resize: none; outline: none; tab-size: 2; }
-    .editor-body textarea:focus { border-color: var(--border-hover); }
-    @keyframes editorAppear { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
 
-    /* Special Effects */
-    #matrix { position: fixed; inset: 0; background: #000; z-index: 4000; display: none; pointer-events: none; }
-    #sl-train { position: fixed; bottom: 20%; left: -100%; z-index: 4000; font-family: var(--font-code); font-size: 12px; color: var(--success); white-space: pre; pointer-events: none; transition: left 8s linear; }
-    .icon { display: inline-block; vertical-align: -2px; margin-right: 4px; }
-    .icon svg { width: 14px; height: 14px; fill: currentColor; }
+    /* =========================================== */
+    /*              CONTEXT MENU & TOAST           */
+    /* =========================================== */
+    .context-menu {
+      position: fixed;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      padding: 6px 0;
+      z-index: 4000;
+      display: none;
+      min-width: 180px;
+    }
+    .context-menu.show { display: block; }
+
+    .context-item {
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .context-item:hover {
+      background: var(--border);
+    }
+    .context-item svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--text-dim);
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 5000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastSlideIn 0.3s ease-out;
+      max-width: 300px;
+    }
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .toast.hide {
+      animation: toastSlideOut 0.3s ease-in forwards;
+    }
+    @keyframes toastSlideOut {
+      to { opacity: 0; transform: translateX(100%); }
+    }
+
+    .toast-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--success);
+    }
+    .toast.error .toast-icon svg { fill: var(--error); }
+    .toast.warning .toast-icon svg { fill: var(--warning); }
+
+    .toast-message {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    /* =========================================== */
+    /*              EFFECTS & ANIMATIONS           */
+    /* =========================================== */
+    #matrix {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 4500;
+      display: none;
+      pointer-events: none;
+    }
+
+    #sl-train {
+      position: fixed;
+      bottom: 25%;
+      left: -100%;
+      z-index: 4500;
+      font-family: var(--font-code);
+      font-size: 12px;
+      color: var(--success);
+      white-space: pre;
+      pointer-events: none;
+      transition: left 10s linear;
+    }
+
+    .icon {
+      display: inline-block;
+      vertical-align: -3px;
+      margin-right: 6px;
+    }
+    .icon svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
     .icon-folder { color: var(--info); }
     .icon-file { color: var(--text-muted); }
     .icon-check { color: var(--success); }
-    .category { margin: 8px 0 4px; padding-bottom: 4px; border-bottom: 1px dashed var(--border); color: var(--text-dim); font-weight: 500; font-size: 13px; display: flex; align-items: center; gap: 6px; }
-    .kv-item { margin: 2px 0; padding-left: 8px; display: flex; gap: 6px; }
+    .icon-error { color: var(--error); }
+    .icon-warning { color: var(--warning); }
+
+    .category {
+      margin: 10px 0 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border);
+      color: var(--text-dim);
+      font-weight: 500;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kv-item {
+      margin: 4px 0;
+      padding-left: 10px;
+      display: flex;
+      gap: 8px;
+    }
     .kv-key { color: var(--text-dim); white-space: nowrap; }
     .kv-val { color: var(--text-muted); word-break: break-all; }
 
     /* Mobile Virtual Keyboard */
-    .mobile-kbd { display: none; padding: 8px; background: #141414; border-top: 1px solid var(--border); gap: 6px; overflow-x: auto; flex-shrink: 0; }
-    .mobile-kbd button { flex: 1; min-width: 44px; height: 44px; background: #222; border: 1px solid #333; color: var(--text); border-radius: 4px; font-family: var(--font-code); font-size: 14px; cursor: pointer; }
-    .mobile-kbd button:active { background: #444; }
+    .mobile-kbd {
+      display: none;
+      padding: 10px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      gap: 8px;
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+    .mobile-kbd button {
+      flex: 1;
+      min-width: 48px;
+      height: 48px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      font-family: var(--font-code);
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mobile-kbd button:active {
+      background: var(--border);
+      transform: scale(0.95);
+    }
 
-    /* Syntax Highlighting Simulation */
+    /* Syntax Highlighting */
     .sh-key { color: var(--info); }
     .sh-string { color: var(--success); }
     .sh-comment { color: var(--text-muted); font-style: italic; }
+    .sh-number { color: var(--warning); }
 
+    /* =========================================== */
+    /*              RESPONSIVE                     */
+    /* =========================================== */
     @media (max-width: 768px) {
       body { padding: 0; }
-      .terminal { height: 100vh; max-height: 100vh; border-radius: 0; border: none; }
-      .titlebar { padding: 7px 12px; }
-      .content { padding: 10px 14px; }
-      .input-area { padding: 8px 14px 10px; }
-      .statusbar { padding: 4px 12px; font-size: 10px; }
+      .terminal {
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+      }
+      .titlebar { padding: 8px 12px; }
+      .content { padding: 12px 14px; }
+      .input-area { padding: 10px 14px 12px; }
+      .statusbar { padding: 5px 12px; font-size: 11px; }
       .grub-container { padding: 16px; }
       .grub-logo { font-size: 8px; }
-      .grub-title { font-size: 18px; }
-      .tooltip .tooltip-text { white-space: normal; max-width: 200px; text-align: left; }
+      .grub-title { font-size: 20px; }
+      .tooltip .tooltip-text {
+        white-space: normal;
+        max-width: 220px;
+        text-align: left;
+      }
       .mobile-kbd { display: flex; }
+      .tabs { display: none; }
     }
-    ::selection { background: var(--accent); color: var(--bg); }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--bg);
+    }
   </style>
 </head>
 <body data-theme="mono">
@@ -262,6 +1172,7 @@
 <div class="crt-overlay" id="crt-overlay"></div>
 <div id="sl-train"></div>
 
+<!-- BOOT SCREEN -->
 <div id="boot-screen">
   <div class="grub-container">
     <div class="grub-header">
@@ -275,12 +1186,14 @@
 \___)=(___/
       </pre>
       <div class="grub-title">WebTerminal</div>
-      <div class="grub-subtitle">Среда обучения работе с терминалом v4.0</div>
+      <div class="grub-subtitle">Продвинутая среда обучения работе с терминалом v5.0</div>
     </div>
 
     <ul class="grub-menu" id="grub-menu">
       <li class="grub-item active" data-action="setup" onclick="selectGrubItem(this)">
-        <span class="grub-item-icon"><svg viewBox="0 0 16 16"><path d="M8,2 L14,5 L14,11 L8,14 L2,11 L2,5 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        <span class="grub-item-icon">
+          <svg viewBox="0 0 16 16"><path d="M8,2 L14,5 L14,11 L8,14 L2,11 L2,5 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </span>
         <span class="grub-item-label">Загрузить систему</span>
         <span class="grub-item-desc">boot</span>
       </li>
@@ -296,7 +1209,7 @@
         </div>
         <span class="tooltip" aria-label="Подсказка">
           <svg viewBox="0 0 16 16"><path d="M8,2 A6,6 0 1,0 8,14 A6,6 0 1,0 8,2 M8,4 A2,2 0 1,1 8,8 M8,11 L8,11.01" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-          <span class="tooltip-text">Уникальный идентификатор вашей сессии.</span>
+          <span class="tooltip-text">Уникальный идентификатор вашей сессии. Влияет на промпт и права.</span>
         </span>
       </div>
       <div class="grub-field">
@@ -306,11 +1219,11 @@
         </div>
         <span class="tooltip" aria-label="Подсказка">
           <svg viewBox="0 0 16 16"><path d="M8,2 A6,6 0 1,0 8,14 A6,6 0 1,0 8,2 M8,4 A2,2 0 1,1 8,8 M8,11 L8,11.01" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-          <span class="tooltip-text">Название виртуальной машины.</span>
+          <span class="tooltip-text">Название виртуальной машины. Отображается в промпте.</span>
         </span>
       </div>
       <button class="grub-btn primary" onclick="startBoot()">Загрузить систему</button>
-      <button class="grub-btn" onclick="cancelSetup()" style="margin-top:6px;">Назад</button>
+      <button class="grub-btn" onclick="cancelSetup()" style="margin-top:8px;">Назад</button>
     </div>
 
     <div class="boot-loading" id="boot-loading" style="display:none;">
@@ -324,20 +1237,46 @@
   </div>
 </div>
 
+<!-- TERMINAL WRAPPER -->
 <div class="terminal-wrapper" id="terminal-wrapper">
   <div class="terminal">
     <div class="titlebar">
       <div class="titlebar-left">
         <div class="controls">
-          <button class="control-btn close" onclick="app.closeTerminal()" title="Закрыть"><svg viewBox="0 0 10 10"><path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button>
-          <button class="control-btn minimize" title="Свернуть"><svg viewBox="0 0 10 10"><path d="M2,5 L8,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button>
-          <button class="control-btn maximize" title="Развернуть"><svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
+          <button class="control-btn close" onclick="app.closeTerminal()" title="Закрыть">
+            <svg viewBox="0 0 10 10"><path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+          </button>
+          <button class="control-btn minimize" title="Свернуть">
+            <svg viewBox="0 0 10 10"><path d="M2,5 L8,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+          </button>
+          <button class="control-btn maximize" title="Развернуть">
+            <svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
         </div>
         <span class="title" id="title">user@webos: ~</span>
       </div>
       <div class="titlebar-right">
-        <button class="help-btn" onclick="app.showHelp()">Справка</button>
+        <button class="titlebar-btn" onclick="app.showAchievements()">
+          <svg viewBox="0 0 16 16"><path d="M8,1 L10,6 L15,6 L11,9 L13,14 L8,11 L3,14 L5,9 L1,6 L6,6 Z" fill="currentColor"/></svg>
+          Достижения
+        </button>
+        <button class="titlebar-btn" onclick="app.showHelp()">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6,6 A2,2 0 0,1 10,6 A2,2 0 0,1 8,8 L8,10 M8,12 L8,12.01" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Справка
+        </button>
       </div>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="1">
+        <span>Terminal 1</span>
+        <button class="tab-close" onclick="app.closeTab(event, 1)">
+          <svg viewBox="0 0 10 10"><path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+        </button>
+      </div>
+      <button class="tab-add" onclick="app.addTab()">
+        <svg viewBox="0 0 16 16"><path d="M8,3 L8,13 M3,8 L13,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
     </div>
 
     <div class="content" id="output" aria-live="polite" aria-atomic="false"></div>
@@ -349,7 +1288,7 @@
         <span class="prompt-path" id="cwd">~</span>
         <span class="prompt-sep">$</span>
       </span>
-      <input type="text" id="cmd" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" data-cursor="block">
+      <input type="text" id="cmd" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off">
     </div>
 
     <div class="mobile-kbd" id="mobile-kbd">
@@ -369,109 +1308,282 @@
   </div>
 </div>
 
-<div class="help-overlay" id="help-overlay">
-  <div class="help-modal">
-    <div class="help-header">
+<!-- MODALS -->
+<div class="modal-overlay" id="help-overlay">
+  <div class="modal">
+    <div class="modal-header">
       <span>Справка по терминалу</span>
-      <button class="help-close" onclick="app.closeHelp()">Закрыть (Esc)</button>
+      <button class="modal-close" onclick="app.closeHelp()">Закрыть (Esc)</button>
     </div>
-    <div class="help-body" id="help-content"></div>
+    <div class="modal-body" id="help-content"></div>
   </div>
 </div>
 
-<div class="editor-overlay" id="editor">
-  <div class="editor">
-    <div class="editor-header">
-      <span>Редактирование: <span class="filename" id="editor-filename"></span></span>
-      <div class="actions">
+<div class="modal-overlay" id="editor">
+  <div class="modal" style="max-width: 900px;">
+    <div class="modal-header">
+      <span>Редактирование: <span id="editor-filename"></span></span>
+      <div class="editor-actions">
         <button class="editor-btn" onclick="app.closeEditor()">Отмена (Esc)</button>
         <button class="editor-btn save" onclick="app.saveFile()">Сохранить (Ctrl+S)</button>
       </div>
     </div>
     <div class="editor-body">
-      <textarea id="editor-content" spellcheck="false"></textarea>
+      <div class="editor-lines" id="editor-lines">1</div>
+      <div class="editor-content">
+        <textarea id="editor-content" spellcheck="false"></textarea>
+      </div>
     </div>
   </div>
 </div>
+
+<div class="modal-overlay" id="achievements-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span>Достижения</span>
+      <button class="modal-close" onclick="app.closeAchievements()">Закрыть</button>
+    </div>
+    <div class="modal-body" id="achievements-content"></div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="context-menu" id="context-menu">
+  <div class="context-item" onclick="app.copySelection()">
+    <svg viewBox="0 0 16 16"><rect x="4" y="4" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2,10 L2,2 L10,2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+    Копировать
+  </div>
+  <div class="context-item" onclick="app.pasteClipboard()">
+    <svg viewBox="0 0 16 16"><rect x="3" y="4" width="10" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,4 L5,2 L11,2 L11,4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+    Вставить
+  </div>
+  <div class="context-item" onclick="app.runCommand('clear')">
+    <svg viewBox="0 0 16 16"><path d="M2,2 L14,14 M14,2 L2,14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Очистить экран
+  </div>
+  <div class="context-item" onclick="app.showHelp()">
+    <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6,6 A2,2 0 0,1 10,6 A2,2 0 0,1 8,8 L8,10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+    Справка
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
 
 <canvas id="matrix"></canvas>
 
 <!-- CONFIGS -->
 <script id="config-json" type="application/json">
-{"app":{"name":"WebTerminal","version":"4.0","defaultHost":"webos","defaultUser":"user","storagePrefix":"wt_"},"ui":{"theme":"mono","cursor":"block","crt":false},"security":{"maxCommandLength":1000,"rateLimitMs":100},"helpMarkdown":"# WebTerminal v{{version}}\n\nПолноценный эмулятор терминала Linux в браузере.\n\n## 📁 Файловая система\n• `ls [-l]` — список файлов\n• `cd <dir>` — перейти в папку\n• `pwd` — текущий путь\n• `cat <file>` — прочитать файл\n• `touch <file>` — создать файл\n• `mkdir [-p] <dir>` — создать папку\n• `rm [-r] <file>` — удалить\n• `cp <src> <dst>` — копировать\n• `mv <src> <dst>` — переместить\n• `tree` — структура папок\n• `find <name>` — поиск файла\n• `edit <file>` — текстовый редактор\n\n## ⚙️ Система\n• `clear` или `Ctrl+L` — очистить экран\n• `history` — история команд\n• `alias [name='cmd']` — создать алиас\n• `theme [mono|ubuntu|dracula|solarized]`\n• `neofetch` — информация о системе\n• `date`, `whoami`, `uname -a`\n\n## 🎮 Развлечения\n• `cowsay <text>`, `sl`, `hack`, `calc <expr>`\n\n> Данные сохраняются в LocalStorage браузера."}
+{
+  "app": {
+    "name": "WebTerminal",
+    "version": "5.0",
+    "defaultHost": "webos",
+    "defaultUser": "user",
+    "storagePrefix": "wt_"
+  },
+  "ui": {
+    "theme": "mono",
+    "cursor": "block",
+    "crt": false
+  },
+  "security": {
+    "maxCommandLength": 2000,
+    "rateLimitMs": 50
+  },
+  "helpMarkdown": "# WebTerminal v{{version}}\n\nПродвинутый эмулятор терминала Linux в браузере.\n\n## Файловая система\n- `ls [-l]` - список файлов\n- `cd <dir>` - перейти в папку\n- `pwd` - текущий путь\n- `cat <file>` - прочитать файл\n- `touch <file>` - создать файл\n- `mkdir [-p] <dir>` - создать папку\n- `rm [-r] <file>` - удалить\n- `cp <src> <dst>` - копировать\n- `mv <src> <dst>` - переместить\n- `tree` - структура папок\n- `find <name>` - поиск файла\n- `edit <file>` - текстовый редактор\n\n## Система\n- `clear` или `Ctrl+L` - очистить экран\n- `history` - история команд\n- `alias name='cmd'` - создать алиас\n- `theme [name]` - сменить тему\n- `neofetch` - информация о системе\n- `date`, `whoami`, `uname -a`\n\n## Развлечения\n- `cowsay <text>`, `sl`, `hack`\n- `calc <expr>` - калькулятор\n\n> Данные сохраняются в LocalStorage."
+}
 </script>
 
 <script id="commands-json" type="application/json">
-{"ls":{"desc":"List directory","usage":"ls [-l] [path]"},"cd":{"desc":"Change directory","usage":"cd <path>"},"pwd":{"desc":"Print working directory","usage":"pwd"},"cat":{"desc":"Display file","usage":"cat <file>"},"touch":{"desc":"Create file","usage":"touch <file>"},"mkdir":{"desc":"Make directory","usage":"mkdir [-p] <dir>"},"rm":{"desc":"Remove file/dir","usage":"rm [-r] <file>"},"cp":{"desc":"Copy file","usage":"cp <src> <dst>"},"mv":{"desc":"Move file","usage":"mv <src> <dst>"},"tree":{"desc":"Directory tree","usage":"tree"},"find":{"desc":"Find file","usage":"find <name>"},"edit":{"desc":"Edit file","usage":"edit <file>"},"clear":{"desc":"Clear screen","usage":"clear"},"history":{"desc":"Command history","usage":"history"},"alias":{"desc":"Create alias","usage":"alias name='command'"},"theme":{"desc":"Change theme","usage":"theme <name>"},"neofetch":{"desc":"System info","usage":"neofetch"},"date":{"desc":"Current date","usage":"date"},"calc":{"desc":"Calculator","usage":"calc <expr>"},"cowsay":{"desc":"Cow says","usage":"cowsay <text>"},"sl":{"desc":"Steam Locomotive","usage":"sl"},"hack":{"desc":"Hack the planet","usage":"hack"},"sudo":{"desc":"Execute as root","usage":"sudo <cmd>"},"help":{"desc":"Show help","usage":"help"}}
+{
+  "ls": {"desc": "List directory", "usage": "ls [-l] [path]"},
+  "cd": {"desc": "Change directory", "usage": "cd <path>"},
+  "pwd": {"desc": "Print working directory", "usage": "pwd"},
+  "cat": {"desc": "Display file", "usage": "cat <file>"},
+  "touch": {"desc": "Create file", "usage": "touch <file>"},
+  "mkdir": {"desc": "Make directory", "usage": "mkdir [-p] <dir>"},
+  "rm": {"desc": "Remove file/dir", "usage": "rm [-r] <file>"},
+  "cp": {"desc": "Copy file", "usage": "cp <src> <dst>"},
+  "mv": {"desc": "Move file", "usage": "mv <src> <dst>"},
+  "tree": {"desc": "Directory tree", "usage": "tree"},
+  "find": {"desc": "Find file", "usage": "find <name>"},
+  "edit": {"desc": "Edit file", "usage": "edit <file>"},
+  "clear": {"desc": "Clear screen", "usage": "clear"},
+  "history": {"desc": "Command history", "usage": "history"},
+  "alias": {"desc": "Create alias", "usage": "alias name='command'"},
+  "theme": {"desc": "Change theme", "usage": "theme <name>"},
+  "neofetch": {"desc": "System info", "usage": "neofetch"},
+  "date": {"desc": "Current date", "usage": "date"},
+  "calc": {"desc": "Calculator", "usage": "calc <expr>"},
+  "cowsay": {"desc": "Cow says", "usage": "cowsay <text>"},
+  "sl": {"desc": "Steam Locomotive", "usage": "sl"},
+  "hack": {"desc": "Hack the planet", "usage": "hack"},
+  "sudo": {"desc": "Execute as root", "usage": "sudo <cmd>"},
+  "help": {"desc": "Show help", "usage": "help"}
+}
 </script>
 
 <script id="filesystem-json" type="application/json">
-{"~":{"type":"dir","children":{"documents":{"type":"dir","children":{"readme.txt":{"type":"file","content":"Welcome to WebTerminal v{{version}}\n\nЭто полнофункциональный эмулятор.\nПопробуйте команды: ls, tree, neofetch, cowsay","meta":{"created":"{{timestamp}}","readonly":true}}}},"projects":{"type":"dir","children":{"webapp":{"type":"dir","children":{"index.html":{"type":"file","content":"<!DOCTYPE html>\n<html><body><h1>Hello World</h1></body></html>","meta":{"created":"{{timestamp}}"}}}}},"logs":{"type":"dir","children":{"sys.log":{"type":"file","content":"[INFO] System initialized\n[INFO] User logged in","meta":{"created":"{{timestamp}}"}}}},".config":{"type":"dir","children":{"settings.json":{"type":"file","content":"{\n  \"theme\": \"mono\",\n  \"cursor\": \"block\"\n}","meta":{"created":"{{timestamp}}"}}}},".bash_history":{"type":"file","content":"","meta":{"created":"{{timestamp}}","readonly":true}}}}}
+{
+  "~": {
+    "type": "dir",
+    "children": {
+      "documents": {
+        "type": "dir",
+        "children": {
+          "readme.txt": {
+            "type": "file",
+            "content": "Welcome to WebTerminal v{{version}}\n\nЭто полнофункциональный эмулятор.\nПопробуйте команды: ls, tree, neofetch, cowsay",
+            "meta": {"created": "{{timestamp}}", "readonly": true}
+          }
+        }
+      },
+      "projects": {
+        "type": "dir",
+        "children": {
+          "webapp": {
+            "type": "dir",
+            "children": {
+              "index.html": {
+                "type": "file",
+                "content": "<!DOCTYPE html>\n<html><body><h1>Hello World</h1></body></html>",
+                "meta": {"created": "{{timestamp}}"}
+              }
+            }
+          }
+        }
+      },
+      "logs": {
+        "type": "dir",
+        "children": {
+          "sys.log": {
+            "type": "file",
+            "content": "[INFO] System initialized\n[INFO] User logged in",
+            "meta": {"created": "{{timestamp}}"}
+          }
+        }
+      },
+      ".config": {
+        "type": "dir",
+        "children": {
+          "settings.json": {
+            "type": "file",
+            "content": "{\n  \"theme\": \"mono\",\n  \"cursor\": \"block\"\n}",
+            "meta": {"created": "{{timestamp}}"}
+          }
+        }
+      },
+      ".bash_history": {
+        "type": "file",
+        "content": "",
+        "meta": {"created": "{{timestamp}}", "readonly": true}
+      }
+    }
+  }
+}
 </script>
 
 <script>
 /**
- * WebTerminal v4.0
- * Полностью клиентская архитектура, модульный дизайн, оптимизированная производительность.
+ * WebTerminal v5.0
+ * Полноценный эмулятор терминала с вкладками, достижениями и расширенной ФС.
  */
 
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
-// --- Утилиты ---
+// ===========================================
+//              UTILITIES
+// ===========================================
 const Utils = {
-  esc: (str) => String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])),
-  trunc: (str, len) => str && str.length > len ? str.slice(0, len) + '…' : (str||''),
-  clone: (obj) => structuredClone(obj),
+  esc: (str) => String(str).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+  }[c])),
+  
+  trunc: (str, len) => str && str.length > len ? str.slice(0, len) + '…' : (str || ''),
+  
+  clone: (obj) => {
+    try { return structuredClone(obj); }
+    catch { return JSON.parse(JSON.stringify(obj)); }
+  },
+  
   syntaxHighlight: (content, ext) => {
     if (!content) return '';
     let html = Utils.esc(content);
     if (ext === 'json' || ext === 'js') {
       html = html.replace(/(".*?")/g, '<span class="sh-string">$1</span>')
-                 .replace(/(\/\/.*)/g, '<span class="sh-comment">$1</span>');
+                 .replace(/(\/\/.*)/g, '<span class="sh-comment">$1</span>')
+                 .replace(/(\d+)/g, '<span class="sh-number">$1</span>');
+    } else if (ext === 'html') {
+      html = html.replace(/(&lt;\/?[\w\s="/.':;#-\/]+&gt;)/g, '<span class="sh-key">$1</span>');
     }
     return html;
+  },
+  
+  formatSize: (bytes) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
   }
 };
 
-// --- Конфигурация ---
+// ===========================================
+//              CONFIG LOADER
+// ===========================================
 const Config = {
-  data: null, commands: null, filesystem: null,
+  data: null,
+  commands: null,
+  filesystem: null,
+  
   async load() {
     try {
       this.data = JSON.parse($('#config-json').textContent);
       this.commands = JSON.parse($('#commands-json').textContent);
       this.filesystem = this.processTemplates(JSON.parse($('#filesystem-json').textContent));
       return true;
-    } catch(e) { console.error("Config load failed", e); return false; }
+    } catch (e) {
+      console.error("Config load failed:", e);
+      return false;
+    }
   },
+  
   processTemplates(obj) {
     const replace = (str) => typeof str === 'string' ? str.replace(/\{\{(\w+)\}\}/g, (_, k) => 
-      ({ version: this.data?.app?.version||'4.0', timestamp: Date.now(), theme: 'mono' })[k] || '') : str;
-    const walk = (o) => Array.isArray(o) ? o.map(walk) : (typeof o==='object' && o!==null ? Object.fromEntries(Object.entries(o).map(([k,v])=>[k, walk(v)])) : replace(o));
+      ({ version: this.data?.app?.version || '5.0', timestamp: Date.now(), theme: 'mono' })[k] || '') : str;
+    const walk = (o) => Array.isArray(o) ? o.map(walk) : 
+      (typeof o === 'object' && o !== null ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, walk(v)])) : replace(o));
     return walk(obj);
   }
 };
 
-// --- Виртуальная Файловая Система (VFS) ---
+// ===========================================
+//              VIRTUAL FILE SYSTEM
+// ===========================================
 class VirtualFS {
   constructor(prefix) {
     this.prefix = prefix;
     this.tree = {};
   }
+  
   load() {
     const saved = localStorage.getItem(this.prefix + 'fs');
     this.tree = saved ? JSON.parse(saved) : Utils.clone(Config.filesystem);
   }
+  
   save() {
-    try { localStorage.setItem(this.prefix + 'fs', JSON.stringify(this.tree)); } 
-    catch(e) { alert('LocalStorage переполнен! Удалите старые файлы.'); }
+    try {
+      localStorage.setItem(this.prefix + 'fs', JSON.stringify(this.tree));
+    } catch (e) {
+      app.showToast('LocalStorage переполнен!', 'error');
+    }
   }
   
-  // Разрешение пути (возвращает массив частей пути или null)
   resolvePath(path, cwdArr) {
     if (!path || path === '~') return ['~'];
-    let parts = path.startsWith('/') || path.startsWith('~/') ? path.replace('~', '').split('/').filter(Boolean) : [...cwdArr.slice(1), ...path.split('/').filter(Boolean)];
+    let parts = path.startsWith('/') || path.startsWith('~/') 
+      ? path.replace('~', '').split('/').filter(Boolean) 
+      : [...cwdArr.slice(1), ...path.split('/').filter(Boolean)];
     let resolved = ['~'];
     for (let p of parts) {
       if (p === '.') continue;
@@ -480,7 +1592,7 @@ class VirtualFS {
     }
     return resolved;
   }
-
+  
   getNode(pathArr) {
     let curr = this.tree['~'];
     for (let i = 1; i < pathArr.length; i++) {
@@ -489,14 +1601,14 @@ class VirtualFS {
     }
     return curr;
   }
-
+  
   getParentAndName(pathArr) {
     if (pathArr.length === 1) return { parent: this.tree, name: '~' };
     let parentArr = pathArr.slice(0, -1);
     let parent = this.getNode(parentArr);
     return { parent, name: pathArr[pathArr.length - 1] };
   }
-
+  
   mkdir(path, pFlag = false) {
     let pathArr = this.resolvePath(path, app.cwd);
     let curr = this.tree['~'];
@@ -512,7 +1624,7 @@ class VirtualFS {
     this.save();
     return { success: true };
   }
-
+  
   rm(path, rFlag = false) {
     let pathArr = this.resolvePath(path, app.cwd);
     let { parent, name } = this.getParentAndName(pathArr);
@@ -523,7 +1635,7 @@ class VirtualFS {
     this.save();
     return { success: true };
   }
-
+  
   cp(src, dst) {
     let srcArr = this.resolvePath(src, app.cwd);
     let dstArr = this.resolvePath(dst, app.cwd);
@@ -537,13 +1649,13 @@ class VirtualFS {
     this.save();
     return { success: true };
   }
-
+  
   mv(src, dst) {
     let res = this.cp(src, dst);
     if (res.success) this.rm(src, true);
     return res;
   }
-
+  
   find(name, pathArr = ['~']) {
     let results = [];
     let node = this.getNode(pathArr);
@@ -555,7 +1667,7 @@ class VirtualFS {
     }
     return results;
   }
-
+  
   tree(pathArr = ['~'], prefix = '') {
     let node = this.getNode(pathArr);
     if (!node || node.type !== 'dir') return '';
@@ -573,23 +1685,31 @@ class VirtualFS {
   }
 }
 
-// --- Основное приложение ---
+// ===========================================
+//              TERMINAL APP
+// ===========================================
 class TerminalApp {
   constructor() {
-    this.user = 'user'; this.host = 'webos'; this.cwd = ['~'];
+    this.user = 'user';
+    this.host = 'webos';
+    this.cwd = ['~'];
     this.vfs = new VirtualFS('wt_');
-    this.history = []; this.historyIdx = -1;
+    this.history = [];
+    this.historyIdx = -1;
     this.aliases = {};
-    this.isMatrix = false; this.matrixAnim = null;
+    this.isMatrix = false;
+    this.matrixAnim = null;
     this.editingFile = null;
-    this.maxLines = 200; // Виртуальный скроллинг / ограничение DOM
+    this.maxLines = 300;
+    this.tabs = [{ id: 1, name: 'Terminal 1', cwd: ['~'], history: [] }];
+    this.activeTab = 1;
+    this.achievements = JSON.parse(localStorage.getItem('wt_achievements') || '{}');
   }
-
+  
   async init() {
     await Config.load();
     this.vfs.load();
     
-    // Загрузка настроек
     const savedUser = localStorage.getItem('wt_user');
     if (savedUser) {
       this.user = savedUser;
@@ -602,47 +1722,54 @@ class TerminalApp {
     this.setupEvents();
     this.startClock();
   }
-
+  
   applyTheme(themeName) {
     document.body.setAttribute('data-theme', themeName);
     $('#theme-label').textContent = themeName;
     localStorage.setItem('wt_theme', themeName);
   }
-
+  
   setupEvents() {
     const cmd = $('#cmd');
     cmd.addEventListener('keydown', e => this.handleInput(e));
     
-    // Глобальные хоткеи
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         if ($('#editor').classList.contains('show')) this.closeEditor();
         else if ($('#help-overlay').classList.contains('show')) this.closeHelp();
+        else if ($('#achievements-overlay').classList.contains('show')) this.closeAchievements();
         else if (this.isMatrix) this.stopMatrix();
       }
       if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); this.runCommand('clear'); }
     });
-
-    // Клик вне модалок закрывает их
+    
     document.addEventListener('click', e => {
-      if ($('#editor').classList.contains('show') && !e.target.closest('.editor')) this.closeEditor();
+      if (!$('#context-menu').contains(e.target)) {
+        $('#context-menu').classList.remove('show');
+      }
+    });
+    
+    $('#output').addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const menu = $('#context-menu');
+      menu.style.left = e.pageX + 'px';
+      menu.style.top = e.pageY + 'px';
+      menu.classList.add('show');
     });
   }
-
+  
   injectMobileKey(key) {
     const cmd = $('#cmd');
     cmd.focus();
-    if (key === 'Tab') { this.handleInput({ key: 'Tab', preventDefault: ()=>{} }); return; }
+    if (key === 'Tab') { this.handleInput({ key: 'Tab', preventDefault: () => {} }); return; }
     if (key === 'Ctrl+C') { cmd.value = ''; this.print(''); return; }
     if (key === 'Ctrl+L') { this.runCommand('clear'); return; }
-    
-    // Эмуляция стрелок
     if (key === 'ArrowUp' || key === 'ArrowDown') {
-      this.handleInput({ key, preventDefault: ()=>{} });
+      this.handleInput({ key, preventDefault: () => {} });
       return;
     }
   }
-
+  
   handleInput(e) {
     const cmd = $('#cmd');
     if (e.key === 'Tab') {
@@ -665,22 +1792,21 @@ class TerminalApp {
       return;
     }
     if (e.key !== 'Enter') return;
-
+    
     e.preventDefault();
     const rawCmd = cmd.value.trim();
     if (!rawCmd) { this.print(''); cmd.value = ''; return; }
-
+    
     this.history.push(rawCmd);
     this.historyIdx = this.history.length;
-    localStorage.setItem('wt_history', JSON.stringify(this.history.slice(-100))); // Сохраняем последние 100
-
-    // Вывод введенной команды
+    localStorage.setItem('wt_history', JSON.stringify(this.history.slice(-200)));
+    
     this.printPrompt(rawCmd);
     cmd.value = '';
-
+    
     this.runCommand(rawCmd);
   }
-
+  
   autoComplete() {
     const cmd = $('#cmd');
     const val = cmd.value;
@@ -688,16 +1814,14 @@ class TerminalApp {
     const lastPart = parts[parts.length - 1];
     
     if (!lastPart) return;
-
-    // 1. Автодополнение команд или алиасов
+    
     if (parts.length === 1) {
       const matches = Object.keys(Config.commands).concat(Object.keys(this.aliases)).filter(c => c.startsWith(lastPart));
       if (matches.length === 1) { cmd.value = matches[0] + ' '; }
       else if (matches.length > 1) { this.print(matches.join('  '), 'muted'); }
       return;
     }
-
-    // 2. Автодополнение путей
+    
     const node = this.vfs.getNode(this.cwd);
     if (!node || node.type !== 'dir') return;
     
@@ -711,20 +1835,18 @@ class TerminalApp {
       this.print(matches.join('  '), 'muted');
     }
   }
-
+  
   runCommand(rawCmd) {
-    // Обработка алиасов
     const firstWord = rawCmd.split(/\s+/)[0];
     let finalCmd = rawCmd;
     if (this.aliases[firstWord]) {
       finalCmd = rawCmd.replace(firstWord, this.aliases[firstWord]);
     }
-
-    // Обработка перенаправления вывода (>)
+    
     if (finalCmd.includes('>')) {
       const [cmdPart, filePart] = finalCmd.split('>').map(s => s.trim());
       const fileName = filePart.replace(/^>>?\s*/, '');
-      const content = cmdPart.replace(/^echo\s+['"]?|['"]?$/g, ''); // Упрощенный парсинг echo
+      const content = cmdPart.replace(/^echo\s+['"]?|['"]?$/g, '');
       
       if (cmdPart.startsWith('echo')) {
         const pathArr = this.vfs.resolvePath(fileName, this.cwd);
@@ -733,15 +1855,15 @@ class TerminalApp {
           parent.children[name] = { type: 'file', content: content + '\n', meta: { created: Date.now() } };
           this.vfs.save();
           this.print(`Saved to ${fileName}`, 'success');
+          this.unlockAchievement('file_creator');
           return;
         }
       }
     }
-
-    // Парсинг команды
+    
     const args = finalCmd.match(/(?:[^\s"]+|"[^"]*")+/g)?.map(a => a.replace(/^"|"$/g, '')) || [];
     const name = args.shift();
-
+    
     try {
       const handler = this.getHandler(name);
       if (handler) {
@@ -758,7 +1880,7 @@ class TerminalApp {
     this.updatePrompt();
     $('#cmd').focus();
   }
-
+  
   getHandler(name) {
     const handlers = {
       'ls': (a) => {
@@ -768,23 +1890,24 @@ class TerminalApp {
         const node = this.vfs.getNode(pathArr);
         if (!node || node.type !== 'dir') return this.error(`ls: cannot access '${targetPath}': No such directory`);
         
-        const entries = Object.entries(node.children).sort((x,y) => x[0].localeCompare(y[0]));
+        const entries = Object.entries(node.children).sort((x, y) => x[0].localeCompare(y[0]));
         if (!entries.length) return '';
         
         if (showLong) {
           return entries.map(([k, v]) => {
             const perms = v.type === 'dir' ? 'drwxr-xr-x' : '-rw-r--r--';
             const size = v.type === 'file' ? (v.content?.length || 0) : 4096;
-            const date = new Date(v.meta?.created || Date.now()).toLocaleDateString('ru-RU', {month:'short', day:'numeric'});
-            return `${perms} 1 ${this.user} ${this.user} ${String(size).padStart(5)} ${date} ${k}${v.type==='dir'?'/':''}`;
+            const date = new Date(v.meta?.created || Date.now()).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' });
+            return `${perms} 1 ${this.user} ${this.user} ${String(size).padStart(5)} ${date} ${k}${v.type === 'dir' ? '/' : ''}`;
           }).join('\n');
         }
         return entries.map(([k, v]) => {
           const cls = v.type === 'dir' ? 'success' : '';
           const icon = v.type === 'dir' ? 'folder' : 'file';
-          return `<span class="icon icon-${icon}"><svg viewBox="0 0 14 14"><path d="${v.type==='dir'?'M2,4 L4,2 L12,2 L12,10 L2,10 Z':'M3,2 L9,2 L11,4 L11,12 L3,12 Z'}" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span><span class="${cls}">${k}${v.type==='dir'?'/':''}</span>`;
+          return `<span class="icon icon-${icon}"><svg viewBox="0 0 14 14"><path d="${v.type === 'dir' ? 'M2,4 L4,2 L12,2 L12,10 L2,10 Z' : 'M3,2 L9,2 L11,4 L11,12 L3,12 Z'}" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span><span class="${cls}">${k}${v.type === 'dir' ? '/' : ''}</span>`;
         }).join('  ');
       },
+      
       'cd': (a) => {
         const target = a[0] || '~';
         if (target === '~') { this.cwd = ['~']; return ''; }
@@ -794,7 +1917,9 @@ class TerminalApp {
         if (node && node.type === 'dir') { this.cwd = pathArr; return ''; }
         return this.error(`cd: ${target}: No such directory`);
       },
+      
       'pwd': () => '/' + this.cwd.join('/').replace('~', 'home/' + this.user),
+      
       'cat': (a) => {
         if (!a[0]) return this.error('cat: missing file operand');
         const pathArr = this.vfs.resolvePath(a[0], this.cwd);
@@ -804,6 +1929,7 @@ class TerminalApp {
         const ext = a[0].split('.').pop();
         return Utils.syntaxHighlight(node.content, ext);
       },
+      
       'touch': (a) => {
         if (!a[0]) return this.error('touch: missing file operand');
         const pathArr = this.vfs.resolvePath(a[0], this.cwd);
@@ -812,18 +1938,22 @@ class TerminalApp {
         if (!parent.children[name]) {
           parent.children[name] = { type: 'file', content: '', meta: { created: Date.now() } };
           this.vfs.save();
+          this.unlockAchievement('file_creator');
           return this.success(`Created '${name}'`);
         }
         return '';
       },
+      
       'mkdir': (a) => {
         const pFlag = a.includes('-p');
         const dir = a.find(x => !x.startsWith('-'));
         if (!dir) return this.error('mkdir: missing operand');
         const res = this.vfs.mkdir(dir, pFlag);
         if (res.error) return this.error(res.error);
+        this.unlockAchievement('dir_creator');
         return this.success(`Created directory '${dir}'`);
       },
+      
       'rm': (a) => {
         const rFlag = a.includes('-r') || a.includes('-rf');
         const target = a.find(x => !x.startsWith('-'));
@@ -832,27 +1962,32 @@ class TerminalApp {
         if (res.error) return this.error(res.error);
         return this.success(`Removed '${target}'`);
       },
+      
       'cp': (a) => {
         if (a.length < 2) return this.error('cp: missing operand');
         const res = this.vfs.cp(a[0], a[1]);
         if (res.error) return this.error(res.error);
         return this.success(`Copied '${a[0]}' to '${a[1]}'`);
       },
+      
       'mv': (a) => {
         if (a.length < 2) return this.error('mv: missing operand');
         const res = this.vfs.mv(a[0], a[1]);
         if (res.error) return this.error(res.error);
         return this.success(`Moved '${a[0]}' to '${a[1]}'`);
       },
+      
       'tree': () => {
         const out = this.vfs.tree(this.cwd);
         return out ? out : '0 directories, 0 files';
       },
+      
       'find': (a) => {
         if (!a[0]) return this.error('find: missing name');
         const res = this.vfs.find(a[0], this.cwd);
         return res.length ? res.join('\n') : this.muted(`No files found matching '${a[0]}'`);
       },
+      
       'edit': (a) => {
         if (!a[0]) return this.error('edit: missing filename');
         const pathArr = this.vfs.resolvePath(a[0], this.cwd);
@@ -862,13 +1997,16 @@ class TerminalApp {
         this.openEditor(a[0], node.content || '');
         return null;
       },
+      
       'clear': () => { $('#output').innerHTML = ''; return null; },
+      
       'history': () => {
-        return this.history.map((h, i) => `  ${String(i+1).padStart(4)}  ${h}`).join('\n') || this.muted('History is empty');
+        return this.history.map((h, i) => `  ${String(i + 1).padStart(4)}  ${h}`).join('\n') || this.muted('History is empty');
       },
+      
       'alias': (a) => {
         if (!a[0]) {
-          return Object.entries(this.aliases).map(([k,v]) => `alias ${k}='${v}'`).join('\n') || 'No aliases defined';
+          return Object.entries(this.aliases).map(([k, v]) => `alias ${k}='${v}'`).join('\n') || 'No aliases defined';
         }
         const match = a[0].match(/^(\w+)=(.*)$/);
         if (!match) return this.error('alias: invalid format. Use: alias name=\'command\'');
@@ -876,13 +2014,15 @@ class TerminalApp {
         localStorage.setItem('wt_aliases', JSON.stringify(this.aliases));
         return this.success(`Alias '${match[1]}' set`);
       },
+      
       'theme': (a) => {
-        if (!a[0]) return 'Available themes: mono, ubuntu, dracula, solarized';
-        const valid = ['mono', 'ubuntu', 'dracula', 'solarized'];
+        if (!a[0]) return 'Available themes: mono, ubuntu, dracula, solarized, nord, monokai';
+        const valid = ['mono', 'ubuntu', 'dracula', 'solarized', 'nord', 'monokai'];
         if (!valid.includes(a[0])) return this.error(`theme: '${a[0]}' not found`);
         this.applyTheme(a[0]);
         return this.success(`Theme changed to '${a[0]}'`);
       },
+      
       'neofetch': () => {
         const mem = performance?.memory ? Math.round(performance.memory.usedJSHeapSize / 1048576) : '?';
         return `<span class="success">       _</span>     <span class="prompt-user">${this.user}</span>@<span class="prompt-path">${this.host}</span>
@@ -893,7 +2033,12 @@ class TerminalApp {
 <span class="success">  \\__/|_|</span>    Memory: ${mem} MB
                    Storage: ${Object.keys(localStorage).length} keys`;
       },
-      'date': () => new Date().toLocaleString('ru-RU', {weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}),
+      
+      'date': () => new Date().toLocaleString('ru-RU', {
+        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      }),
+      
       'calc': (a) => {
         if (!a.length) return 'Usage: calc <expression>';
         const expr = a.join(' ').replace(/[^0-9+\-*/().%\s]/g, '');
@@ -902,29 +2047,33 @@ class TerminalApp {
           return Number.isFinite(res) ? this.success(`= ${res}`) : this.error('Error');
         } catch { return this.error('Invalid expression'); }
       },
+      
       'cowsay': (a) => {
         const text = a.join(' ') || 'Moo!';
         const border = '-'.repeat(text.length + 2);
         return ` ${border}\n< ${text} >\n ${border}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
       },
+      
       'sl': () => {
         this.runSlAnimation();
         return this.muted('Choo choo!');
       },
+      
       'hack': () => {
         this.startMatrix();
         return this.muted('Initiating hack sequence... (Press any key to stop)');
       },
+      
       'sudo': (a) => {
         if (!a.length) return this.error('sudo: missing command');
         return this.warning(`[sudo] password for ${this.user}: \nSorry, this is a simulation. Most commands work without sudo.`);
       },
+      
       'help': () => { this.showHelp(); return null; }
     };
-    return handlers[name] || (Config.commands[name] ? handlers[Config.commands[name].handler?.split(':')[1]] : null);
+    return handlers[name] || null;
   }
-
-  // --- UI Методы ---
+  
   print(html, cls = '') {
     const output = $('#output');
     const d = document.createElement('div');
@@ -932,13 +2081,12 @@ class TerminalApp {
     d.innerHTML = html;
     output.appendChild(d);
     
-    // Ограничение DOM для производительности
     while (output.children.length > this.maxLines) {
       output.removeChild(output.firstChild);
     }
     output.scrollTop = output.scrollHeight;
   }
-
+  
   printPrompt(cmd) {
     const pathStr = this.cwd.join('/') === '~' ? '~' : this.cwd.join('/').replace('~/', '~/');
     const html = `<span class="prompt-user">${this.user}</span><span class="prompt-sep">@</span><span class="prompt-path">${this.host}</span><span class="prompt-sep">:</span><span class="prompt-path">${pathStr}</span><span class="prompt-sep">$</span> ${Utils.esc(cmd)}`;
@@ -947,12 +2095,12 @@ class TerminalApp {
     d.innerHTML = html;
     $('#output').appendChild(d);
   }
-
-  error(m) { return `<span class="error">❌ ${m}</span>`; }
-  success(m) { return `<span class="success">✅ ${m}</span>`; }
-  warning(m) { return `<span class="warning">⚠️ ${m}</span>`; }
+  
+  error(m) { return `<span class="icon icon-error"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,5 L11,11 M11,5 L5,11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="error">${m}</span>`; }
+  success(m) { return `<span class="icon icon-check"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,8 L7,10 L11,6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="success">${m}</span>`; }
+  warning(m) { return `<span class="icon icon-warning"><svg viewBox="0 0 16 16"><path d="M8,2 L14,13 L2,13 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8,6 L8,9 M8,11 L8,11.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="warning">${m}</span>`; }
   muted(m) { return `<span class="muted">${m}</span>`; }
-
+  
   updatePrompt() {
     const s = this.cwd.join('/') === '~' ? '~' : this.cwd.join('/').replace('~/', '~/');
     $('#cwd').textContent = s;
@@ -960,49 +2108,56 @@ class TerminalApp {
     $('#disp-user').textContent = this.user;
     $('#disp-host').textContent = this.host;
   }
-
+  
   visualBell() {
-    if (Config.data.ui.crt) {
-      document.body.classList.add('visual-bell');
-      setTimeout(() => document.body.classList.remove('visual-bell'), 100);
-    }
+    document.body.classList.add('visual-bell');
+    setTimeout(() => document.body.classList.remove('visual-bell'), 150);
   }
-
+  
   startClock() {
-    const u = () => $('#clock').textContent = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
-    u(); setInterval(u, 1000);
+    const u = () => $('#clock').textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    u();
+    setInterval(u, 1000);
   }
-
-  // --- Модалки ---
+  
   openEditor(filename, content) {
     this.editingFile = filename;
     $('#editor-filename').textContent = filename;
     $('#editor-content').value = content || '';
+    this.updateEditorLines();
     $('#editor').classList.add('show');
     $('#editor-content').focus();
     $('#cmd').blur();
   }
+  
+  updateEditorLines() {
+    const textarea = $('#editor-content');
+    const lines = textarea.value.split('\n').length;
+    $('#editor-lines').textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
+  }
+  
   closeEditor() {
     $('#editor').classList.remove('show');
     this.editingFile = null;
     $('#cmd').focus();
   }
+  
   saveFile() {
     if (!this.editingFile) return;
     const pathArr = this.vfs.resolvePath(this.editingFile, this.cwd);
     const node = this.vfs.getNode(pathArr);
     if (node && node.type === 'file') {
       node.content = $('#editor-content').value;
-      node.meta = { ...(node.meta||{}), modified: Date.now() };
+      node.meta = { ...(node.meta || {}), modified: Date.now() };
       this.vfs.save();
       this.print(this.success(`Saved '${this.editingFile}'`));
+      this.showToast(`Файл '${this.editingFile}' сохранен`, 'success');
     }
     this.closeEditor();
   }
-
+  
   showHelp() {
-    const md = Config.data.helpMarkdown.replace(/\{\{(\w+)\}\}/g, (_,k) => Config.data.app[k] || '');
-    // Простой markdown парсер
+    const md = Config.data.helpMarkdown.replace(/\{\{(\w+)\}\}/g, (_, k) => Config.data.app[k] || '');
     const html = md
       .replace(/^### (.*$)/gim, '<h3>$1</h3>')
       .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -1015,34 +2170,149 @@ class TerminalApp {
     $('#help-content').innerHTML = html;
     $('#help-overlay').classList.add('show');
   }
+  
   closeHelp() { $('#help-overlay').classList.remove('show'); }
-
+  
+  showAchievements() {
+    const achievements = {
+      'file_creator': { name: 'Создатель файлов', desc: 'Создайте свой первый файл', icon: '📄' },
+      'dir_creator': { name: 'Архитектор', desc: 'Создайте директорию', icon: '📁' },
+      'theme_master': { name: 'Мастер тем', desc: 'Смените тему оформления', icon: '🎨' },
+      'hacker': { name: 'Хакер', desc: 'Запустите эффект Matrix', icon: '💻' }
+    };
+    
+    let html = '<h2>Ваши достижения</h2>';
+    for (let [key, ach] of Object.entries(achievements)) {
+      const unlocked = this.achievements[key];
+      html += `<div style="padding: 12px; margin: 8px 0; background: ${unlocked ? 'rgba(80,250,123,0.1)' : 'rgba(255,255,255,0.02)'}; border-radius: 6px; border-left: 3px solid ${unlocked ? 'var(--success)' : 'var(--border)'};">
+        <div style="font-size: 18px; margin-bottom: 4px;">${ach.icon} ${ach.name} ${unlocked ? '✅' : '🔒'}</div>
+        <div style="color: var(--text-dim); font-size: 13px;">${ach.desc}</div>
+      </div>`;
+    }
+    
+    $('#achievements-content').innerHTML = html;
+    $('#achievements-overlay').classList.add('show');
+  }
+  
+  closeAchievements() { $('#achievements-overlay').classList.remove('show'); }
+  
+  unlockAchievement(key) {
+    if (!this.achievements[key]) {
+      this.achievements[key] = Date.now();
+      localStorage.setItem('wt_achievements', JSON.stringify(this.achievements));
+      this.showToast(`Достижение разблокировано!`, 'success');
+    }
+  }
+  
   closeTerminal() {
     this.print(this.muted('Сессия завершена. Обновите страницу для перезагрузки.'));
     $('#cmd').disabled = true;
     $('#cmd').placeholder = 'закрыто';
   }
-
-  // --- Эффекты ---
+  
+  addTab() {
+    const id = this.tabs.length + 1;
+    this.tabs.push({ id, name: `Terminal ${id}`, cwd: ['~'], history: [] });
+    this.renderTabs();
+    this.switchTab(id);
+  }
+  
+  closeTab(event, id) {
+    event.stopPropagation();
+    if (this.tabs.length === 1) return;
+    this.tabs = this.tabs.filter(t => t.id !== id);
+    if (this.activeTab === id) {
+      this.switchTab(this.tabs[0].id);
+    }
+    this.renderTabs();
+  }
+  
+  switchTab(id) {
+    this.activeTab = id;
+    const tab = this.tabs.find(t => t.id === id);
+    if (tab) {
+      this.cwd = tab.cwd;
+      this.history = tab.history;
+      this.updatePrompt();
+    }
+    this.renderTabs();
+  }
+  
+  renderTabs() {
+    const tabsEl = $('#tabs');
+    tabsEl.innerHTML = this.tabs.map(t => `
+      <div class="tab ${t.id === this.activeTab ? 'active' : ''}" data-tab="${t.id}" onclick="app.switchTab(${t.id})">
+        <span>${t.name}</span>
+        <button class="tab-close" onclick="app.closeTab(event, ${t.id})">
+          <svg viewBox="0 0 10 10"><path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+        </button>
+      </div>
+    `).join('') + `
+      <button class="tab-add" onclick="app.addTab()">
+        <svg viewBox="0 0 16 16"><path d="M8,3 L8,13 M3,8 L13,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+    `;
+  }
+  
+  showToast(message, type = 'success') {
+    const container = $('#toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <div class="toast-icon">
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5,8 L7,10 L11,6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="toast-message">${message}</div>
+    `;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+  
+  copySelection() {
+    const selection = window.getSelection().toString();
+    if (selection) {
+      navigator.clipboard.writeText(selection);
+      this.showToast('Скопировано в буфер обмена', 'success');
+    }
+    $('#context-menu').classList.remove('show');
+  }
+  
+  async pasteClipboard() {
+    try {
+      const text = await navigator.clipboard.readText();
+      $('#cmd').value += text;
+      $('#cmd').focus();
+    } catch (e) {
+      this.showToast('Не удалось вставить из буфера', 'error');
+    }
+    $('#context-menu').classList.remove('show');
+  }
+  
   startMatrix() {
     this.isMatrix = true;
+    this.unlockAchievement('hacker');
     const cv = $('#matrix');
     cv.style.display = 'block';
     const ctx = cv.getContext('2d');
-    cv.width = innerWidth; cv.height = innerHeight;
-    const fs = 16, cols = Math.floor(cv.width/fs);
+    cv.width = innerWidth;
+    cv.height = innerHeight;
+    const fs = 16, cols = Math.floor(cv.width / fs);
     const drops = new Float32Array(cols).fill(1);
     
     const draw = () => {
       if (!this.isMatrix) return;
       ctx.fillStyle = 'rgba(0,0,0,0.05)';
-      ctx.fillRect(0,0,cv.width,cv.height);
+      ctx.fillRect(0, 0, cv.width, cv.height);
       ctx.fillStyle = '#0F0';
       ctx.font = `${fs}px monospace`;
-      for(let i=0; i<cols; i++) {
+      for (let i = 0; i < cols; i++) {
         const text = String.fromCharCode(0x30A0 + Math.random() * 96);
-        ctx.fillText(text, i*fs, drops[i]*fs);
-        if(drops[i]*fs > cv.height && Math.random() > 0.975) drops[i] = 0;
+        ctx.fillText(text, i * fs, drops[i] * fs);
+        if (drops[i] * fs > cv.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
       }
       this.matrixAnim = requestAnimationFrame(draw);
@@ -1050,23 +2320,23 @@ class TerminalApp {
     draw();
     
     const stopHandler = (e) => {
-      if (['Shift','Control','Alt','Meta'].includes(e.key)) return;
+      if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return;
       this.stopMatrix();
       document.removeEventListener('keydown', stopHandler);
     };
     document.addEventListener('keydown', stopHandler);
   }
-
+  
   stopMatrix() {
     this.isMatrix = false;
     if (this.matrixAnim) cancelAnimationFrame(this.matrixAnim);
     const cv = $('#matrix');
     cv.style.display = 'none';
-    cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
+    cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
     this.print(this.muted('Matrix sequence terminated.'));
     $('#cmd').focus();
   }
-
+  
   runSlAnimation() {
     const train = `      ====        ________                ___________
   _D _|  |_______/        \\__I_I_____===__|_________|
@@ -1081,13 +2351,11 @@ __/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|______________________
     const el = $('#sl-train');
     el.textContent = train;
     el.style.left = '-100%';
-    // Force reflow
     void el.offsetWidth;
     el.style.left = '100%';
-    setTimeout(() => { el.style.left = '-100%'; }, 8500);
+    setTimeout(() => { el.style.left = '-100%'; }, 10500);
   }
-
-  // --- Boot Sequence ---
+  
   bootComplete() {
     $('#boot-screen').classList.add('hidden');
     setTimeout(() => {
@@ -1096,51 +2364,60 @@ __/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|______________________
       this.updatePrompt();
       $('#cmd').focus();
       this.printWelcome();
-    }, 600);
+    }, 800);
   }
-
+  
   printWelcome() {
     const v = Config.data.app.version;
     this.print(`<div class="welcome"><strong>WebTerminal</strong> <span class="muted">v${v}</span> — <span class="prompt-user">${this.user}</span>@<span class="prompt-path">${this.host}</span><span class="hint"><code>help</code> — список команд &nbsp; <code>theme</code> — сменить тему &nbsp; <code>tree</code> — файловая система</span></div>`);
   }
 }
 
-// --- Глобальные функции для HTML onclick ---
+// ===========================================
+//              GLOBAL FUNCTIONS
+// ===========================================
 const app = new TerminalApp();
-window.selectGrubItem = (el) => { $$('.grub-item').forEach(i=>i.classList.remove('active')); el.classList.add('active'); };
-window.startSetup = () => { 
-  $$('.grub-item').forEach(i=>i.style.display='none'); 
-  $('#grub-profile').style.display='block'; 
-  $('#grub-footer').innerHTML='<kbd>Enter</kbd> загрузить &nbsp; <kbd>Esc</kbd> назад'; 
-  setTimeout(()=>$('#setup-username')?.focus(),100); 
+
+window.selectGrubItem = (el) => {
+  $$('.grub-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
 };
-window.cancelSetup = () => { 
-  $('#grub-profile').style.display='none'; 
-  $$('.grub-item').forEach(i=>{i.style.display='flex';i.classList.add('active');}); 
-  $('#grub-footer').innerHTML='<kbd>Enter</kbd> выбрать &nbsp; <kbd>Esc</kbd> назад'; 
+
+window.startSetup = () => {
+  $$('.grub-item').forEach(i => i.style.display = 'none');
+  $('#grub-profile').style.display = 'block';
+  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> загрузить &nbsp; <kbd>Esc</kbd> назад';
+  setTimeout(() => $('#setup-username')?.focus(), 100);
 };
+
+window.cancelSetup = () => {
+  $('#grub-profile').style.display = 'none';
+  $$('.grub-item').forEach(i => { i.style.display = 'flex'; i.classList.add('active'); });
+  $('#grub-footer').innerHTML = '<kbd>Enter</kbd> выбрать &nbsp; <kbd>Esc</kbd> назад';
+};
+
 window.startBoot = async () => {
-  const un = $('#setup-username')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,'') || 'user';
-  const hn = $('#setup-hostname')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,'') || 'webos';
-  localStorage.setItem('wt_user', un); 
+  const un = $('#setup-username')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'user';
+  const hn = $('#setup-hostname')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'webos';
+  localStorage.setItem('wt_user', un);
   localStorage.setItem('wt_host', hn);
   
-  $$('.grub-item').forEach(i=>i.style.display='none'); 
-  $('#grub-profile').style.display='none'; 
-  $('#grub-footer').style.display='none'; 
-  $('#boot-loading').style.display='block';
+  $$('.grub-item').forEach(i => i.style.display = 'none');
+  $('#grub-profile').style.display = 'none';
+  $('#grub-footer').style.display = 'none';
+  $('#boot-loading').style.display = 'block';
   
   const steps = ['Загрузка ядра...', 'Инициализация VFS...', 'Монтирование /dev/sda1...', `Запуск сессии для "${un}"...`, 'Готово.'];
-  for(let i=0; i<steps.length; i++) {
-    $('#boot-status').textContent = steps[i]; 
-    await new Promise(r => setTimeout(r, 300 + Math.random()*400));
+  for (let i = 0; i < steps.length; i++) {
+    $('#boot-status').textContent = steps[i];
+    await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
   }
   
-  app.user = un; app.host = hn;
+  app.user = un;
+  app.host = hn;
   app.bootComplete();
 };
 
-// Обработка клавиш на экране загрузки
 document.addEventListener('keydown', e => {
   if ($('#boot-screen').style.display === 'none') return;
   if (e.key === 'Enter') {
@@ -1154,17 +2431,23 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Хоткеи редактора
 $('#editor-content')?.addEventListener('keydown', e => {
   if (e.key === 'Escape') { e.preventDefault(); app.closeEditor(); }
   if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); app.saveFile(); }
 });
-$('#setup-username')?.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();startBoot();} });
-$('#setup-hostname')?.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();startBoot();} });
 
-// Инициализация
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => app.init()); 
-else app.init();
+$('#editor-content')?.addEventListener('input', () => {
+  app.updateEditorLines();
+});
+
+$('#setup-username')?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); startBoot(); } });
+$('#setup-hostname')?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); startBoot(); } });
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => app.init());
+} else {
+  app.init();
+}
 </script>
 </body>
 </html>
